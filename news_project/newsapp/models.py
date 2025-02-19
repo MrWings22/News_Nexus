@@ -31,19 +31,19 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
 
-# class Tags(models.Model):
-#     tag_id = models.AutoField(primary_key=True)
-#     tag_name = models.CharField(max_length=100, unique=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
+class Tags(models.Model):
+    tag_id = models.AutoField(primary_key=True)
+    tag_name = models.CharField(max_length=100, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
-# class ArticleTags(models.Model):
-#     articletag_id = models.AutoField(primary_key=True)
-#     article = models.ForeignKey(Article, on_delete=models.CASCADE)
-#     tag = models.ForeignKey(Tags, on_delete=models.CASCADE)
-#     created_at  = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
+class ArticleTags(models.Model):
+    articletag_id = models.AutoField(primary_key=True)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tags, on_delete=models.CASCADE)
+    created_at  = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 # class ArticleImages(models.Model):

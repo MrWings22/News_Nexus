@@ -13,14 +13,14 @@ class Category(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-# class Article(models.Model):
-#     article_id = models.AutoField(primary_key=True)
-#     head_line = models.CharField(max_length=255)
-#     description = models.TextField()
-#     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
+class Article(models.Model):
+    article_id = models.AutoField(primary_key=True)
+    head_line = models.CharField(max_length=255)
+    description = models.TextField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 # class Comments(models.Model):

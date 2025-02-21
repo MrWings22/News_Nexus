@@ -1,3 +1,11 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+def Indexpage(request):
+    return render(request, "index.html")
+
+def Homepage(request):
+    return render(request, "home.html")
+
+def Detailedpage(request):
+    return render(request, "detail-page.html")

@@ -134,7 +134,9 @@
         <div class="row g-4">
             <div class="col-lg-7 col-xl-8 mt-0">
                 <div class="position-relative overflow-hidden rounded">
-                    <img src="{% static 'img/news-1.jpg' %}" class="img-fluid rounded img-zoomin w-100" alt="">
+                    
+                    <img src="{% static 'img/cricket.jpg' %}" class="img-fluid rounded img-zoomin w-100" alt="{{ imag.title }}">
+                    
                     <div class="d-flex justify-content-center px-4 position-absolute flex-wrap" style="bottom: 10px; left: 0;">
                         <a href="#" class="text-white me-3 link-hover"><i class="fa fa-clock"></i> 06 minute read</a>
                         <a href="#" class="text-white me-3 link-hover"><i class="fa fa-eye"></i> 3.5k Views</a>
@@ -143,11 +145,12 @@
                     </div>
                 </div>
                 <div class="border-bottom py-3">
-                    
                     <a href="#" class="display-4 text-dark mb-0 link-hover">Lorem Ipsum is simply dummy text of the printing</a>
                 </div>
-                <p class="mt-3 mb-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley standard dummy text ever since the 1500s, when an unknown printer took a galley...
+                {% for news in latestnews %}
+                <p class="mt-3 mb-4">{{ news.description }}
                 </p>
+                {% endfor %}
                 <div class="bg-light p-4 rounded">
                     <div class="news-2">
                         <h3 class="mb-4">Top Story</h3>
@@ -324,7 +327,7 @@
                         <img src="img/news-7.jpg" class="img-zoomin img-fluid rounded-top w-100" alt="">
                     </div>
                     <div class="d-flex flex-column p-4">
-                        <a href="#" class="h4">Lorem Ipsum is simply dummy text of...</a>
+                        <a href="#" class="h4"></a>
                         <div class="d-flex justify-content-between">
                             <a href="#" class="small text-body link-hover">by Willum Skeem</a>
                             <small class="text-body d-block"><i class="fas fa-calendar-alt me-1"></i> Dec 9, 2024</small>

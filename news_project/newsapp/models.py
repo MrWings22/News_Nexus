@@ -49,7 +49,7 @@ class ArticleTags(models.Model):
 class ArticleImages(models.Model):
     image_id = models.AutoField(primary_key=True)
     image_name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='newsapp/static/img/')
+    image = models.ImageField(upload_to='img/')
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

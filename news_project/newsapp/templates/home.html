@@ -134,9 +134,9 @@
         <div class="row g-4">
             <div class="col-lg-7 col-xl-8 mt-0">
                 <div class="position-relative overflow-hidden rounded">
-
-                    <img src="{% static 'img/cricket.jpg' %}" class="img-fluid rounded img-zoomin w-100" alt="{{ imag.title }}">
-                   
+                    {%for image in latestnews_images%}
+                    <img src="{{ image.image.url }}" class="img-fluid rounded img-zoomin w-100" alt="{{ image.image.name }}">
+                    {%endfor%}
                     <div class="d-flex justify-content-center px-4 position-absolute flex-wrap" style="bottom: 10px; left: 0;">
                         <a href="#" class="text-white me-3 link-hover"><i class="fa fa-clock"></i> 06 minute read</a>
                         <a href="#" class="text-white me-3 link-hover"><i class="fa fa-eye"></i> 3.5k Views</a>
@@ -1222,10 +1222,6 @@
 </div>
 {% endblock %}
 <!-- Most Populer News End -->
-
-  <!-- Back to Top -->
-  <a href="#" class="btn btn-primary border-2 border-white rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
-
         
   <!-- JavaScript Libraries -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>

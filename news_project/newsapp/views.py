@@ -7,7 +7,9 @@ def Indexpage(request):
 def Homepage(request):
     latestnews = Article.objects.order_by('-created_at').first()
     topfivenews = Article.objects.order_by('-created_at')[:5]
-    return render(request, 'home.html', {'latestnews': latestnews ,'topfivenews': topfivenews})
+    latestnews_images = ArticleImages.objects.filter(article=latestnews) if latestnews else None
+    return render(request, 'home.html', {'latestnews': latestnews ,'latestnews_images': latestnews_images,'topfivenews': topfivenews})
+
 def Detailedpage(request):
     return render(request, "detail-page.html")
 

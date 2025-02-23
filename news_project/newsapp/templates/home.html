@@ -134,9 +134,9 @@
         <div class="row g-4">
             <div class="col-lg-7 col-xl-8 mt-0">
                 <div class="position-relative overflow-hidden rounded">
-                    {% for image in latestnews.articleimages_set.all %}
-                    <img src="{{ image.image.url }}" class="img-fluid rounded img-zoomin w-100" alt="{{ imag.title }}">
-                    {%endfor%}
+
+                    <img src="{% static 'img/cricket.jpg' %}" class="img-fluid rounded img-zoomin w-100" alt="{{ imag.title }}">
+                   
                     <div class="d-flex justify-content-center px-4 position-absolute flex-wrap" style="bottom: 10px; left: 0;">
                         <a href="#" class="text-white me-3 link-hover"><i class="fa fa-clock"></i> 06 minute read</a>
                         <a href="#" class="text-white me-3 link-hover"><i class="fa fa-eye"></i> 3.5k Views</a>
@@ -145,14 +145,14 @@
                     </div>
                 </div>
                 <div class="border-bottom py-3">
-                    {% for news in latestnews %}
-                    <a href="#" class="display-4 text-dark mb-0 link-hover">{{ news.head_line }}</a>
-                    {% endfor %}
+                    
+                    <a href="#" class="display-4 text-dark mb-0 link-hover">{{ latestnews.head_line }}</a>
+                   
                 </div>
                 
                 <p class="mt-3 mb-4">{{ latestnews.description }}
                 </p>
-                {% endfor %}
+                
                 <div class="bg-light p-4 rounded">
                     <div class="news-2">
                         <h3 class="mb-4">Top Story</h3>

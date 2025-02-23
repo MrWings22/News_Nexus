@@ -1,17 +1,15 @@
-from django.shortcuts import render, redirect
-from .models import Article
+from django.shortcuts import render
+from .models import Article, ArticleImages
 
 def Indexpage(request):
     return render(request, "index.html")
 
 def Homepage(request):
-    latestnews = Article.objects.all()
-    return render(request, 'home.html', {'latestnews': latestnews})
-
+    latestnews = Article.objects.order_by('-created_at').first()
+    topfivenews = Article.objects.order_by('-created_at')[:5]
+    return render(request, 'home.html', {'latestnews': latestnews ,'topfivenews': topfivenews})
 def Detailedpage(request):
     return render(request, "detail-page.html")
 
-def NewsImages(request):
-    images = ArticleImages.objects.all()
-    return render(request, 'home.html', {'images': images})
+
     

@@ -7,7 +7,7 @@ urlpatterns = [
     path('jj', views.Indexpage,  name="Indexpage"),
     path('', views.Homepage,  name="Homepage"),
     path('detailed_page/', views.Detailedpage,  name="Detailedpage"),
-   
+    path('article/<int:article_id>/', views.articledetail, name='articledetail'),
 ]
 
 if settings.DEBUG:

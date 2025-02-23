@@ -10,6 +10,11 @@ def Homepage(request):
     latestnews_images = ArticleImages.objects.filter(article=latestnews) if latestnews else None
     return render(request, 'home.html', {'latestnews': latestnews ,'latestnews_images': latestnews_images,'topfivenews': topfivenews})
 
+def articledetail(request, article_id):
+    article = Article.objects.get(article_id=article_id)
+    article_images = ArticleImages.objects.filter(article=article)
+    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images})
+
 def Detailedpage(request):
     return render(request, "detail-page.html")
 

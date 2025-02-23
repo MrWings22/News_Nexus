@@ -36,15 +36,15 @@
         <!-- Single Product Start -->
         <div class="container-fluid py-5">
             <div class="container py-5">
-                <ol class="breadcrumb justify-content-start mb-4">
+                <!-- <ol class="breadcrumb justify-content-start mb-4">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                     <li class="breadcrumb-item"><a href="#">Pages</a></li>
                     <li class="breadcrumb-item active text-dark">Single Page</li>
-                </ol>
+                </ol> -->
                 <div class="row g-4">
                     <div class="col-lg-8">
                         <div class="mb-4">
-                            <a href="#" class="h1 display-5">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</a>
+                            <a href="#" class="h1 display-5">{{ article.head_line }}</a>
                         </div>
                         <div class="position-relative rounded overflow-hidden mb-3">
                             <img src="img/news-1.jpg" class="img-zoomin img-fluid rounded w-100" alt="">
@@ -58,13 +58,9 @@
                             <a href="#" class="text-dark link-hover me-3"><i class="fa fa-comment-dots"></i> 05 Comment</a>
                             <a href="#" class="text-dark link-hover"><i class="fa fa-arrow-up"></i> 1.5k Share</a>
                         </div>
-                        <p class="my-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy Lorem Ipsum has been the industry's standard dummy type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                        </p>
+                        <p class="my-4"></p>
                         <p class="my-4">
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
+                            {{ article.description}}
                         </p>
                         <div class="bg-light p-4 mb-4 rounded border-start border-3 border-primary">
                             <h1 class="mb-2">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</h1>

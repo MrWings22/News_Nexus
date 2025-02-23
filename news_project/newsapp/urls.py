@@ -7,6 +7,6 @@ urlpatterns = [
     path('hhj', views.Indexpage,  name="Indexpage"),
     path('', views.Homepage,  name="Homepage"),
     path('jk', views.Detailedpage,  name="Detailedpage"),
-    path('img/', views.NewsImages, name='NewsImages'),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+   
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

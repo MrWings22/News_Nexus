@@ -140,7 +140,7 @@
     color: var(--bs-primary) !important;
 }
 
-/* #note {
+#note {
     position: relative;
     animation: noteAnimate 10s infinite;
     animation-timing-function: ease-in-out;
@@ -149,9 +149,9 @@
 }
 
 @keyframes noteAnimate {
-    from {left: -735px;}
-    to {left: 735px;}
-} */
+    from {left: 735px;}
+    to {left: -735px;}
+}
 
 /*** Topbar End ***/
 
@@ -294,12 +294,13 @@
   
 }
 
-.latest-news .latest-news-item:hover{
+/* .latest-news .latest-news-item:hover{
     position: relative;
     z-index: 1;
     height: 60px;
     width: 300px;
-}
+} */
+
 /*** Latest News End ***/
 
 

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - NewsNexus</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <!-- Google reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css"/>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        .container {
+            width: 400px; margin: 50px auto;
+            padding: 30px; background: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .phone-input {
+            display: flex;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create an Account</h2>
+        <h5>Welcome to NewsNexus</h5>
+        <div class="social-login">
+            <div id="g_id_onload"
+                data-client_id="17220004254-2qn2ck2rjorqrfp90eukhadat3cah9lr.apps.googleusercontent.com"
+                data-callback="handleCredentialResponse"
+                data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin" data-type="standard"></div>
+        </div>
+        <div class="divider"><span>or</span></div>
+        
+        <input type="text" id="name" placeholder="Full Name">
+        <input type="email" id="email" placeholder="Enter Email">
+        
+        <div class="phone-input">
+            <input type="tel" id="phone" placeholder="Phone Number">
+        </div>
+        
+        <input type="password" id="password" placeholder="Enter Password">
+        <input type="password" id="confirmPassword" placeholder="Confirm Password">
+        
+        <!-- Google reCAPTCHA -->
+        <div class="g-recaptcha" data-sitekey="6LdoEeAqAAAAAFjquAxMotIHRzAfBw-_0J0FMezH"></div>
+        
+        <button id="continueBtn" onclick="register()">Continue</button>
+        
+        <p>Already have an account? <a href="loginwithemail.html">Login here</a></p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const phoneInputField = document.getElementById("phone");
+            window.intlTelInput(phoneInputField, {
+                initialCountry: "auto",
+                geoIpLookup: function(callback) {
+                    fetch('https://ipinfo.io/json?token=YOUR_TOKEN')
+                        .then(response => response.json())
+                        .then(data => callback(data.country))
+                        .catch(() => callback("us"));
+                },
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+            });
+        });
+
+        function register() {
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            let phone = document.getElementById("phone").value;
+            let password = document.getElementById("password").value;
+            let confirmPassword = document.getElementById("confirmPassword").value;
+            let recaptchaResponse = grecaptcha.getResponse();
+            
+            if (!name || !email || !phone || !password || !confirmPassword) {
+                alert("Please fill in all fields.");
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+                return;
+            }
+            
+            if (!recaptchaResponse) {
+                alert("Please complete the reCAPTCHA verification.");
+                return;
+            }
+            
+            fetch("http://127.0.0.1:5500/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, phone, password, recaptchaResponse })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Registration successful!");
+                } else {
+                    alert("Error: " + data.error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

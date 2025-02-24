@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - NewsNexus</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        .container {
+            width: 400px; margin: 50px auto;
+            padding: 30px; background: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 10px;
+        }
+        .social-btn img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ccc;
+        }
+        .divider span {
+            padding: 0 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome Back</h2>
+        <div class="social-login">
+            <div id="g_id_onload"
+                data-client_id="17220004254-2qn2ck2rjorqrfp90eukhadat3cah9lr.apps.googleusercontent.com"
+                data-callback="handleCredentialResponse"
+                data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin" data-type="standard"></div>
+        </div>
+        <div class="divider"><span>or</span></div>
+        
+        <!-- Email input -->
+        <input type="email" id="emailInput" placeholder="Enter Email">
+
+        <div id="passwordDiv">
+            <input type="password" id="password" placeholder="Enter Password">
+            <button onclick="login()">Continue</button>
+        </div>
+        <button><a href="loginwithnumber.html">Login with Phone</a></button>
+        <p>New to NewsNexus? <a href="registerforlogin.html">Create an account to get started.</a></p>
+    </div>
+
+    <script>
+        function login() {
+            alert("Login successful (Dummy Function)");
+        }
+
+        function handleCredentialResponse(response) {
+            console.log("Encoded JWT ID token: " + response.credential);
+            alert("Google Login Successful");
+        }
+    </script>
+</body>
+</html>

@@ -329,13 +329,9 @@
             <div class="latest-news-item">
                 <div class="bg-light rounded">
                     <div class="rounded-top overflow-hidden">
-                    {% with first_image=news.articleimages_set.all.0 %}
-                        {% if first_image %}
-                        <img src="{{ first_image.image.url }}" id="topnews-images" class="img-zoomin img-fluid rounded-top w-100" alt="">
-                        {% else %}
-                        <img src="{% static 'img/placeholder.png' %}" class="img-zoomin img-fluid rounded-top w-100" alt="No image available">
-                        {% endif %}
-                    {% endwith %}
+                        {% with img=news.articleimages_set.first %}
+                        <img src="{{ img.image.url }}" id="topnews-images" class="img-zoomin img-fluid rounded-top w-100" alt="{{ news.head_line }}">
+                        {% endwith %}
                     </div>
                     <div class="d-flex flex-column p-4">
                         <!--  -->

@@ -198,7 +198,7 @@
 
 .dropdown .dropdown-menu a:hover {
     background: var(--bs-secondary);
-    color: var(--bs-primary);
+    color: white;
 }
 
 .navbar .nav-item:hover .dropdown-menu {
@@ -214,6 +214,24 @@
     .navbar .navbar-collapse .border-top {
         border-top: none !important;
     }
+}
+
+.login{
+    width:100px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.login:hover{
+    background: blue;
+    color:white;
+    box-shadow: 0px 0px 4px 5px rgba(0, 0, 0, 0.4);
+}
+.login:hover .signin{
+    color: azure;
 }
 
 #searchModal .modal-content {

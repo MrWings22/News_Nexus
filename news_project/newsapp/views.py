@@ -15,6 +15,11 @@ def articledetail(request, article_id):
     article_images = ArticleImages.objects.filter(article=article)
     return render(request, 'detail-page.html', {'article': article, 'article_images': article_images})
 
+def contactus(request):
+    return render(request, 'contact.html')
+
+def loginemail(request):
+    return render(request, 'loginwithemail.html')
 
 
     

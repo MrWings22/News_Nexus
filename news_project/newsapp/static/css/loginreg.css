@@ -17,6 +17,14 @@ body {
     max-width: 400px;
     text-align: center;
 }
+.register-container {
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(41, 139, 244, 0.721);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
 h2 {
     color: #333;
 }

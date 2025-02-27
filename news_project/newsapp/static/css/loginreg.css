@@ -1,0 +1,131 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    background-color: #f5f5f5;
+}
+.login-container {
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(41, 139, 244, 0.721);
+    width: 100%;
+    margin-bottom: 60px;
+    max-width: 400px;
+    text-align: center;
+}
+h2 {
+    color: #333;
+}
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+.form-group label {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    background: white;
+    padding: 0 5px;
+    color: #666;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    pointer-events: none;
+}
+.form-group input {
+    width: 100%;
+    padding: 12px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+.form-group input:focus, 
+.form-group input:not(:placeholder-shown) {
+    padding-top: 16px;
+    padding-bottom: 8px;
+}
+.form-group input:focus + label, 
+.form-group input:not(:placeholder-shown) + label {
+    top: 5px;
+    font-size: 12px;
+    color: #347ff1;
+}
+.toggle-login {
+    text-align: center;
+    margin: 1rem 0;
+    color: #347ff1;
+    cursor: pointer;
+}
+.btn {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #4b8ff5;
+    color: white;
+    cursor: pointer;
+    margin-top: 1rem;
+    font-size: 16px;
+}
+.btn:hover {
+    background-color: #0b6bc5;
+}
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+}
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #ccc;
+}
+.divider span {
+    padding: 0 10px;
+    color: #666;
+}
+.register-link {
+    text-align: center;
+    margin-top: 1rem;
+    color: #666;
+}
+.social-login {
+    margin-top: 1rem;
+}
+.iti {
+    width: 100%;
+}
+.iti--separate-dial-code .iti__selected-flag {
+    padding-left: 10px;
+}
+.phone-input {
+    flex: 1;
+    border: none;
+    font-size: 16px;
+    padding: 10px;
+    outline: none;
+}
+.goback{
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 50px;
+    width:fit-content;
+    height: fit-content;
+}
+
+.goback i {
+    color: rgb(118, 150, 255);
+    transition: color 0.3s ease;
+}
+
+.goback i:hover {
+    color: rgb(28, 80, 251);
+}

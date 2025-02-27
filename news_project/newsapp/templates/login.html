@@ -10,13 +10,14 @@
 
     <!-- intl-tel-input CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
-
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <style>
         body {
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
             height: 100vh;
             margin: 0;
             background-color: #f5f5f5;
@@ -26,6 +27,7 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(41, 139, 244, 0.721);
             width: 100%;
+            margin-bottom: 60px;
             max-width: 400px;
             text-align: center;
         }
@@ -124,9 +126,30 @@
             padding: 10px;
             outline: none;
         }
+        .goback{
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 50px;
+            width:fit-content;
+            height: fit-content;
+        }
+
+        .goback i {
+            color: rgb(118, 150, 255);
+            transition: color 0.3s ease;
+        }
+
+        .goback i:hover {
+            color: rgb(28, 80, 251);
+        }
+
     </style>
 </head>
 <body>
+    <div class="goback">
+        <a href="{% url 'Homepage' %}"><i class='bx bxs-left-arrow-square'></i></a>
+    </div>
     <div class="login-container">
         <h2>Login to NewsApp</h2>
         <form id="loginForm">
@@ -171,7 +194,7 @@
             Don't have an account? <a href="{% url 'register' %}">Register here</a>
         </div>
     </div>
-
+    
     <!-- intl-tel-input JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 
@@ -228,5 +251,6 @@
             alert("Google Login Successful");
         }
     </script>
+
 </body>
 </html>

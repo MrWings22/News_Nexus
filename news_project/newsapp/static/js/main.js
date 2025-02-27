@@ -126,3 +126,12 @@
 
 })(jQuery);
 
+  // Function to update the date dynamically
+    function updateDate() {
+        const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
+        const today = new Date().toLocaleDateString('en-US', options);
+        document.getElementById('current-date').textContent = today;
+    }
+
+    // Call the function to update the date on page load
+    updateDate();

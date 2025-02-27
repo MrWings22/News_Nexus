@@ -135,3 +135,10 @@
 
     // Call the function to update the date on page load
     updateDate();
+
+    // const comments = document.querySelector('.commentbox');
+    // const commentbutton = document.querySelector('.commentbtn');
+
+    // commentbutton.addEventListener('click', ()=>{
+    //     comments.classList.add('active');
+    // });

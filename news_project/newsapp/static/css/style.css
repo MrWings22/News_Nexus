@@ -222,7 +222,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    
 }
 
 .login:hover{
@@ -458,5 +457,68 @@
 }
 /*** Footer End ***/
 
+/* comment popup start */
+/* .commentbox{
+    position: absolute;
+    height: 700px;
+    width: 500px;
+    border: 6px solid rgb(106, 106, 106);
+    border-radius: 20px;
+    padding: 10px;
+    transform: scale(0);
+    transition: transform .5s ease, height .2s ease;
+    z-index: 999;
+}
 
+.commentbox.active-popup{
+    transform: scale(1);
+    height: 700px;
+}
+.commentbox.active {
+    height: 750px;
+}
 
+.input-field{
+    position: absolute;
+    bottom: 20px;
+    width: 495px;
+    height: 40px;
+    
+}
+.comment-input{
+    position: absolute;
+    bottom: 5px;
+    width: 487px;
+    height: 30px;
+    border-radius: 20px;
+}
+input{
+    font-size: 20px;
+    padding: 5px;
+}
+#sendicon{
+    position: absolute;
+    bottom: 14px;
+    right: 0px;
+    font-size: 25px;
+}
+#sendicon:hover{
+    color: blue;
+}  
+.comment-fields{
+    height: 600px;
+    width: 480px;
+    padding: 10px;
+    
+}
+.usercomment{
+    background: rgb(228, 228, 228);
+    border-radius: 10px;
+    padding: 6px 6px 1px 6px;
+    top: 5px;
+}
+.user_date{
+    display: flex;
+    gap:10px
+} */
+/* comment popup end */

@@ -6,8 +6,9 @@ from . import views
 urlpatterns = [
     path('jj', views.Indexpage,  name="Indexpage"),
     path('', views.Homepage,  name="Homepage"),
-    path('article/(?P<article_id>[0-9]+)/\Z', views.articledetail, name='articledetail'),
-    path('article_images/(?P<article_id>[0-9]+)/\Z', views.articledetail, name='articledetail'),
+    path('article/<int:article_id>', views.articledetail, name='articledetail'),
+    path('contact/', views.contactus, name='contactus'),
+    path('loginemail/', views.loginemail, name='loginemail')
 ]
 
 if settings.DEBUG:

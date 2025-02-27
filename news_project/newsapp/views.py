@@ -19,7 +19,10 @@ def contactus(request):
     return render(request, 'contact.html')
 
 def loginemail(request):
-    return render(request, 'loginwithemail.html')
+    return render(request, 'login.html')
+
+def register(request):
+    return render(request, 'registration.html')
 
 
     

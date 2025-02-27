@@ -24,7 +24,7 @@
         .register-container {
             padding: 2rem;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(207, 19, 19, 0.564);
+            box-shadow: 0 0 10px rgba(41, 139, 244, 0.721);
             width: 100%;
             max-width: 400px;
             text-align: center;
@@ -70,7 +70,7 @@
         .form-group input:not(:placeholder-shown) + label {
             top: 5px;
             font-size: 12px;
-            color: #da3f3f;
+            color: #347ff1;
         }
         label {
             display: block;
@@ -89,13 +89,13 @@
             padding: 0.75rem;
             border: none;
             border-radius: 4px;
-            background-color: #7d3333;
+            background-color:  #4b8ff5;
             color: white;
             cursor: pointer;
             margin-top: 1rem;
         }
         .btn:hover {
-            background-color: #c62121;
+            background-color:  #0b6bc5;
         }
         .divider {
             display: flex;
@@ -174,7 +174,7 @@
         </div>
 
         <div class="register-link">
-            Already have an account? <a href="login.html">Login here</a>
+            Already have an account? <a href="{% url 'loginemail' %}">Login here</a>
         </div>
     </div>
 

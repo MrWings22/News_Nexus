@@ -24,7 +24,7 @@
         .login-container {
             padding: 2rem;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(171, 19, 19, 0.721);
+            box-shadow: 0 0 10px rgba(41, 139, 244, 0.721);
             width: 100%;
             max-width: 400px;
             text-align: center;
@@ -66,12 +66,12 @@
         .form-group input:not(:placeholder-shown) + label {
             top: 5px;
             font-size: 12px;
-            color: #d44f3b;
+            color: #347ff1;
         }
         .toggle-login {
             text-align: center;
             margin: 1rem 0;
-            color: #942727;
+            color: #347ff1;
             cursor: pointer;
         }
         .btn {
@@ -79,14 +79,14 @@
             padding: 0.75rem;
             border: none;
             border-radius: 4px;
-            background-color: #a83939;
+            background-color: #4b8ff5;
             color: white;
             cursor: pointer;
             margin-top: 1rem;
             font-size: 16px;
         }
         .btn:hover {
-            background-color: #e43e1d;
+            background-color: #0b6bc5;
         }
         .divider {
             display: flex;
@@ -168,7 +168,7 @@
         </div>
 
         <div class="register-link">
-            Don't have an account? <a href="registration.html">Register here</a>
+            Don't have an account? <a href="{% url 'register' %}">Register here</a>
         </div>
     </div>
 

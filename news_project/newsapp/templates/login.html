@@ -20,7 +20,19 @@
     </div>
     <div class="login-container">
         <h2>Login to NewsApp</h2>
-        <form id="loginForm">
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p style="color:red" class="{{ message.tags }}">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form id="loginForm" method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <input type="hidden" id="login_method" name="login_method" value="email">
+
             <!-- Email Login -->
             <div class="form-group" id="emailGroup">
                 <input type="email" id="email" name="email" placeholder=" " required>
@@ -73,15 +85,18 @@
             const emailGroup = document.getElementById('emailGroup');
             const phoneGroup = document.getElementById('phoneGroup');
             const toggleText = document.getElementById('toggleText');
+            const loginMethodInput = document.getElementById('login_method');
 
             if (isEmailLogin) {
                 emailGroup.style.display = 'none';
                 phoneGroup.style.display = 'block';
                 toggleText.textContent = 'Email';
+                loginMethodInput.value = 'phone';
             } else {
                 emailGroup.style.display = 'block';
                 phoneGroup.style.display = 'none';
                 toggleText.textContent = 'Phone Number';
+                loginMethodInput.value = 'email';
             }
             isEmailLogin = !isEmailLogin;
         }
@@ -97,20 +112,16 @@
             });
 
             document.getElementById("loginForm").addEventListener("submit", function (e) {
-                e.preventDefault();
+               
 
                 if (!isEmailLogin) {
                     if (iti.isValidNumber()) {
-                        const phoneNumber = iti.getNumber();
-                        console.log("Valid phone number:", phoneNumber);
-                        alert("Valid phone number: " + phoneNumber);
+                        phoneInputField.value = iti.getNumber();
                     } else {
                         alert("Invalid phone number. Please check your input.");
-                        return;
+                        e.preventDefault();
                     }
                 }
-
-                alert("Login successful!");
             });
         });
 

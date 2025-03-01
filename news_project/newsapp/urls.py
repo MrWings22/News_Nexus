@@ -4,12 +4,13 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('jj', views.Indexpage,  name="Indexpage"),
+    path('index/', views.Indexpage,  name="Indexpage"),
     path('', views.Homepage,  name="Homepage"),
     path('article/<int:article_id>', views.articledetail, name='articledetail'),
     path('contact/', views.contactus, name='contactus'),
-    path('loginemail/', views.loginemail, name='loginemail'),
-    path('register/', views.register, name='register')
+    path('login/', views.Login, name='login'),
+    path('register/', views.Registration, name='register'),
+    path('logout/', views.Logout, name='logout'),
 ]
 
 if settings.DEBUG:

@@ -458,37 +458,44 @@
 /*** Footer End ***/
 
 /* comment popup start */
-/* .commentbox{
+.commentbox{
     position: absolute;
-    height: 700px;
-    width: 500px;
-    border: 6px solid rgb(106, 106, 106);
+    min-height: 45rem;
+    background: grey;
+    border: 6px solid rgb(207, 207, 207);
     border-radius: 20px;
     padding: 10px;
-    transform: scale(0);
+    transform: scaleZ(1);
     transition: transform .5s ease, height .2s ease;
     z-index: 999;
+    top: 31rem;
+    right: 110px;
 }
 
 .commentbox.active-popup{
     transform: scale(1);
     height: 700px;
+    z-index: 1;
+
 }
 .commentbox.active {
     height: 750px;
+    z-index: 1;
+    top: 31rem;
+    right: 110px;
 }
 
 .input-field{
     position: absolute;
     bottom: 20px;
-    width: 495px;
+    width: 385px;
     height: 40px;
     
 }
 .comment-input{
     position: absolute;
     bottom: 5px;
-    width: 487px;
+    width: 385px;
     height: 30px;
     border-radius: 20px;
 }
@@ -507,7 +514,7 @@ input{
 }  
 .comment-fields{
     height: 600px;
-    width: 480px;
+    max-width: 385px;
     padding: 10px;
     
 }
@@ -520,5 +527,28 @@ input{
 .user_date{
     display: flex;
     gap:10px
-} */
+}
+.closebtn{
+    position: absolute;
+    z-index: 9999;
+    color: rgb(255, 14, 14);
+}
+.closebtn i{
+    font-size: 400px;
+}
+.commentbtn{
+    border:none;
+    background: transparent;
+    color:white;
+}
+.commentbtn:hover{
+    border:none;
+    background: transparent;
+    color:rgb(83, 106, 254);
+    transition: .3s ease-in;
+}
+
+.commentbtn i:hover{
+    color:rgb(83, 106, 254);
+}
 /* comment popup end */

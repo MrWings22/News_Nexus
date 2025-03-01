@@ -1,5 +1,23 @@
 from django.shortcuts import render
 from .models import Article, ArticleImages
+from django.contrib.auth import authenticate, login, logout
+
+
+# def UserLogin(request):
+#     username = request.POST("username")
+#     password = request.POST("password")
+#     user = authenticate(request, username=username, password=password)
+
+# def Registration(request):
+#     if request.method == "POST":
+#         username = request.POST['username']
+#         email = request.POST['email']
+#         phone = request.POST['phone']
+#         password = request.POST['password']
+#         confirmpassword = request.POST['confirmpassword']
+#         User.objects.create(username=username, email=email, phone=phone, password=password, confirmpassword=confirmpassword)
+
+#     return render(request, 'registration.html')
 
 def Indexpage(request):
     return render(request, "index.html")

@@ -227,7 +227,8 @@
 .login:hover{
     background: blue;
     color:white;
-    box-shadow: 0px 0px 4px 5px rgba(0, 0, 0, 0.4);
+    border: 1px solid white;
+    box-shadow: 3px 2px  0px rgba(0, 0, 0, 0.4);
 }
 .login:hover .signin{
     color: azure;
@@ -458,7 +459,7 @@
 /*** Footer End ***/
 
 /* comment popup start */
-.commentbox{
+/* .commentbox{
     position: absolute;
     min-height: 45rem;
     background: grey;
@@ -484,34 +485,46 @@
     top: 31rem;
     right: 110px;
 }
-
+*/
 .input-field{
     position: absolute;
     bottom: 20px;
-    width: 385px;
-    height: 40px;
+    width: 465px;
+    height: 50px;
     
 }
 .comment-input{
     position: absolute;
     bottom: 5px;
-    width: 385px;
-    height: 30px;
+    width: 465px;
+    height: 50px;
     border-radius: 20px;
 }
 input{
     font-size: 20px;
     padding: 5px;
 }
-#sendicon{
-    position: absolute;
+/* #sendicon{
+    position: fixed;
     bottom: 14px;
     right: 0px;
     font-size: 25px;
+    z-index:9999;
 }
 #sendicon:hover{
     color: blue;
-}  
+}   */
+
+.send-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+    font-size: 25px;
+    color: black;
+    cursor: pointer;
+}
+
+/*
 .comment-fields{
     height: 600px;
     max-width: 385px;
@@ -550,5 +563,41 @@ input{
 
 .commentbtn i:hover{
     color:rgb(83, 106, 254);
-}
+} */
 /* comment popup end */
+/* Customize modal position */
+/* Override Bootstrap modal positioning */
+.custom-modal {
+    position: fixed !important; 
+    right: 30px; 
+    top: 140px; 
+    margin: 0 !important;
+    
+}
+.modal-dialog {
+    max-height: 80vh;
+    height: 80vh; 
+    display: flex;
+    align-items: center; 
+}
+
+.modal-content {
+    height: 100%; 
+    overflow-y: auto;
+    overflow: visible !important;
+}
+
+.custom-modal.modal-dialog {
+    transform: none !important; 
+}
+.modal-backdrop {
+    display: none !important;
+}
+body.modal-open {
+    pointer-events: auto !important;
+    overflow: auto !important;
+    padding-right: 0px !important;
+}
+.modal-open::after {
+    content: none !important; 
+}

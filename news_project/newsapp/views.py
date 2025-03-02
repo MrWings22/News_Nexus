@@ -17,7 +17,7 @@ def Login(request):
             email = request.POST.get("email")
             try:
                 user = CustomUser.objects.get(email=email)
-                if user.password != password:
+                if not user.check_password(password):
                     user = None
             except CustomUser.DoesNotExist:
                 user = None
@@ -25,7 +25,7 @@ def Login(request):
             phone = request.POST.get("phone")
             try:
                 user = CustomUser.objects.get(phone=phone)
-                if user.password != password:
+                if not user.check_password(password):
                     user = None
             except CustomUser.DoesNotExist:
                 user = None
@@ -78,7 +78,7 @@ def Registration(request):
         user = CustomUser.objects.create(username=username, email=email, phone=phone)
         user.set_password(password)
         user.save()
-
+        
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)

@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Article, ArticleImages, CustomUser, Comment
+from .models import Article, ArticleImages, CustomUser, Comment, Category
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import CommentForm
@@ -92,35 +92,52 @@ def Registration(request):
     return render(request, 'registration.html')
 
 
-
-
-
 def Indexpage(request):
     return render(request, "index.html")
 
-def Homepage(request):
-    latestnews = Article.objects.order_by('-created_at').first()
-    topfivenews = Article.objects.order_by('-created_at').exclude(pk=latestnews.pk)[:5]
-    latestnews_images = ArticleImages.objects.filter(article=latestnews) if latestnews else None
-    return render(request, 'home.html', {'latestnews': latestnews ,'latestnews_images': latestnews_images,'topfivenews': topfivenews})
-
 @login_required
-def articledetail(request, article_id):
-    article = Article.objects.get(article_id=article_id)
-    article_images = ArticleImages.objects.filter(article=article)
-    comments = Comment.objects.filter(article=article).order_by('-created_at')
+def Homepage(request):
+    category_name = request.GET.get('category', None)
+
+    if category_name:
+        category = get_object_or_404(Category, category_name=category_name)
+        latestnews = Article.objects.filter(category=category).order_by('-created_at').first()
+    else:
+        latestnews = Article.objects.order_by('-created_at').first()
     
+
+    if latestnews:
+        topfivenews = Article.objects.filter(category=latestnews.category).order_by('-created_at').exclude(pk=latestnews.pk)[:5]
+        latestnews_images = ArticleImages.objects.filter(article=latestnews) 
+        comments = Comment.objects.filter(article=latestnews).order_by('-created_at')
+    else:
+        latestnews = []
+        comment = []
+        topfivenews = []
+        latestnews_images =[]
+
+    form = CommentForm()
+    categories = Category.objects.all()
+
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
-            comment.articles = article
+            comment.article = latestnews
             comment.user = request.user
             comment.save()
-            return redirect('articledetail', article_id=article.article_id)
+            return redirect('Homepage')
         else:
-            form = CommentForm()
-    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images, 'comments':comments, 'form': form})
+            messages.error(request, "Cannot add a comment because there is no latest news article.")
+
+    return render(request, 'home.html', {'latestnews': latestnews ,'latestnews_images': latestnews_images,'topfivenews': topfivenews,'comments': comments,'form': form,'selected_category': category_name, 'categories': categories})
+
+
+def articledetail(request, article_id):
+    article = Article.objects.get(article_id=article_id)
+    article_images = ArticleImages.objects.filter(article=article)
+    
+    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images})
 
 def contactus(request):
     return render(request, 'contact.html')

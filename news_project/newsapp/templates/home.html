@@ -153,26 +153,25 @@
                             <div class="modal-dialog custom-modal">
                                 <div class="modal-content">
                                     <div style="border:none;" class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Comments</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel"><i style="font-family:Copperplate;color:rgb(122, 177, 255)">{{ latestnews.head_line|truncatechars:40 }}</i></h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">
+                                    <div class="modal-body custom-scroll">
                                         {% for comment in comments %}
-                                        <div class="usercomment">
-                                            <div class="user_date">
-                                                <b><div class="user" style="color:blueviolet">{{ comment.user.username }}</div></b>
-                                                <div class="date" style="font-size: 14px; color: grey">{{ comment.created_at }}</div>
-                                            </div>
+                                        <div class="comment">
+                                            <p><strong>{{ comment.user.username }}</strong> - {{ comment.created_at|date:" g:i a" }}</p>
                                             <p>{{ comment.comments }}</p>
                                         </div>
+                                        {% empty %}
+                                            <p style="color: grey; text-align: center;">No comments yet. Be the first to comment!</p>
                                         {% endfor %}
                                     </div>
                                     <div style="border:none;" class="modal-footer">
-                                        <form method="post" action="{% url 'articledetail' latestnews.article_id %}">
+                                        <form style="width:100%" method="post" action="{% url 'Homepage' %}">
                                             {% csrf_token %}
                                             <div class="input-field">
-                                                {{ form.comments }}
-                                                <textarea class="comment-input" ></textarea>
+                                               {{ form.comments }}
+                                              
                                                 <button style="background: transparent; border: none;"><i id="sendicon"class="fa fa-paper-plane"></i></button>
                                             </div>
                                         </form>
@@ -1219,11 +1218,13 @@
 
         document.addEventListener("DOMContentLoaded", function () {
         let commentInput = document.querySelector(".comment-input");
-    
-        commentInput.addEventListener("input", function () {
-            this.style.height = "50px"; // Reset height
-            this.style.height = this.scrollHeight + "px"; // Expand dynamically
-        });
+
+        if (commentInput) {
+            commentInput.addEventListener("input", function () {
+                this.style.height = "50px"; // Reset height
+                this.style.height = this.scrollHeight + "px"; // Expand dynamically
+            });
+        }
     });
     
     });

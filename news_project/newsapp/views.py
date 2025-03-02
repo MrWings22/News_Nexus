@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse
-from .models import Article, ArticleImages, CustomUser
+from django.contrib.auth.decorators import login_required
+from .models import Article, ArticleImages, CustomUser, Comment
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from .forms import CommentForm
 import re
 
 
@@ -103,10 +104,23 @@ def Homepage(request):
     latestnews_images = ArticleImages.objects.filter(article=latestnews) if latestnews else None
     return render(request, 'home.html', {'latestnews': latestnews ,'latestnews_images': latestnews_images,'topfivenews': topfivenews})
 
+@login_required
 def articledetail(request, article_id):
     article = Article.objects.get(article_id=article_id)
     article_images = ArticleImages.objects.filter(article=article)
-    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images})
+    comments = Comment.objects.filter(article=article).order_by('-created_at')
+    
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.articles = article
+            comment.user = request.user
+            comment.save()
+            return redirect('articledetail', article_id=article.article_id)
+        else:
+            form = CommentForm()
+    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images, 'comments':comments, 'form': form})
 
 def contactus(request):
     return render(request, 'contact.html')

@@ -120,18 +120,17 @@ h2 {
     padding: 10px;
     outline: none;
 }
-.goback{
+
+.goback i {
     position: absolute;
     top: 20px;
     left: 20px;
     font-size: 50px;
-    width:fit-content;
-    height: fit-content;
-}
-
-.goback i {
     color: rgb(118, 150, 255);
+    background: transparent;
     transition: color 0.3s ease;
+    
+    
 }
 
 .goback i:hover {

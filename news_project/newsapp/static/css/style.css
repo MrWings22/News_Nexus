@@ -227,7 +227,8 @@
 .login:hover{
     background: blue;
     color:white;
-    box-shadow: 0px 0px 4px 5px rgba(0, 0, 0, 0.4);
+    border: 1px solid white;
+    box-shadow: 3px 2px  0px rgba(0, 0, 0, 0.4);
 }
 .login:hover .signin{
     color: azure;
@@ -456,69 +457,126 @@
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 /*** Footer End ***/
-
-/* comment popup start */
-/* .commentbox{
-    position: absolute;
-    height: 700px;
-    width: 500px;
-    border: 6px solid rgb(106, 106, 106);
-    border-radius: 20px;
-    padding: 10px;
-    transform: scale(0);
-    transition: transform .5s ease, height .2s ease;
-    z-index: 999;
-}
-
-.commentbox.active-popup{
-    transform: scale(1);
-    height: 700px;
-}
-.commentbox.active {
-    height: 750px;
-}
-
-.input-field{
-    position: absolute;
-    bottom: 20px;
-    width: 495px;
-    height: 40px;
-    
-}
-.comment-input{
-    position: absolute;
-    bottom: 5px;
-    width: 487px;
-    height: 30px;
-    border-radius: 20px;
-}
-input{
-    font-size: 20px;
-    padding: 5px;
-}
-#sendicon{
-    position: absolute;
-    bottom: 14px;
-    right: 0px;
-    font-size: 25px;
-}
-#sendicon:hover{
-    color: blue;
-}  
-.comment-fields{
-    height: 600px;
-    width: 480px;
-    padding: 10px;
-    
-}
-.usercomment{
-    background: rgb(228, 228, 228);
-    border-radius: 10px;
-    padding: 6px 6px 1px 6px;
-    top: 5px;
-}
-.user_date{
+.modal-body{
     display: flex;
-    gap:10px
-} */
-/* comment popup end */
+    flex-direction: column;
+    gap: 10px;
+    overflow: hidden;
+    max-height: 570px;
+}
+.custom-scroll {
+    max-height: 570px;  /* Set a fixed height */
+    overflow-y: auto;   /* Enable vertical scrolling */
+    padding-right: 10px; /* Space for scrollbar */
+}
+
+/* Optional: Custom scrollbar styling */
+.custom-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.comment{
+    background-color: rgb(208, 208, 208);
+    padding: 5px;
+    min-width: 70px;
+    width: 100%;
+    border-radius: 10px;
+}
+.input-field {
+    position: relative;
+    width: 100%;
+    min-height: 50px;
+    max-height: 100px;
+    display: flex;
+    align-items: flex-start; 
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid black;
+}
+
+
+.comment-input {
+    width: 100%;
+    min-height: 50px;
+    max-height: 300px; 
+    font-size: 16px;
+    padding: 10px;
+    resize: none;
+    border: none;
+    outline: none;
+    overflow: hidden; 
+    line-height: 1.5; 
+}
+
+
+#sendicon {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    font-size: 25px;
+    cursor: pointer;
+    color: gray;
+    z-index: 10;
+}
+
+#sendicon:hover {
+    color: rgb(14, 193, 238);
+}
+.custom-modal {
+    position: fixed !important;
+    top: 0;
+    right: -100%; 
+    width: 750px; 
+    max-height: 100vh;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    margin: 0 !important;
+    transition: right 0.5s ease-in-out !important;
+    overflow-y: auto;
+    z-index: 1055; 
+}
+
+
+.modal.fade .custom-modal {
+    transform: none !important;
+    opacity: 1 !important;
+}
+
+
+.modal.show .custom-modal {
+    right: 0 !important;
+}
+
+.modal-content {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.modal-backdrop {
+    display: none !important;
+}
+
+
+body.modal-open {
+    overflow: auto !important; 
+    pointer-events: auto !important; 
+    padding-right: 0 !important; 
+}
+
+
+body.modal-open .modal {
+    pointer-events: none; 
+}
+body.modal-open .custom-modal {
+    pointer-events: auto; 
+}

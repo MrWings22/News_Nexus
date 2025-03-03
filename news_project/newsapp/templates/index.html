@@ -93,14 +93,23 @@
                                 <div class="nav-item dropdown">
                                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Categories</a>
                                     <div class="dropdown-menu m-0 bg-secondary rounded-0">
-                                        <a href="#" class="dropdown-item">Sports</a>
-                                        <a href="#" class="dropdown-item">Politics</a>
-                                        <a href="#" class="dropdown-item">Technology</a>
-                                        <a href="#" class="dropdown-item">Entertainment</a>
+                                        {% for category in categories %}
+                                            <a href="{% url 'Homepage' %}?category={{ category.category_name }}" class="dropdown-item">{{ category.category_name }}</a>
+                                        {% endfor %}
                                     </div>
                                 </div>
                                 <a href="{% url 'contactus' %}" class="nav-item nav-link">Contact Us</a>
-                                <div class="login"><a href="{% url 'loginemail' %}" class="nav-item nav-link" style="font-size:large; "><div class="signin">Sign-in</div></a></div>
+                                {% if user.is_authenticated %}
+                                <div class="nav-item dropdown">
+                                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">{{ user.username }}</a>
+                                    <div class="dropdown-menu m-0 bg-secondary rounded-0">
+                                        <a href="{% url 'logout' %}" class="dropdown-item">Logout</a>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="login"><a href="{% url 'login' %}" class="nav-item nav-link" style="font-size:large;"><div class="signin">Sign-in</div></a></div>
+                                {% endif %}
+                               
                             </div>
                             <div class="d-flex flex-nowrap border-top pt-3 pt-xl-0">
                                 <div class="d-flex">

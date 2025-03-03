@@ -136,9 +136,28 @@
     // Call the function to update the date on page load
     updateDate();
 
-    // const comments = document.querySelector('.commentbox');
-    // const commentbutton = document.querySelector('.commentbtn');
-
-    // commentbutton.addEventListener('click', ()=>{
-    //     comments.classList.add('active');
-    // });
+    document.addEventListener("DOMContentLoaded", function () {
+        let modal = document.getElementById("exampleModal");
+        let modalDialog = modal.querySelector(".custom-modal");
+    
+        // When modal opens, slide it in
+        modal.addEventListener("show.bs.modal", function () {
+            modalDialog.style.right = "0";
+        });
+    
+        // When modal closes, slide it back out
+        modal.addEventListener("hidden.bs.modal", function () {
+            modalDialog.style.right = "-100%";
+        });
+    });
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        let commentInput = document.querySelector(".comment-input");
+    
+        commentInput.addEventListener("input", function () {
+            this.style.height = "50px"; // Reset height
+            this.style.height = this.scrollHeight + "px"; // Expand dynamically
+        });
+    });
+    
+    

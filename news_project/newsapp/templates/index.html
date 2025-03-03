@@ -90,7 +90,6 @@
                         <div class="collapse navbar-collapse bg-light py-3" id="navbarCollapse">
                             <div class="navbar-nav mx-auto border-top">
                                 <a href="{% url 'Homepage' %}" class="nav-item nav-link active">Home</a>
-                                <a href="#" class="nav-item nav-link">Detail  Page</a>
                                 <div class="nav-item dropdown">
                                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Categories</a>
                                     <div class="dropdown-menu m-0 bg-secondary rounded-0">
@@ -114,7 +113,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button class="btn-search btn border border-primary btn-md-square rounded-circle bg-white my-auto" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
+                                <div class="search-wrapper">
+                                    <div class="input-holder">
+                                        <input type="text" class="search-input" placeholder="Type to search" />
+                                        <button class="search-icon" onclick="searchToggle(this, event);"><span></span></button>
+                                    </div>
+                                    <span class="close" onclick="searchToggle(this, event);"></span>
+                                </div>
                             </div>
                         </div>
                     </nav>
@@ -125,22 +130,7 @@
 
 
         <!-- Modal Search Start -->
-        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-fullscreen">
-                <div class="modal-content rounded-0">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Search by keyword</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body d-flex align-items-center">
-                        <div class="input-group w-75 mx-auto d-flex">
-                            <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                            <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
         
         <!-- Modal Search End -->
         {%block contents%}

@@ -33,7 +33,7 @@ def Login(request):
 
         if user is not None:
             login(request, user)
-            messages.success(request, "Login successful!")
+            
             return redirect("Homepage")
         else:
             messages.error(request, "Invalid email/phone or password.")
@@ -95,19 +95,20 @@ def Registration(request):
 def Indexpage(request):
     return render(request, "index.html")
 
-@login_required
+
 def Homepage(request):
     category_name = request.GET.get('category', None)
 
     if category_name:
         category = get_object_or_404(Category, category_name=category_name)
         latestnews = Article.objects.filter(category=category).order_by('-created_at').first()
+        topfivenews = Article.objects.filter(category=latestnews.category).order_by('-created_at').exclude(pk=latestnews.pk)[:5]
     else:
         latestnews = Article.objects.order_by('-created_at').first()
-    
+        topfivenews = Article.objects.order_by('-created_at').exclude(pk=latestnews.pk)[:5]
 
     if latestnews:
-        topfivenews = Article.objects.filter(category=latestnews.category).order_by('-created_at').exclude(pk=latestnews.pk)[:5]
+        # topfivenews = Article.objects.filter(category=latestnews.category).order_by('-created_at').exclude(pk=latestnews.pk)[:5]
         latestnews_images = ArticleImages.objects.filter(article=latestnews) 
         comments = Comment.objects.filter(article=latestnews).order_by('-created_at')
     else:
@@ -136,8 +137,12 @@ def Homepage(request):
 def articledetail(request, article_id):
     article = Article.objects.get(article_id=article_id)
     article_images = ArticleImages.objects.filter(article=article)
-    
-    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images})
+    related_news = Article.objects.filter(category=article.category).exclude(article_id=article.article_id).order_by('-created_at')
+    related_news_images = {
+        news.article_id: ArticleImages.objects.filter(article=news).first()
+        for news in related_news
+    }
+    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images, 'related_news':related_news, 'related_news_images': related_news_images})
 
 def contactus(request):
     return render(request, 'contact.html')

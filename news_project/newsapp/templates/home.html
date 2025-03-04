@@ -159,7 +159,7 @@
                                     <div class="modal-body custom-scroll">
                                         {% for comment in comments %}
                                         <div class="comment">
-                                            <p><strong>{{ comment.user.username }}</strong> - {{ comment.created_at|date:" g:i a" }}</p>
+                                            <p style="color: rgb(0, 123, 231)"><strong>{{ comment.user.username }}</strong> <i style="color: rgb(112, 109, 109)">{{ comment.created_at|date:" g:i a" }}</i></p>
                                             <p>{{ comment.comments }}</p>
                                         </div>
                                         {% empty %}

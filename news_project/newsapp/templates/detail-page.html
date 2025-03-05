@@ -12,7 +12,7 @@
         <meta content="" name="description">
 
         <!-- Google Web Fonts -->
-        <i id ="sendicon"class='bx bx-send bx-fade-right' ></i>
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@100;600;800&display=swap" rel="stylesheet"> 
@@ -93,26 +93,34 @@
                             </div>
                             <div class="tab-content">
                                 <div class="detailpage-commentbox">
+                                    <!-- Display Existing Comments -->
                                     <div class="detailpage-comment-fields">
-                                        <div class="detailpage-usercomment">
-                                            <div class="detailpage-user_date">
-                                                <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">john doe</div></b>
-                                                <div class="detailpage-date" style="font-size: 14px; color: grey">5 hr</div>
+                                        {% for comment in article.comment_set.all %}
+                                            <div class="detailpage-usercomment">
+                                                <div class="detailpage-user_date">
+                                                    <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">{{ comment.user.username }}</div></b>
+                                                    <div class="detailpage-date" style="font-size: 14px; color: grey">{{ comment.created_at|timesince }} ago</div>
+                                                </div>
+                                                <p>{{ comment.comments }}</p>
                                             </div>
-                                            <p>This article really resonated with me—great insights and well-written!</p>
-                                        </div>
+                                        {% endfor %}
                                     </div>
+                            
+                                    <!-- Comment Input Form -->
                                     <div class="detailpage-commentarea">
-                                        <div class="detailpage-input-field">
-                                            <textarea class="detailpage-comment-input"></textarea>
-                                            <button style="background: transparent; border: none;"><i id="sendicon"class="fa fa-paper-plane"></i></button>
-                                        </div>
+                                        <form id="CommentForm" method="post" action="{% url 'add_comment' article.article_id %}">
+                                            {% csrf_token %}
+                                            <div class="detailpage-input-field">
+                                                <textarea name="comments" class="detailpage-comment-input" placeholder="Add a comment..." required></textarea>
+                                                <button type="button" id="sendButton">
+                                                    <i id="sendicon" class="fa fa-paper-plane"></i>
+                                                </button>
+                                            </div>
+                                        </form>
                                     </div>
-                                </div>  
-                                <div class="closebtn">
-                                    <i class='bx bx-x-circle'></i>
-                                </div>  
+                                </div>
                             </div>
+                            
                         </div>
                     </div>
                     <div class="col-lg-4 p-2 justify-content-around">
@@ -128,46 +136,10 @@
                                             {% endif %}
                                         {% endwith %}
                                     </div>
-                                    <div style=" height: 140px;" class="col-sm-8 rounded p-2"><a href="{% url 'articledetail' news.article_id %}" ><h4>{{news.head_line|truncatechars:60}}</h4></a></div>
+                                    <div style=" height: 140px;" class="col-sm-8 rounded p-2"><a href="{% url 'articledetail' news.article_id %}" ><h5>{{news.head_line|truncatechars:75}}</h5></a></div>
                                 </div>
                             </div>
                         {%endfor%}
-                        <!-- <div style="height: 140px; background: linear-gradient(to top right, white, rgb(114, 196, 255));" class="row-sm-2 mt-3 rounded">
-                            <div style="border: 1px solid black; height: 140px;"class="col-sm-4 rounded"></div>
-                            <div class="col"></div>
-                        </div>
-                        <div style="height: 140px; background: linear-gradient(to top right, white, rgb(114, 196, 255));" class="row-sm-2 mt-3 rounded">
-                            <div style="border: 1px solid black; height: 140px;"class="col-sm-4 rounded"></div>
-                            <div class="col"></div>
-                        </div>
-                        <div style="height: 140px; background: linear-gradient(to top right, white, rgb(114, 196, 255));" class="row-sm-2 mt-3 rounded">
-                            <div style="border: 1px solid black; height: 140px;"class="col-sm-4 rounded"></div>
-                            <div class="col"></div>
-                        </div>
-                        <div style="height: 140px; background: linear-gradient(to top right, white, rgb(114, 196, 255));" class="row-sm-2 mt-3 rounded">
-                            <div style="border: 1px solid black; height: 140px;"class="col-sm-4 rounded"></div>
-                            <div class="col"></div>
-                        </div>
-                        <div style="height: 140px; background: linear-gradient(to top right, white, rgb(114, 196, 255));" class="row-sm-2 mt-3 rounded">
-                            <div style="border: 1px solid black; height: 140px;"class="col-sm-4 rounded"></div>
-                            <div class="col"></div>
-                        </div>
-                        <div style="height: 140px; background: linear-gradient(to top right, white, rgb(114, 196, 255));" class="row-sm-2 mt-3 rounded">
-                            <div style="border: 1px solid black; height: 140px;"class="col-sm-4 rounded"></div>
-                            <div class="col"></div>
-                        </div>
-                        <div style="height: 140px; background: linear-gradient(to top right, white, rgb(114, 196, 255));" class="row-sm-2 mt-3 rounded">
-                            <div style="border: 1px solid black; height: 140px;"class="col-sm-4 rounded"></div>
-                            <div class="col"></div>
-                        </div>
-                        <div style="height: 140px; background: linear-gradient(to top right, white, rgb(114, 196, 255));" class="row-sm-2 mt-3 rounded">
-                            <div style="border: 1px solid black; height: 140px;"class="col-sm-4 rounded"></div>
-                            <div class="col"></div>
-                        </div>
-                        <div style="height: 140px; background: linear-gradient(to top right, white, rgb(114, 196, 255));" class="row-sm-2 mt-3 rounded">
-                            <div style="border: 1px solid black; height: 140px;"class="col-sm-4 rounded"></div>
-                            <div class="col"></div>
-                        </div> -->
                     </div>
                 </div>
             </div>
@@ -183,6 +155,49 @@
 
         <!-- Template Javascript -->
         <script src="{% static 'js/main.js' %}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const commentForm = document.getElementById('CommentForm');
+                const sendButton = document.getElementById('sendButton');
+            
+                sendButton.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default form submission
+            
+                    const formData = new FormData(commentForm);
+            
+                    fetch(commentForm.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': formData.get('csrfmiddlewaretoken'), // Include CSRF token
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Add the new comment to the page dynamically
+                            const commentList = document.querySelector('.detailpage-comment-fields');
+                            const newComment = document.createElement('div');
+                            newComment.classList.add('detailpage-usercomment');
+                            newComment.innerHTML = `
+                                <div class="detailpage-user_date">
+                                    <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">${data.username}</div></b>
+                                    <div class="detailpage-date" style="font-size: 14px; color: grey">Just now</div>
+                                </div>
+                                <p>${data.comment}</p>
+                            `;
+                            commentList.prepend(newComment); // Add the new comment at the top
+                            commentForm.reset(); // Clear the form
+                        } else {
+                            alert('Failed to submit comment: ' + (data.errors || data.error));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while submitting the comment.');
+                    });
+                });
+            });
+        </script>
     </body>
-
 </html>

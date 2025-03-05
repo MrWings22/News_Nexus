@@ -172,4 +172,16 @@
                 container.find('.search-input').val('');
             }
     }
+
+    //search
+    function searchToggle(obj, event) {
+        var wrapper = document.querySelector('.search-wrapper');
+        if (!wrapper.classList.contains('active')) {
+            wrapper.classList.add('active');
+            event.stopPropagation();
+        } else {
+            wrapper.classList.remove('active');
+            event.stopPropagation();
+        }
+    }
     

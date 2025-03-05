@@ -5,8 +5,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import CommentForm
 import re
-
-
+from django.http import JsonResponse
+from django.db.models import Q
+from django.template.loader import render_to_string
 
 def Login(request):
     if request.method == "POST":
@@ -138,11 +139,12 @@ def articledetail(request, article_id):
     article = Article.objects.get(article_id=article_id)
     article_images = ArticleImages.objects.filter(article=article)
     related_news = Article.objects.filter(category=article.category).exclude(article_id=article.article_id).order_by('-created_at')
+    comments = Comment.objects.filter(article=article).order_by('-created_at')
     related_news_images = {
         news.article_id: ArticleImages.objects.filter(article=news).first()
         for news in related_news
     }
-    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images, 'related_news':related_news, 'related_news_images': related_news_images})
+    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images, 'related_news':related_news, 'related_news_images': related_news_images, 'comments':comments})
 
 def contactus(request):
     return render(request, 'contact.html')
@@ -153,5 +155,38 @@ def loginemail(request):
 def register(request):
     return render(request, 'registration.html')
 
+@login_required
+def add_comment(request, article_id):
+    article = get_object_or_404(Article, article_id=article_id)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.article = article
+            comment.user = request.user
+            comment.save()
+            return JsonResponse({
+                'success': True,
+                'username': request.user.username,
+                'comment': comment.comments,
+                'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            })
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
+
+
+
+def Searchresult(request):
+    query = request.GET.get('q', '').strip()
     
+    if query:
+        articles = Article.objects.filter(
+            Q(head_line__icontains=query) |  # Search in headline
+            Q(category__category_name__icontains=query)  # Search in category name
+        ).distinct()
+    else:
+        articles = Article.objects.all()
+    
+    return render(request, 'search_results.html', {'articles': articles, 'query': query})

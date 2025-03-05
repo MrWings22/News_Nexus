@@ -116,12 +116,17 @@
                                 <!-- <button class="btn-search btn border border-primary btn-md-square rounded-circle bg-white my-auto" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button> -->
                             </div>
                             <div class="search-wrapper">
-                                <div class="input-holder">
-                                    <input type="text" class="search-input" placeholder="Type to search" />
-                                    <button class="search-icon" onclick="searchToggle(this, event);"><span></span></button>
-                                </div>
-                                <span class="close" onclick="searchToggle(this, event);"></span>
+                                <form method="GET" action="{% url 'searchresults' %}">
+                                    <div class="input-holder">
+                                        <input type="text" class="search-input" name="q" placeholder="Type to search" value="{{ query|default:'' }}" />
+                                        <button type="button" class="search-icon" onclick="searchToggle(this, event);">
+                                            <span></span>
+                                        </button>
+                                        
+                                    </div>
+                                </form>
                             </div>
+                            
                         </div>
                     </nav>
                 </div>

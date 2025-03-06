@@ -92,9 +92,10 @@
 /*** Topbar Start ***/
 .sticky-top {
     transition: 0.5s;
-    background: var(--bs-white);
+    background: var(--bg-color);
 }
 
+  
 .topbar {
     padding: 10px 0;
 }
@@ -466,6 +467,7 @@
     gap: 10px;
     overflow: hidden;
     max-height: 570px;
+    
 }
 .custom-scroll {
     max-height: 570px;  /* Set a fixed height */
@@ -488,11 +490,12 @@
 }
 
 .comment{
-    background-color: rgb(208, 208, 208);
+    background-color: rgb(255, 255, 255);
     padding: 5px;
     min-width: 70px;
     width: 100%;
     border-radius: 10px;
+    box-shadow: 5px 5px 10px rgb(142, 142, 142);
 }
 .input-field {
     position: relative;
@@ -503,9 +506,8 @@
     align-items: flex-start; 
     border-radius: 20px;
     background: #fff;
-    border: 1px solid black;
+    box-shadow:0px 0px 10px 6px rgb(153, 226, 248);
 }
-
 
 .comment-input {
     width: 100%;
@@ -519,26 +521,81 @@
     overflow: hidden; 
     line-height: 1.5; 
 }
+.detailpage-commentbox{
+    width: 100%;
+    box-shadow: 1px 1px 15px rgb(81, 80, 80);
+    padding: 10px;
+    height: 80vh;
+    border-radius: 20px;
+
+}
 
 
-#sendicon {
-    position: absolute;
-    right: 15px;
-    bottom: 15px;
+.detailpage-input-field {
+    min-height: 100px;
+    max-height: 100px;
+    display: flex;
+    align-items: flex-start; 
+    border-radius: 20px;
+    background: #fff;
+    box-shadow:0px 0px 10px 7px rgb(153, 226, 248);
+    margin-bottom: 5px;
+}
+
+
+.detailpage-comment-input {
+    width: 94%;
+    min-height: 100px;
+    max-height: 300px; 
+    font-size: 16px;
+    padding: 10px;
+    resize: none;
+    border: none;
+    outline: none;
+    overflow: hidden; 
+    line-height: 1.5; 
+    
+    border-radius: 20px;
+    
+}
+
+.detailpage-comment-fields{
+    height: 430px;
+    padding: 25px;
+}
+.detailpage-commentarea{
+    height: 135px;
+    padding: 25px;
+    
+}
+
+.detailpage-usercomment{
+    background: #f2f2f2;
+    padding:8px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgb(142, 142, 142);
+}
+
+
+#sendButton {
+    position: relative;
+    right: 10px;
+    bottom: -55px;
     font-size: 25px;
     cursor: pointer;
-    color: gray;
-    z-index: 10;
+    color: rgb(80, 208, 254);
+    background: transparent;
+    border: none;
 }
 
 #sendicon:hover {
-    color: rgb(14, 193, 238);
+    color: rgb(0, 183, 228);
 }
 .custom-modal {
     position: fixed !important;
     top: 0;
     right: -100%; 
-    width: 750px; 
+    width: 800px; 
     max-height: 100vh;
     height: 100vh;
     display: flex;
@@ -547,6 +604,8 @@
     transition: right 0.5s ease-in-out !important;
     overflow-y: auto;
     z-index: 1055; 
+    box-shadow:-4px 0px 20px rgb(81, 80, 80);
+    border-radius: 10px;
 }
 
 
@@ -583,3 +642,190 @@ body.modal-open .modal {
 body.modal-open .custom-modal {
     pointer-events: auto; 
 }
+
+
+.search-wrapper {
+    z-index: 999;
+    position: absolute; /* Change to absolute positioning */
+    top: 18px; /* Adjust top position to align with the weather section */
+    right: -30px; /* Adjust right position to align with the weather section */
+    transform: none; /* Remove transform since we're using absolute positioning */
+}
+
+.search-wrapper .input-holder {
+    height: 60px; /* Further reduced height */
+    width: 60px; /* Further reduced width */
+    overflow: hidden;
+    background: rgb(255, 249, 249);
+    border-radius: 50px; /* Adjusted border radius */
+    transition: all 0.3s ease-in-out;
+    z-index: 999;
+}
+
+.search-wrapper.active .input-holder {
+    width: 350px; /* Reduced width when active */
+    border-radius: 50px; /* Adjusted border radius */
+    background: rgb(255, 255, 255);
+    transition: all .5s cubic-bezier(0.000, 0.105, 0.035, 1.570);
+    z-index: 999;
+}
+
+.search-wrapper .input-holder .search-input {
+    width: 100%;
+    height: 35px; /* Further reduced height */
+    padding: 0px 40px 0 10px; /* Adjusted padding */
+    opacity: 0;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: transparent;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    font-family: "Open Sans", Arial, Verdana;
+    font-size: 14px; /* Reduced font size */
+    font-weight: 400;
+    line-height: 20px;
+    color: #000; /* Changed color for better visibility */
+    transform: translate(0, 60px);
+    transition: all .3s cubic-bezier(0.000, 0.105, 0.035, 1.570);
+    transition-delay: 0.3s;
+    z-index: 999;
+}
+
+.search-wrapper.active .input-holder .search-input {
+    opacity: 1;
+    transform: translate(0, 0); /* Ensures it's in the correct position */
+    pointer-events: auto; /* Ensures it's clickable */
+}
+
+
+.search-wrapper .input-holder .search-icon {
+    width: 60px; /* Further reduced width */
+    height: 60px; /* Further reduced height */
+    border: none;
+    border-radius: 50px; /* Adjusted border radius */
+    background: #FFF;
+    padding: 0px;
+    outline: none;
+    position: relative;
+    z-index: 2;
+    float: right;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.search-wrapper.active .input-holder .search-icon {
+    width: 30px; /* Further reduced width when active */
+    height: 30px; /* Further reduced height when active */
+    margin: 5px; /* Adjusted margin */
+    border-radius: 15px; /* Adjusted border radius */
+}
+
+.search-wrapper .input-holder .search-icon span {
+    width: 16px; /* Further reduced width */
+    height: 16px; /* Further reduced height */
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    transform: rotate(45deg);
+    transition: all .4s cubic-bezier(0.650, -0.600, 0.240, 1.650);
+}
+
+.search-wrapper.active .input-holder .search-icon span {
+    transform: rotate(-45deg);
+}
+
+.search-wrapper .input-holder .search-icon span::before,
+.search-wrapper .input-holder .search-icon span::after {
+    position: absolute;
+    content: '';
+}
+
+.search-wrapper .input-holder .search-icon span::before {
+    width: 3px; /* Further reduced width */
+    height: 8px; /* Further reduced height */
+    left: 6px; /* Adjusted left position */
+    top: 12px; /* Adjusted top position */
+    border-radius: 2px;
+    background: #1b91ff;
+}
+
+.search-wrapper .input-holder .search-icon span::after {
+    width: 10px; /* Further reduced width */
+    height: 10px; /* Further reduced height */
+    left: 0px;
+    top: 0px;
+    border-radius: 12px; /* Adjusted border radius */
+    border: 3px solid #1b91ff; /* Reduced border width */
+}
+
+.search-wrapper .close {
+    position: absolute;
+    z-index: 1;
+    top: 15px; /* Further adjusted top position */
+    right: 10px; /* Further adjusted right position */
+    width: 18px; /* Further reduced width */
+    height: 18px; /* Further reduced height */
+    cursor: pointer;
+    transform: rotate(-180deg);
+    transition: all .3s cubic-bezier(0.285, -0.450, 0.935, 0.110);
+    transition-delay: 0.2s;
+}
+
+.search-wrapper.active .close {
+    right: -30px; /* Further adjusted right position */
+    transform: rotate(45deg);
+    transition: all .6s cubic-bezier(0.000, 0.105, 0.035, 1.570);
+    transition-delay: 0.5s;
+}
+
+.search-wrapper .close::before,
+.search-wrapper .close::after {
+    position: absolute;
+    content: '';
+    background: #1b91ff;
+    border-radius: 2px;
+}
+
+.search-wrapper .close::before {
+    width: 3px; /* Further reduced width */
+    height: 25px; /* Further reduced height */
+    left: 10px; /* Adjusted left position */
+    top: 0px;
+}
+
+.search-wrapper .close::after {
+    width: 25px; /* Further reduced width */
+    height: 3px; /* Further reduced height */
+    left: 2px;
+    top: 13px; /* Adjusted top position */
+}
+
+/* light mode and dark mode */
+.detailpage-comment-fields {
+    max-height: 430px; /* Adjust the height as needed */
+    overflow-y: auto; /* Add a vertical scrollbar */
+    padding-right: 10px; /* Add some padding to prevent content from touching the scrollbar */
+}
+
+/* Optional: Style the scrollbar */
+.detailpage-comment-fields::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+}
+
+.detailpage-comment-fields::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color of the scrollbar track */
+}
+
+.detailpage-comment-fields::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scrollbar thumb */
+    border-radius: 4px; /* Rounded corners for the scrollbar thumb */
+}
+
+.detailpage-comment-fields::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the scrollbar thumb on hover */
+}
+
+  
+  

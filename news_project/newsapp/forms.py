@@ -7,9 +7,8 @@ class CommentForm(forms.ModelForm):
         fields = ['comments']
         widgets = {
             'comments': forms.Textarea(attrs={
-                'class': 'form-control comment-input',  # Bootstrap styling
+                'class': 'form-control comment-input',
                 'placeholder': 'Write your comment here...',
-                'rows': 3,  # Set number of visible lines
-                'style': ' border-radius: 10px; padding: 10px; width: 57vh; border: none; '  # Custom CSS styling
+                'rows': 3,
             }),
         }

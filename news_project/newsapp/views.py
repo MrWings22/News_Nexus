@@ -5,8 +5,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import CommentForm
 import re
-
-
+from django.http import JsonResponse
+from django.db.models import Q
+from django.template.loader import render_to_string
 
 def Login(request):
     if request.method == "POST":
@@ -33,7 +34,7 @@ def Login(request):
 
         if user is not None:
             login(request, user)
-            messages.success(request, "Login successful!")
+            
             return redirect("Homepage")
         else:
             messages.error(request, "Invalid email/phone or password.")
@@ -96,17 +97,54 @@ def Indexpage(request):
 
     return render(request, "index.html")
 
+@login_required
 def Homepage(request):
-    latestnews = Article.objects.order_by('-created_at').first()
-    topfivenews = Article.objects.order_by('-created_at').exclude(pk=latestnews.pk)[:5]
-    latestnews_images = ArticleImages.objects.filter(article=latestnews) if latestnews else None
-    return render(request, 'home.html', {'latestnews': latestnews ,'latestnews_images': latestnews_images,'topfivenews': topfivenews})
+    category_name = request.GET.get('category', None)
+
+    if category_name:
+        category = get_object_or_404(Category, category_name=category_name)
+        latestnews = Article.objects.filter(category=category).order_by('-created_at').first()
+    else:
+        latestnews = Article.objects.order_by('-created_at').first()
+    
+
+    if latestnews:
+        topfivenews = Article.objects.filter(category=latestnews.category).order_by('-created_at').exclude(pk=latestnews.pk)[:5]
+        latestnews_images = ArticleImages.objects.filter(article=latestnews) 
+        comments = Comment.objects.filter(article=latestnews).order_by('-created_at')
+    else:
+        latestnews = []
+        comment = []
+        topfivenews = []
+        latestnews_images =[]
+
+    form = CommentForm()
+    categories = Category.objects.all()
+
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.article = latestnews
+            comment.user = request.user
+            comment.save()
+            return redirect('Homepage')
+        else:
+            messages.error(request, "Cannot add a comment because there is no latest news article.")
+
+    return render(request, 'home.html', {'latestnews': latestnews ,'latestnews_images': latestnews_images,'topfivenews': topfivenews,'comments': comments,'form': form,'selected_category': category_name, 'categories': categories})
+
 
 def articledetail(request, article_id):
     article = Article.objects.get(article_id=article_id)
     article_images = ArticleImages.objects.filter(article=article)
-    
-    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images})
+    related_news = Article.objects.filter(category=article.category).exclude(article_id=article.article_id).order_by('-created_at')
+    comments = Comment.objects.filter(article=article).order_by('-created_at')
+    related_news_images = {
+        news.article_id: ArticleImages.objects.filter(article=news).first()
+        for news in related_news
+    }
+    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images, 'related_news':related_news, 'related_news_images': related_news_images, 'comments':comments})
 
 def contactus(request):
     return render(request, 'contact.html')
@@ -117,5 +155,38 @@ def loginemail(request):
 def register(request):
     return render(request, 'registration.html')
 
+@login_required
+def add_comment(request, article_id):
+    article = get_object_or_404(Article, article_id=article_id)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.article = article
+            comment.user = request.user
+            comment.save()
+            return JsonResponse({
+                'success': True,
+                'username': request.user.username,
+                'comment': comment.comments,
+                'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            })
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
+
+
+
+def Searchresult(request):
+    query = request.GET.get('q', '').strip()
     
+    if query:
+        articles = Article.objects.filter(
+            Q(head_line__icontains=query) |  # Search in headline
+            Q(category__category_name__icontains=query)  # Search in category name
+        ).distinct()
+    else:
+        articles = Article.objects.all()
+    
+    return render(request, 'search_results.html', {'articles': articles, 'query': query})

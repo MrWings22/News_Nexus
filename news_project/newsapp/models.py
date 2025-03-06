@@ -12,7 +12,9 @@ class Category(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
+    def __str__(self):
+        return self.category_name
+    
 class Article(models.Model):
     article_id = models.AutoField(primary_key=True)
     head_line = models.CharField(max_length=255)
@@ -21,7 +23,10 @@ class Article(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    views = models.PositiveIntegerField(default=0) 
 
+    def __str__(self):
+        return self.head_line
 
 class Comment(models.Model):
     comment_id = models.AutoField(primary_key=True)
@@ -53,5 +58,8 @@ class ArticleImages(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.image_name
 
 

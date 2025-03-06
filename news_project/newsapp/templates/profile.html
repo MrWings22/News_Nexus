@@ -1,0 +1,20 @@
+{% extends 'index.html'%}
+{% block contents %}
+<div class="row " style="height: 80vh">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4 p-5 justify-content-around" >
+        <div class="row-sm-5" style="height:65vh; background: linear-gradient(to top right, white, rgb(204, 238, 255))" >
+            <div class="row-sm-12" style="height: 150px; background: rgb(211, 211, 255); display:flex; justify-content: center; align-items: center;">
+                <div class="profile-pic" style="height:140px; width: 140px; border-radius: 50%; background: white;">
+                    <img src=""> 
+                </div>
+                <div class="edit_pic" style="position: absolute; margin-right: -100px; margin-bottom: -100px;">
+                    <i class="fa fa-edit" style=""></i> 
+                    <input type="file" id="imageUpload" name="imageUpload" style="height: 20px; width: 20px; z-index: 1;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4"></div>
+</div>
+{% endblock %}

@@ -4,10 +4,11 @@ from .models import Article, ArticleImages, CustomUser, Comment, Category
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import CommentForm
-import re
+import re, requests
 from django.http import JsonResponse
 from django.db.models import Q
 from django.template.loader import render_to_string
+
 
 def Login(request):
     if request.method == "POST":
@@ -109,7 +110,9 @@ def Homepage(request):
         topfivenews = Article.objects.order_by('-created_at').exclude(pk=latestnews.pk)[:5]
 
     if latestnews:
-        # topfivenews = Article.objects.filter(category=latestnews.category).order_by('-created_at').exclude(pk=latestnews.pk)[:5]
+        latestnews.views += 1
+        latestnews.save(update_fields=['views'])
+
         latestnews_images = ArticleImages.objects.filter(article=latestnews) 
         comments = Comment.objects.filter(article=latestnews).order_by('-created_at')
     else:
@@ -137,6 +140,10 @@ def Homepage(request):
 
 def articledetail(request, article_id):
     article = Article.objects.get(article_id=article_id)
+
+    article.views += 1
+    article.save(update_fields=['views'])
+
     article_images = ArticleImages.objects.filter(article=article)
     related_news = Article.objects.filter(category=article.category).exclude(article_id=article.article_id).order_by('-created_at')
     comments = Comment.objects.filter(article=article).order_by('-created_at')
@@ -190,3 +197,7 @@ def Searchresult(request):
         articles = Article.objects.all()
     
     return render(request, 'search_results.html', {'articles': articles, 'query': query})
+
+#user profile
+def profile(request):
+    return render(request, 'profile.html')

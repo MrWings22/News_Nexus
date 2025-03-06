@@ -126,6 +126,48 @@
 
 })(jQuery);
 
+// function to load real time weather
+document.addEventListener("DOMContentLoaded", function () {
+    // 1. Update Date
+    function updateDate() {
+        const now = new Date();
+        const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+        document.getElementById("weather-date").innerText = now.toLocaleDateString("en-US", options);
+    }
+    updateDate();
+
+    // 2. Fetch Live Location & Weather
+    function fetchWeather() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                const apiKey = "47eed1a31f80d6bd24e9a10c56ab12fa"; 
+                const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    // Update Temperature
+                    document.getElementById("temperature").innerText = `${Math.round(data.main.temp)}°C`;
+                    
+                    // Update Location (City Name)
+                    document.getElementById("location").innerText = data.name + ",";
+
+                    // Update Weather Icon
+                    const iconCode = data.weather[0].icon;
+                    document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/${iconCode}.png`;
+
+                } catch (error) {
+                    document.getElementById("temperature").innerText = "Error";
+                    document.getElementById("location").innerText = "Weather Unavailable";
+                }
+            });
+        }
+    }
+    fetchWeather();
+});
   // Function to update the date dynamically
     function updateDate() {
         const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
@@ -185,3 +227,19 @@
         }
     }
     
+//shareoption function 
+function shareWebsite() {
+    if (navigator.share) {
+        navigator.share({
+            title: document.title,
+            text: "Check out this amazing website!",
+            url: window.location.href
+        }).then(() => {
+            console.log("Thanks for sharing!");
+        }).catch((error) => {
+            console.error("Error sharing:", error);
+        });
+    } else {
+        alert("Sharing is not supported on this browser.");
+    }
+}

@@ -13,6 +13,7 @@ urlpatterns = [
     path('logout/', views.Logout, name='logout'),
     path('article/<int:article_id>/comment/', views.add_comment, name='add_comment'),
     path('searchresult/', views.Searchresult, name='searchresults'),
+    path('profile/', views.profile, name='profile'),
 ]
 
 if settings.DEBUG:

@@ -70,7 +70,7 @@
             <div class="container-fluid bg-light">
                 <div class="container px-0">
                     <nav class="navbar navbar-light navbar-expand-xl">
-                        <a href="index.html" class="navbar-brand mt-3">
+                        <a href="{% url 'Homepage' %}" class="navbar-brand mt-3">
                             <p class="text-primary display-6 mb-2" style="line-height: 0;">NewsNexus</p>
                             <small class="text-body fw-normal" style="letter-spacing: 12px;">Newspaper</small>
                         </a>
@@ -93,7 +93,7 @@
                                 <div class="nav-item dropdown">
                                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">{{ user.username }}</a>
                                     <div class="dropdown-menu m-0 bg-secondary rounded-0">
-                                        <a href="" class="dropdown-item">Profile</a>
+                                        <a href="{% url 'profile' %}" class="dropdown-item">Profile</a>
                                         <a href="{% url 'logout' %}" class="dropdown-item">Logout</a>
                                     </div>
                                 </div>
@@ -103,27 +103,17 @@
                                
                             </div>
                             <div class="d-flex flex-nowrap border-top pt-3 pt-xl-0">
-                                <div class="d-flex">
-                                    <img src="{% static 'img/weather-icon.png' %}" class="img-fluid w-100 me-2" alt="">
-                                    <div class="d-flex align-items-center">
-                                        <strong class="fs-4 text-secondary">31°C</strong>
-                                        <div class="d-flex flex-column ms-2" style="width: 150px;">
-                                            <span class="text-body">NEW YORK,</span>
-                                            <small>Mon. 10 jun 2024</small>
+                                    <div class="d-flex">
+                                        <img src="img/weather-icon.png" class="img-fluid w-100 me-2" alt="" id="weather-icon">
+                                        <div class="d-flex align-items-center">
+                                            <strong class="fs-4 text-secondary" id="temperature">Fetching...</strong>
+                                            <div class="d-flex flex-column ms-2" style="width: 150px;">
+                                                <span class="text-body" id="location">Locating...</span>
+                                                <small id="weather-date">Loading date...</small>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-<<<<<<< HEAD
-                                <div class="search-wrapper">
-                                    <div class="input-holder">
-                                        <input type="text" class="search-input" placeholder="Type to search" />
-                                        <button class="search-icon" onclick="searchToggle(this, event);"><span></span></button>
-                                    </div>
-                                    <span class="close" onclick="searchToggle(this, event);"></span>
-                                </div>
-=======
                                 <!-- <button class="btn-search btn border border-primary btn-md-square rounded-circle bg-white my-auto" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button> -->
->>>>>>> 248dde433219aacd837f0a42e54b879d341255d6
                             </div>
                             <div class="search-wrapper">
                                 <form method="GET" action="{% url 'searchresults' %}">
@@ -145,9 +135,6 @@
         <!-- Navbar End -->
           
         <!-- Modal Search Start -->
-<<<<<<< HEAD
-
-=======
         <!-- <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content rounded-0">
@@ -165,7 +152,6 @@
             </div>
         </div> -->
         
->>>>>>> 248dde433219aacd837f0a42e54b879d341255d6
         
         <!-- Modal Search End -->
         {%block contents%}

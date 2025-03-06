@@ -312,15 +312,18 @@
   
 }
 
-/* .latest-news .latest-news-item:hover{
-    position: relative;
-    z-index: 1;
-    height: 60px;
-    width: 300px;
-} */
+
 
 /*** Latest News End ***/
 
+.news-card {
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
+}
+.news-card:hover {
+    transform: scale(1.05);
+}
 
 /*** Whats New Start ***/
 .populer-news .whats-carousel.owl-carousel {

@@ -127,14 +127,16 @@
 })(jQuery);
 
   // Function to update the date dynamically
-    function updateDate() {
-        const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
-        const today = new Date().toLocaleDateString('en-US', options);
-        document.getElementById('current-date').textContent = today;
+  function updateDate() {
+    const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
+    const today = new Date().toLocaleDateString('en-US', options);
+    const dateElement = document.getElementById('current-date');
+    if (dateElement) {
+        dateElement.textContent = today;
     }
+}
 
-    // Call the function to update the date on page load
-    updateDate();
+updateDate();
 
     document.addEventListener("DOMContentLoaded", function () {
         let modal = document.getElementById("exampleModal");
@@ -185,3 +187,66 @@
         }
     }
     
+    document.addEventListener('DOMContentLoaded', function() {
+        const commentForm = document.getElementById('commentForm');
+        const sendButton = document.getElementById('sendButton');
+        const commentList = document.getElementById('comment-list');
+        console.log("Detail page JS loaded", commentForm, sendButton, commentList);
+
+        sendButton.addEventListener('click', function() {
+            console.log("Send button clicked on detail page");
+            const formData = new FormData(commentForm);
+            fetch(commentForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+                },
+            })
+            .then(response => {
+                console.log("Response:", response);
+                return response.json();
+            })
+            .then(data => {
+                console.log("Data:", data);
+                if (data.success) {
+                    const newComment = document.createElement('div');
+                    newComment.classList.add('detailpage-usercomment');
+                    newComment.innerHTML = `
+                        <div class="detailpage-user_date">
+                            <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">${data.username}</div></b>
+                            <div class="detailpage-date" style="font-size: 14px; color: grey">Just now</div>
+                        </div>
+                        <p>${data.comment}</p>
+                    `;
+                    commentList.prepend(newComment);
+                    commentForm.reset();
+                } else {
+                    alert('Failed to submit comment: ' + (data.errors || data.error));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting the comment.');
+            });
+        });
+    });
+
+    
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get the selected category from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedCategory = urlParams.get('category');
+
+        if (selectedCategory) {
+            document.getElementById('selected-category').textContent = selectedCategory;
+        }
+    });
+
+    // Update the dropdown text when a category is clicked
+    document.querySelectorAll('.category-item').forEach(item => {
+        item.addEventListener('click', function (event) {
+            document.getElementById('selected-category').textContent = this.textContent;
+        });
+    });

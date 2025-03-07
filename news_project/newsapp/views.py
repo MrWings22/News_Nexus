@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Article, ArticleImages, CustomUser, Comment, Category
+from .models import Article, ArticleImages, CustomUser, Comment, Category, CustomUser
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import CommentForm
@@ -8,7 +8,7 @@ import re, requests
 from django.http import JsonResponse
 from django.db.models import Q
 from django.template.loader import render_to_string
-
+from django.views.decorators.csrf import csrf_exempt
 
 def Login(request):
     if request.method == "POST":
@@ -124,18 +124,9 @@ def Homepage(request):
     form = CommentForm()
     categories = Category.objects.all()
 
-    if request.method == "POST":
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.article = latestnews
-            comment.user = request.user
-            comment.save()
-            return redirect('Homepage')
-        else:
-            messages.error(request, "Cannot add a comment because there is no latest news article.")
-
     return render(request, 'home.html', {'latestnews': latestnews ,'latestnews_images': latestnews_images,'topfivenews': topfivenews,'comments': comments,'form': form,'selected_category': category_name, 'categories': categories})
+
+
 
 
 def articledetail(request, article_id):
@@ -162,29 +153,6 @@ def loginemail(request):
 def register(request):
     return render(request, 'registration.html')
 
-@login_required
-def add_comment(request, article_id):
-    article = get_object_or_404(Article, article_id=article_id)
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.article = article
-            comment.user = request.user
-            comment.save()
-            return JsonResponse({
-                'success': True,
-                'username': request.user.username,
-                'comment': comment.comments,
-                'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-            })
-        else:
-            return JsonResponse({'success': False, 'errors': form.errors})
-    return JsonResponse({'success': False, 'error': 'Invalid request method'})
-
-
-
-
 def Searchresult(request):
     query = request.GET.get('q', '').strip()
     
@@ -200,4 +168,32 @@ def Searchresult(request):
 
 #user profile
 def profile(request):
+    
     return render(request, 'profile.html')
+
+@login_required
+@csrf_exempt
+def add_comment(request, article_id):
+    print("add_comment called with article_id:", article_id)
+    if request.method == "POST":
+        print("POST data:", request.POST)
+        article = get_object_or_404(Article, article_id=article_id)
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.article = article
+            comment.user = request.user
+            comment.save()
+            print("Comment saved:", comment.comments)
+            return JsonResponse({
+                'success': True,
+                'username': request.user.username,
+                'comment': comment.comments,
+                'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S')
+            })
+        else:
+            print("Form errors:", form.errors)
+            return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+
+

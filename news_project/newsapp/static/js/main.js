@@ -126,7 +126,6 @@
 
 })(jQuery);
 
-// function to load real time weather
 document.addEventListener("DOMContentLoaded", function () {
     // 1. Update Date
     function updateDate() {
@@ -136,28 +135,38 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     updateDate();
 
-    // 2. Fetch Live Location & Weather
+    // 2. Fetch Live Location & Weather using Tomorrow.io API
     function fetchWeather() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(async (position) => {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
-                const apiKey = "47eed1a31f80d6bd24e9a10c56ab12fa"; 
-                const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+                const apiKey = "DlZi5gqlEI1iWp6T3vVaEgT3V6GU6YPF";  // Replace with your Tomorrow.io API key
+                const url = `https://api.tomorrow.io/v4/timelines?location=${lat},${lon}&fields=temperature&fields=weatherCode&timesteps=current&units=metric&apikey=${apiKey}`;
 
                 try {
                     const response = await fetch(url);
-                    const data = await response.json();
-
-                    // Update Temperature
-                    document.getElementById("temperature").innerText = `${Math.round(data.main.temp)}°C`;
+                    const json = await response.json();
                     
-                    // Update Location (City Name)
-                    document.getElementById("location").innerText = data.name + ",";
-
-                    // Update Weather Icon
-                    const iconCode = data.weather[0].icon;
-                    document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/${iconCode}.png`;
+                    // Extract current weather data
+                    const data = json.data.timelines[0].intervals[0].values;
+                    // Update Weather Icon based on weatherCode
+                    const weatherCode = data.weatherCode;
+                    const iconMap = {
+                        0: "clear-day",        // Clear sky
+                        1000: "clear-day",     // Clear, sunny
+                        1001: "cloudy",        // Cloudy
+                        1100: "partly-cloudy", // Partly Cloudy
+                        1101: "partly-cloudy", // Partly Cloudy
+                        1102: "cloudy",        // Cloudy
+                        4000: "drizzle",       // Drizzle
+                        5001: "flurries",      // Flurries
+                        5100: "light-snow",    // Light Snow
+                        8000: "thunderstorm"   // Thunderstorm
+                        // Add more mapping as needed
+                    };
+                    const iconCode = iconMap[weatherCode] || "unknown";
+                    document.getElementById("weather-icon").src = `https://www.tomorrow.io/images/icons/${iconCode}.png`;
 
                 } catch (error) {
                     document.getElementById("temperature").innerText = "Error";
@@ -168,6 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     fetchWeather();
 });
+
   // Function to update the date dynamically
     function updateDate() {
         const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };

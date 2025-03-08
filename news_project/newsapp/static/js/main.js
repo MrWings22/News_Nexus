@@ -250,3 +250,57 @@ updateDate();
             document.getElementById('selected-category').textContent = this.textContent;
         });
     });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // 1. Update Date
+        function updateDate() {
+            const now = new Date();
+            const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+            document.getElementById("weather-date").innerText = now.toLocaleDateString("en-US", options);
+        }
+        updateDate();
+    
+        // 2. Fetch Live Location & Weather using Tomorrow.io API
+        function fetchWeather() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const apiKey = "DlZi5gqlEI1iWp6T3vVaEgT3V6GU6YPF";  // Replace with your Tomorrow.io API key
+                    const url = `https://api.tomorrow.io/v4/timelines?location=${lat},${lon}&fields=temperature&fields=weatherCode&timesteps=current&units=metric&apikey=${apiKey}`;
+    
+                    try {
+                        const response = await fetch(url);
+                        const json = await response.json();
+                        
+                        // Extract current weather data
+                        const data = json.data.timelines[0].intervals[0].values;
+                        // Update Weather Icon based on weatherCode
+                        const weatherCode = data.weatherCode;
+                        const iconMap = {
+                            0: "clear-day",        // Clear sky
+                            1000: "clear-day",     // Clear, sunny
+                            1001: "cloudy",        // Cloudy
+                            1100: "partly-cloudy", // Partly Cloudy
+                            1101: "partly-cloudy", // Partly Cloudy
+                            1102: "cloudy",        // Cloudy
+                            4000: "drizzle",       // Drizzle
+                            5001: "flurries",      // Flurries
+                            5100: "light-snow",    // Light Snow
+                            8000: "thunderstorm"   // Thunderstorm
+                            // Add more mapping as needed
+                        };
+                        const iconCode = iconMap[weatherCode] || "unknown";
+                        document.getElementById("weather-icon").src = `https://www.tomorrow.io/images/icons/${iconCode}.png`;
+    
+                    } catch (error) {
+                        document.getElementById("temperature").innerText = "Error";
+                        document.getElementById("location").innerText = "Weather Unavailable";
+                    }
+                });
+            }
+        }
+        fetchWeather();
+    });
+
+   

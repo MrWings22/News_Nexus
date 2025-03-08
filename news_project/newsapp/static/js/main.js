@@ -179,14 +179,16 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
   // Function to update the date dynamically
-    function updateDate() {
-        const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
-        const today = new Date().toLocaleDateString('en-US', options);
-        document.getElementById('current-date').textContent = today;
+  function updateDate() {
+    const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
+    const today = new Date().toLocaleDateString('en-US', options);
+    const dateElement = document.getElementById('current-date');
+    if (dateElement) {
+        dateElement.textContent = today;
     }
+}
 
-    // Call the function to update the date on page load
-    updateDate();
+updateDate();
 
     document.addEventListener("DOMContentLoaded", function () {
         let modal = document.getElementById("exampleModal");
@@ -237,19 +239,3 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
     
-//shareoption function 
-function shareWebsite() {
-    if (navigator.share) {
-        navigator.share({
-            title: document.title,
-            text: "Check out this amazing website!",
-            url: window.location.href
-        }).then(() => {
-            console.log("Thanks for sharing!");
-        }).catch((error) => {
-            console.error("Error sharing:", error);
-        });
-    } else {
-        alert("Sharing is not supported on this browser.");
-    }
-}

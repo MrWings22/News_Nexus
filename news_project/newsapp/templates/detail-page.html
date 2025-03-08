@@ -52,10 +52,15 @@
                         <div class="d-flex justify-content-between">
                             <a href="#" class="text-dark link-hover me-3"><i class="fa fa-clock"></i> 06 minute read</a>
                             <a href="#" class="text-dark link-hover me-3"><i class="fa fa-eye"></i> {{article.views}} Views</a>
+<<<<<<< HEAD
                             <a href="#" class="text-dark link-hover me-3"><i class="fa fa-comment-dots"></i> 05 Comment</a>
                             <a href="#" class="text-dark link-hover" onclick="shareWebsite(); return false;">
                                 <i class="fa fa-arrow-up"></i>Share
                             </a>
+=======
+                            <a href="#" class="text-dark link-hover me-3"><i class="fa fa-comment-dots"></i> {{ comments.count}} Comment</a>
+                            <a href="#" class="text-dark link-hover"><i class="fa fa-arrow-up"></i> 1.5k Share</a>
+>>>>>>> 2d22f998106407ed81a71efd7935ce47b495510f
                         </div>
                         <p class="my-4"></p>
                         <p class="my-4">
@@ -63,7 +68,7 @@
                         </p>
                         
                         
-                        <div class="tab-class">
+                        <!-- <div class="tab-class">
                             <div class="d-flex justify-content-between border-bottom mb-4">
                                 <ul class="nav nav-pills d-inline-flex text-center">
                                     <li class="nav-item mb-3">
@@ -93,9 +98,9 @@
                                     <i class="btn fab fa-linkedin-in link-hover btn btn-square rounded-circle border-primary text-dark"></i>
                                 </div>
                             </div>
-                            <div class="tab-content">
+                                <div class="tab-content">
                                 <div class="detailpage-commentbox">
-                                    <!-- Display Existing Comments -->
+                                   
                                     <div class="detailpage-comment-fields">
                                         {% for comment in article.comment_set.all %}
                                             <div class="detailpage-usercomment">
@@ -108,9 +113,9 @@
                                         {% endfor %}
                                     </div>
                             
-                                    <!-- Comment Input Form -->
+                                   
+                                    
                                     <div class="detailpage-commentarea">
-                                        <form id="CommentForm" method="post" action="{% url 'add_comment' article.article_id %}">
                                             {% csrf_token %}
                                             <div class="detailpage-input-field">
                                                 <textarea name="comments" class="detailpage-comment-input" placeholder="Add a comment..." required></textarea>
@@ -123,6 +128,61 @@
                                 </div>
                             </div>
                             
+                        </div> -->
+                        <div class="tab-class">
+                            <div class="d-flex justify-content-between border-bottom mb-4">
+                                <ul class="nav nav-pills d-inline-flex text-center">
+                                    <li class="nav-item mb-3">
+                                        <h5 class="mt-2 me-3 mb-0">Tags:</h5>
+                                    </li>
+                                    <li class="nav-item mb-3">
+                                        <a class="d-flex py-2 bg-light rounded-pill active me-2" data-bs-toggle="pill" href="#tab-1">
+                                            <span class="text-dark" style="width: 100px;">Sports</span>
+                                        </a>
+                                    </li>
+                                    <!-- Other tags -->
+                                </ul>
+                                <div class="d-flex align-items-center">
+                                    <h5 class="mb-0 me-3">Share:</h5>
+                                    <!-- Share buttons -->
+                                </div>
+                            </div>
+                            <div class="tab-content">
+                                <div class="detailpage-commentbox">
+                                    <!-- Display Existing Comments -->
+                                    <div class="detailpage-comment-fields" id="comment-list">
+                                        {% for comment in article.comment_set.all %}
+                                            <div class="detailpage-usercomment">
+                                                <div class="detailpage-user_date">
+                                                    <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">{{ comment.user.username }}</div></b>
+                                                    <div class="detailpage-date" style="font-size: 14px; color: grey">{{ comment.created_at|timesince }} ago</div>
+                                                </div>
+                                                <p>{{ comment.comments }}</p>
+                                            </div>
+                                        {% empty %}
+                                            <p style="color: grey; text-align: center;">No comments yet. Be the first to comment!</p>
+                                        {% endfor %}
+                                    </div>
+                                    <!-- Comment Input Form -->
+                                    {% if request.user.is_authenticated %}
+                                    <div class="detailpage-commentarea">
+                                        <form id="commentForm" action="{% url 'add_comment' article.article_id %}" method="post">
+                                            {% csrf_token %}
+                                            <div class="detailpage-input-field">
+                                                <textarea name="comments" class="detailpage-comment-input" placeholder="Add a comment..." required></textarea>
+                                                <button type="button" id="sendButton">
+                                                    <i id="sendicon" class="fa fa-paper-plane"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    {% else %}
+                                    <div class="detailpage-commentarea">
+                                        <p>Please <a href="{% url 'login' %}">log in</a> to comment.</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-lg-4 p-2 justify-content-around">
@@ -149,7 +209,7 @@
         <!-- Single Product End -->
         {% endblock %}
         <!-- JavaScript Libraries -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="{% static 'lib/easing/easing.min.js' %}"></script>
         <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
@@ -158,48 +218,7 @@
         <!-- Template Javascript -->
         <script src="{% static 'js/main.js' %}"></script>
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const commentForm = document.getElementById('CommentForm');
-                const sendButton = document.getElementById('sendButton');
             
-                sendButton.addEventListener('click', function(event) {
-                    event.preventDefault(); // Prevent default form submission
-            
-                    const formData = new FormData(commentForm);
-            
-                    fetch(commentForm.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-CSRFToken': formData.get('csrfmiddlewaretoken'), // Include CSRF token
-                        },
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Add the new comment to the page dynamically
-                            const commentList = document.querySelector('.detailpage-comment-fields');
-                            const newComment = document.createElement('div');
-                            newComment.classList.add('detailpage-usercomment');
-                            newComment.innerHTML = `
-                                <div class="detailpage-user_date">
-                                    <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">${data.username}</div></b>
-                                    <div class="detailpage-date" style="font-size: 14px; color: grey">Just now</div>
-                                </div>
-                                <p>${data.comment}</p>
-                            `;
-                            commentList.prepend(newComment); // Add the new comment at the top
-                            commentForm.reset(); // Clear the form
-                        } else {
-                            alert('Failed to submit comment: ' + (data.errors || data.error));
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('An error occurred while submitting the comment.');
-                    });
-                });
-            });
-        </script>
+            </script>
     </body>
 </html>

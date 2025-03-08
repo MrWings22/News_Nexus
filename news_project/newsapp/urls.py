@@ -11,9 +11,10 @@ urlpatterns = [
     path('login/', views.Login, name='login'),
     path('register/', views.Registration, name='register'),
     path('logout/', views.Logout, name='logout'),
-    path('article/<int:article_id>/comment/', views.add_comment, name='add_comment'),
     path('searchresult/', views.Searchresult, name='searchresults'),
     path('profile/', views.profile, name='profile'),
+    path('article/<int:article_id>/comment/', views.add_comment, name='add_comment'),
+  
 ]
 
 if settings.DEBUG:

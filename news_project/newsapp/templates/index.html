@@ -81,10 +81,10 @@
                             <div class="navbar-nav mx-auto border-top">
                                 <a href="{% url 'Homepage' %}" class="nav-item nav-link active">Home</a>
                                 <div class="nav-item dropdown">
-                                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Categories</a>
+                                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" id="selected-category">Categories</a>
                                     <div class="dropdown-menu m-0 bg-secondary rounded-0">
                                         {% for category in categories %}
-                                            <a href="{% url 'Homepage' %}?category={{ category.category_name }}" class="dropdown-item">{{ category.category_name }}</a>
+                                            <a href="{% url 'Homepage' %}?category={{ category.category_name }}" class="dropdown-item category-item">{{ category.category_name }}</a>
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -103,6 +103,7 @@
                                
                             </div>
                             <div class="d-flex flex-nowrap border-top pt-3 pt-xl-0">
+<<<<<<< HEAD
                                     <div class="d-flex">
                                         <img src="img/weather-icon.png" class="img-fluid w-100 me-2" alt="" id="weather-icon">
                                         <div class="d-flex align-items-center">
@@ -111,6 +112,15 @@
                                                 <span class="text-body" id="location">Locating...</span>
                                                 <small id="weather-date">Loading date...</small>
                                             </div>
+=======
+                                <div class="d-flex">
+                                    <img src="img/weather-icon.png" class="img-fluid w-100 me-2" alt="" id="weather-icon">
+                                    <div class="d-flex align-items-center">
+                                        <strong class="fs-4 text-secondary" id="temperature">Fetching...</strong>
+                                        <div class="d-flex flex-column ms-2" style="width: 150px;">
+                                            <span class="text-body" id="location">Locating...</span>
+                                            <small id="weather-date">Loading date...</small>
+>>>>>>> 2d22f998106407ed81a71efd7935ce47b495510f
                                         </div>
                                     </div>
                                 <!-- <button class="btn-search btn border border-primary btn-md-square rounded-circle bg-white my-auto" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button> -->

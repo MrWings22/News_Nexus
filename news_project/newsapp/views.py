@@ -9,6 +9,10 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
+from django.conf import settings
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+import json
 
 def Login(request):
     if request.method == "POST":
@@ -96,7 +100,49 @@ def Registration(request):
     
     return render(request, 'registration.html')
 
+@csrf_exempt  # Temporarily disable CSRF protection for testing
+def google_authenticate(request):
+    if request.method == 'POST':
+        try:
+            # Ensure request body is not empty
+            if not request.body:
+                return JsonResponse({'success': False, 'error': 'Empty request body'}, status=400)
 
+            data = json.loads(request.body)  # This is where the error happens
+            token = data.get('credential')
+
+            if not token:
+                return JsonResponse({'success': False, 'error': 'Missing credential token'}, status=400)
+
+            # Verify Google token
+            idinfo = id_token.verify_oauth2_token(
+                token, 
+                google_requests.Request(), 
+                settings.GOOGLE_CLIENT_ID
+            )
+            if idinfo['aud'] != settings.GOOGLE_CLIENT_ID:
+                return JsonResponse({'success': False, 'error': 'Invalid client ID'}, status=400)
+
+            email = idinfo['email']
+            name = idinfo.get('name', '')
+
+            # Check if user exists
+            user, created = CustomUser.objects.get_or_create(email=email, defaults={'username': name})
+            
+            if created:
+                user.set_password(None)  # User logs in with Google
+                user.save()
+
+            # Log in the user
+            login(request, user)
+            return JsonResponse({'success': True, 'redirect': 'Homepage'})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid JSON format'}, status=400)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
 def Indexpage(request):
     return render(request, "index.html")
 

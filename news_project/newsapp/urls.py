@@ -10,6 +10,7 @@ urlpatterns = [
     path('contact/', views.contactus, name='contactus'),
     path('login/', views.Login, name='login'),
     path('register/', views.Registration, name='register'),
+    path('google-authenticate/', views.google_authenticate, name='google_authenticate'),
     path('logout/', views.Logout, name='logout'),
     path('searchresult/', views.Searchresult, name='searchresults'),
     path('profile/', views.profile, name='profile'),

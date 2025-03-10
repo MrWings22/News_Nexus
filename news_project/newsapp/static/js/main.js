@@ -302,8 +302,11 @@ updateDate();
         }
         fetchWeather();
     });
-
+    
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM fully loaded');
+        
+        // Element selections
         const editBtn = document.getElementById('edit-btn');
         const saveBtn = document.getElementById('save-btn');
         const backBtn = document.getElementById('back-btn');
@@ -312,104 +315,144 @@ updateDate();
         const editPicBtn = document.getElementById('edit-pic-btn');
         const profilePicUpload = document.getElementById('profile-pic-upload');
         const profilePic = document.getElementById('profile-pic');
+        const front = document.querySelector('.front');
+        const back = document.querySelector('.back');
         
-        let originalHeight;
-    
+        // Debug element presence
+        console.log('Elements found:', {
+            editBtn: !!editBtn,
+            saveBtn: !!saveBtn,
+            backBtn: !!backBtn,
+            wrapper: !!wrapper,
+            profileContainer: !!profileContainer,
+            front: !!front,
+            back: !!back
+        });
+        
+        // Store original dimensions
+        let originalHeight = profileContainer ? profileContainer.offsetHeight + 'px' : '40rem';
+        console.log('Original height:', originalHeight);
+        
         // Check for error messages
         const hasErrors = document.querySelector('.validation-errors .alert-danger') || 
-                        document.querySelector('.toast.error.show');
+                         document.querySelector('.toast.error.show');
+        console.log('Has errors:', !!hasErrors);
         
-        // If there are error messages, make sure the back side is showing
-        if (hasErrors) {
-            // Keep the form in edit mode when there are errors
-            if (wrapper) {
-                wrapper.classList.add('flipped');
-            } else {
-                // Alternative flip method if wrapper class isn't working
-                document.querySelector('.front').style.transform = 'rotateY(180deg)';
-                document.querySelector('.front').style.display = 'none';
-                document.querySelector('.back').style.transform = 'rotateY(0deg)';
-                document.querySelector('.back').style.display = 'block';
-                
+        // Function to adjust the container height based on content
+        function adjustContainerHeight() {
+            if (profileContainer) {
+                const backContent = back ? back.offsetHeight : 0;
+                const frontContent = front ? front.offsetHeight : 0;
+                const maxHeight = Math.max(backContent, frontContent, 600) + 'px';
+                console.log('Adjusting container height to:', maxHeight);
+                profileContainer.style.minHeight = maxHeight;
+                profileContainer.style.marginBottom = '8rem';
+            }
+        }
+        
+        // Handle error state - only flip if there are validation errors
+        if (hasErrors && wrapper) {
+            console.log('Flipping due to errors');
+            wrapper.classList.add('flipped');
+            
+            if (back) {
+                back.style.zIndex = '3';
+                if (front) front.style.zIndex = '1';
             }
             
-            // Ensure profile container has enough height for form
-            if (profileContainer) {
-                profileContainer.style.minHeight = '55rem';
+            // Adjust container height
+            adjustContainerHeight();
+        } else {
+            console.log('No errors, ensuring front is visible');
+            // Ensure we're not flipped if there are no errors
+            if (wrapper) {
+                wrapper.classList.remove('flipped');
+            }
+            
+            // Make sure front is visible
+            if (front) {
+                front.style.zIndex = '3';
+            }
+            
+            if (back) {
+                back.style.zIndex = '1';
             }
         }
         
         // Handle edit button click
         if (editBtn) {
             editBtn.addEventListener('click', function() {
-                originalHeight = profileContainer ? profileContainer.style.minHeight : null;
-                // Increase the height when flipping to back side
-                if (profileContainer) {
-                    profileContainer.style.minHeight = '55rem';
+                console.log('Edit button clicked');
+                // Store current height before flipping
+                originalHeight = profileContainer ? profileContainer.offsetHeight + 'px' : originalHeight;
+                
+                // Ensure back has higher z-index during transition
+                if (back) {
+                    back.style.zIndex = '3';
+                    if (front) front.style.zIndex = '1';
                 }
                 
+                // Adjust container height
+                adjustContainerHeight();
+                
+                // Flip the card
                 if (wrapper) {
                     wrapper.classList.add('flipped');
-                } else {
-                    // Alternative flip method
-                    document.querySelector('.front').style.transform = 'rotateY(180deg)';
-                    setTimeout(function() {
-                        document.querySelector('.front').style.display = 'none';
-                        document.querySelector('.back').style.display = 'block';
-                        setTimeout(function() {
-                            document.querySelector('.back').style.transform = 'rotateY(0deg)';
-                        }, 50);
-                    }, 300);
+                    console.log('Flipped wrapper');
                 }
             });
         }
         
-        // Handle save button click
-        if (saveBtn) {
-            saveBtn.addEventListener('click', function() {
-                // Form submission is handled by the form's action attribute
-                // This will just handle the animation if the form were submitted without validation errors
-                if (profileContainer) {
-                    profileContainer.style.minHeight = originalHeight;
-                }
-                
-                if (wrapper) {
-                    wrapper.classList.remove('flipped');
-                }
-            });
-        }
-        
-        // Handle back button click
+        // Handle back button click - make sure this works
         if (backBtn) {
-            backBtn.addEventListener('click', function() {
-                if (profileContainer) {
-                    profileContainer.style.minHeight = originalHeight;
-                }
+            backBtn.addEventListener('click', function(e) {
+                console.log('Back button clicked');
+                e.preventDefault();
                 
+                // Flip back the card
                 if (wrapper) {
                     wrapper.classList.remove('flipped');
-                } else {
-                    // Alternative flip method
-                    document.querySelector('.back').style.transform = 'rotateY(180deg)';
+                    console.log('Unflipped wrapper');
+                }
+                
+                // Reset z-index after transition completes
+                setTimeout(function() {
+                    if (front) {
+                        front.style.zIndex = '3';
+                    }
+                    if (back) {
+                        back.style.zIndex = '1';
+                    }
+                    console.log('Reset z-indices');
+                }, 600);
+                
+                // Clear any error messages
+                const errorElements = document.querySelectorAll('.validation-errors .alert-danger, .toast.error.show');
+                errorElements.forEach(el => {
+                    el.style.display = 'none';
+                });
+                console.log('Cleared error messages');
+                
+                // Restore original height after transition
+                if (profileContainer && originalHeight) {
                     setTimeout(function() {
-                        document.querySelector('.back').style.display = 'none';
-                        document.querySelector('.front').style.display = 'block';
-                        setTimeout(function() {
-                            document.querySelector('.front').style.transform = 'rotateY(0deg)';
-                        }, 50);
+                        profileContainer.style.minHeight = originalHeight;
+                        profileContainer.style.marginBottom = '0';
+                        console.log('Restored original height:', originalHeight);
                     }, 300);
                 }
             });
         }
         
-        // Handle profile picture upload button
+        // Handle profile picture upload
         if (editPicBtn && profilePicUpload) {
             editPicBtn.addEventListener('click', function() {
                 profilePicUpload.click();
+                console.log('Profile pic upload triggered');
             });
         }
         
-        // Preview the selected image
+        // Preview selected image
         if (profilePicUpload && profilePic) {
             profilePicUpload.addEventListener('change', function(e) {
                 if (this.files && this.files[0]) {
@@ -417,16 +460,28 @@ updateDate();
                     
                     reader.onload = function(e) {
                         profilePic.setAttribute('src', e.target.result);
+                        console.log('Profile pic preview updated');
                     }
                     
                     reader.readAsDataURL(this.files[0]);
                 }
             });
         }
+        
+        // Check if we need to force proper state after everything loads
+        window.addEventListener('load', function() {
+            console.log('Window fully loaded');
+            // Force proper z-index after everything else loads
+            if (wrapper && wrapper.classList.contains('flipped')) {
+                if (back) back.style.zIndex = '3';
+                if (front) front.style.zIndex = '1';
+            } else {
+                if (front) front.style.zIndex = '3';
+                if (back) back.style.zIndex = '1';
+            }
+            
+            // Adjust container height again after all assets load
+            adjustContainerHeight();
+        });
     });
-
-    document.getElementById('save-btn').addEventListener('click', function(event) {
-        // No need for event.preventDefault() or manual submission
-        // The form will submit normally
-    });
-
+    

@@ -303,4 +303,130 @@ updateDate();
         fetchWeather();
     });
 
-   
+    document.addEventListener('DOMContentLoaded', function() {
+        const editBtn = document.getElementById('edit-btn');
+        const saveBtn = document.getElementById('save-btn');
+        const backBtn = document.getElementById('back-btn');
+        const wrapper = document.querySelector('.wrapper');
+        const profileContainer = document.querySelector('.profile-container');
+        const editPicBtn = document.getElementById('edit-pic-btn');
+        const profilePicUpload = document.getElementById('profile-pic-upload');
+        const profilePic = document.getElementById('profile-pic');
+        
+        let originalHeight;
+    
+        // Check for error messages
+        const hasErrors = document.querySelector('.validation-errors .alert-danger') || 
+                        document.querySelector('.toast.error.show');
+        
+        // If there are error messages, make sure the back side is showing
+        if (hasErrors) {
+            // Keep the form in edit mode when there are errors
+            if (wrapper) {
+                wrapper.classList.add('flipped');
+            } else {
+                // Alternative flip method if wrapper class isn't working
+                document.querySelector('.front').style.transform = 'rotateY(180deg)';
+                document.querySelector('.front').style.display = 'none';
+                document.querySelector('.back').style.transform = 'rotateY(0deg)';
+                document.querySelector('.back').style.display = 'block';
+                
+            }
+            
+            // Ensure profile container has enough height for form
+            if (profileContainer) {
+                profileContainer.style.minHeight = '55rem';
+            }
+        }
+        
+        // Handle edit button click
+        if (editBtn) {
+            editBtn.addEventListener('click', function() {
+                originalHeight = profileContainer ? profileContainer.style.minHeight : null;
+                // Increase the height when flipping to back side
+                if (profileContainer) {
+                    profileContainer.style.minHeight = '55rem';
+                }
+                
+                if (wrapper) {
+                    wrapper.classList.add('flipped');
+                } else {
+                    // Alternative flip method
+                    document.querySelector('.front').style.transform = 'rotateY(180deg)';
+                    setTimeout(function() {
+                        document.querySelector('.front').style.display = 'none';
+                        document.querySelector('.back').style.display = 'block';
+                        setTimeout(function() {
+                            document.querySelector('.back').style.transform = 'rotateY(0deg)';
+                        }, 50);
+                    }, 300);
+                }
+            });
+        }
+        
+        // Handle save button click
+        if (saveBtn) {
+            saveBtn.addEventListener('click', function() {
+                // Form submission is handled by the form's action attribute
+                // This will just handle the animation if the form were submitted without validation errors
+                if (profileContainer) {
+                    profileContainer.style.minHeight = originalHeight;
+                }
+                
+                if (wrapper) {
+                    wrapper.classList.remove('flipped');
+                }
+            });
+        }
+        
+        // Handle back button click
+        if (backBtn) {
+            backBtn.addEventListener('click', function() {
+                if (profileContainer) {
+                    profileContainer.style.minHeight = originalHeight;
+                }
+                
+                if (wrapper) {
+                    wrapper.classList.remove('flipped');
+                } else {
+                    // Alternative flip method
+                    document.querySelector('.back').style.transform = 'rotateY(180deg)';
+                    setTimeout(function() {
+                        document.querySelector('.back').style.display = 'none';
+                        document.querySelector('.front').style.display = 'block';
+                        setTimeout(function() {
+                            document.querySelector('.front').style.transform = 'rotateY(0deg)';
+                        }, 50);
+                    }, 300);
+                }
+            });
+        }
+        
+        // Handle profile picture upload button
+        if (editPicBtn && profilePicUpload) {
+            editPicBtn.addEventListener('click', function() {
+                profilePicUpload.click();
+            });
+        }
+        
+        // Preview the selected image
+        if (profilePicUpload && profilePic) {
+            profilePicUpload.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        profilePic.setAttribute('src', e.target.result);
+                    }
+                    
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        }
+    });
+
+    document.getElementById('save-btn').addEventListener('click', function(event) {
+        // No need for event.preventDefault() or manual submission
+        // The form will submit normally
+    });
+

@@ -824,5 +824,235 @@ body.modal-open .custom-modal {
     background: #555; /* Color of the scrollbar thumb on hover */
 }
 
-  
-  
+.profile-container {      
+    min-height: 35rem;
+    transition: min-height 0.6s ease-in-out
+}
+
+.wrapper {
+   display: flex; 
+   align-items: center;
+   justify-content: center;
+   position: relative;
+   height: 100%;
+}
+
+#profile-pic {
+    border-radius: 50%; 
+    height: 150px; 
+    width: 150px;
+    box-shadow: 0 5px 10px 0 rgb(74, 74, 74);
+    position: relative;
+    top: -185px;
+    left: 290px;
+    z-index: 1;
+}
+
+.edit-icon {
+    position: absolute;
+    top: 50px;
+    left: 300px;
+    background-color: #4eaafa;
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 40;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.back-icon {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: #4eaafa;
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 30;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.edit-icon:hover, .back-icon:hover {
+    background-color: #6aebff;
+}
+
+.card-container {
+    position: relative;
+    width: 90%;
+    max-width: 550px;
+    min-height: 30rem;
+    perspective: 1000px;
+    transition: transform 0.6s ease;
+    transform-style: preserve-3d;
+    margin-top: 100px;
+    right: 50px;
+}
+
+.flipped .card-container {
+    transform: rotateY(180deg);
+}
+
+.profile-body {
+    position: absolute;
+    backface-visibility: hidden;
+    background: rgb(255, 255, 255);
+    border-radius: 20px; 
+    box-shadow: 0 7px 10px 1px rgb(166, 166, 166); 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: flex-start; 
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 100px 20px 30px 20px;
+    overflow: hidden;
+}
+
+.wrapper.flipped .back {
+    z-index: 3;
+}
+
+.wrapper.flipped .profile-container {
+    margin-bottom: 2rem; /* Prevent footer overlap when flipped */
+}
+
+.front {
+    z-index: 1;
+    right: 10px;
+    height: 25rem;
+}
+
+.back {
+    transform: rotateY(180deg);
+    z-index: 1;
+    padding-top: 100px;
+    height: auto;
+    min-height: 40rem; 
+    transition: z-index 0.1s 0.3s;
+    overflow-y: auto; 
+}
+
+.alert-danger {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    position: relative;
+    z-index: 4; /* Ensure error message appears above other elements */
+}
+
+.form-container {
+    width: 100%;
+    padding: 0 10px;
+}
+
+.wrapper .profile-body h2 {
+    color: rgb(162, 161, 161);
+    margin-bottom: 15px;
+}
+
+.vh-80 {
+    height: 80vh;
+}
+
+.wrapper .profile-body .btn {
+    height: 80px; 
+    width: 100%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.wrapper .profile-body button {
+    width: 140px; 
+    height: 50px; 
+    background: linear-gradient(to left, rgb(78, 170, 250), rgb(106, 235, 255));
+    border: none; 
+    color: white; 
+    font-size: 20px; 
+    border-radius: 25px;
+}
+
+.wrapper .profile-body button:hover {
+    animation: btnAnimate 1s infinite; 
+}
+
+@keyframes btnAnimate {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.wrapper h5 {
+    color: rgb(162, 161, 161);
+    margin: 10px 0;
+}
+
+.form-group {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+}
+
+.toast-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+  }
+  .toast {
+    min-width: 250px;
+    margin-top: 10px;
+    padding: 15px 25px;
+    color: white;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.4s;
+    transform: translateY(-20px);
+    pointer-events: auto;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .toast.success {
+    background-color: #4CAF50;
+  }
+  .toast.error {
+    background-color: #F44336;
+  }
+  .toast.info {
+    background-color: #2196F3;
+  }

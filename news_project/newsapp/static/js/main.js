@@ -250,3 +250,238 @@ updateDate();
             document.getElementById('selected-category').textContent = this.textContent;
         });
     });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // 1. Update Date
+        function updateDate() {
+            const now = new Date();
+            const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+            document.getElementById("weather-date").innerText = now.toLocaleDateString("en-US", options);
+        }
+        updateDate();
+    
+        // 2. Fetch Live Location & Weather using Tomorrow.io API
+        function fetchWeather() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const apiKey = "DlZi5gqlEI1iWp6T3vVaEgT3V6GU6YPF";  // Replace with your Tomorrow.io API key
+                    const url = `https://api.tomorrow.io/v4/timelines?location=${lat},${lon}&fields=temperature&fields=weatherCode&timesteps=current&units=metric&apikey=${apiKey}`;
+    
+                    try {
+                        const response = await fetch(url);
+                        const json = await response.json();
+                        
+                        // Extract current weather data
+                        const data = json.data.timelines[0].intervals[0].values;
+                        // Update Weather Icon based on weatherCode
+                        const weatherCode = data.weatherCode;
+                        const iconMap = {
+                            0: "clear-day",        // Clear sky
+                            1000: "clear-day",     // Clear, sunny
+                            1001: "cloudy",        // Cloudy
+                            1100: "partly-cloudy", // Partly Cloudy
+                            1101: "partly-cloudy", // Partly Cloudy
+                            1102: "cloudy",        // Cloudy
+                            4000: "drizzle",       // Drizzle
+                            5001: "flurries",      // Flurries
+                            5100: "light-snow",    // Light Snow
+                            8000: "thunderstorm"   // Thunderstorm
+                            // Add more mapping as needed
+                        };
+                        const iconCode = iconMap[weatherCode] || "unknown";
+                        document.getElementById("weather-icon").src = `https://www.tomorrow.io/images/icons/${iconCode}.png`;
+    
+                    } catch (error) {
+                        document.getElementById("temperature").innerText = "Error";
+                        document.getElementById("location").innerText = "Weather Unavailable";
+                    }
+                });
+            }
+        }
+        fetchWeather();
+    });
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM fully loaded');
+        
+        // Element selections
+        const editBtn = document.getElementById('edit-btn');
+        const saveBtn = document.getElementById('save-btn');
+        const backBtn = document.getElementById('back-btn');
+        const wrapper = document.querySelector('.wrapper');
+        const profileContainer = document.querySelector('.profile-container');
+        const editPicBtn = document.getElementById('edit-pic-btn');
+        const profilePicUpload = document.getElementById('profile-pic-upload');
+        const profilePic = document.getElementById('profile-pic');
+        const front = document.querySelector('.front');
+        const back = document.querySelector('.back');
+        
+        // Debug element presence
+        console.log('Elements found:', {
+            editBtn: !!editBtn,
+            saveBtn: !!saveBtn,
+            backBtn: !!backBtn,
+            wrapper: !!wrapper,
+            profileContainer: !!profileContainer,
+            front: !!front,
+            back: !!back
+        });
+        
+        // Store original dimensions
+        let originalHeight = profileContainer ? profileContainer.offsetHeight + 'px' : '40rem';
+        console.log('Original height:', originalHeight);
+        
+        // Check for error messages
+        const hasErrors = document.querySelector('.validation-errors .alert-danger') || 
+                         document.querySelector('.toast.error.show');
+        console.log('Has errors:', !!hasErrors);
+        
+        // Function to adjust the container height based on content
+        function adjustContainerHeight() {
+            if (profileContainer) {
+                const backContent = back ? back.offsetHeight : 0;
+                const frontContent = front ? front.offsetHeight : 0;
+                const maxHeight = Math.max(backContent, frontContent, 600) + 'px';
+                console.log('Adjusting container height to:', maxHeight);
+                profileContainer.style.minHeight = maxHeight;
+                profileContainer.style.marginBottom = '8rem';
+            }
+        }
+        
+        // Handle error state - only flip if there are validation errors
+        if (hasErrors && wrapper) {
+            console.log('Flipping due to errors');
+            wrapper.classList.add('flipped');
+            
+            if (back) {
+                back.style.zIndex = '3';
+                if (front) front.style.zIndex = '1';
+            }
+            
+            // Adjust container height
+            adjustContainerHeight();
+        } else {
+            console.log('No errors, ensuring front is visible');
+            // Ensure we're not flipped if there are no errors
+            if (wrapper) {
+                wrapper.classList.remove('flipped');
+            }
+            
+            // Make sure front is visible
+            if (front) {
+                front.style.zIndex = '3';
+            }
+            
+            if (back) {
+                back.style.zIndex = '1';
+            }
+        }
+        
+        // Handle edit button click
+        if (editBtn) {
+            editBtn.addEventListener('click', function() {
+                console.log('Edit button clicked');
+                // Store current height before flipping
+                originalHeight = profileContainer ? profileContainer.offsetHeight + 'px' : originalHeight;
+                
+                // Ensure back has higher z-index during transition
+                if (back) {
+                    back.style.zIndex = '3';
+                    if (front) front.style.zIndex = '1';
+                }
+                
+                // Adjust container height
+                adjustContainerHeight();
+                
+                // Flip the card
+                if (wrapper) {
+                    wrapper.classList.add('flipped');
+                    console.log('Flipped wrapper');
+                }
+            });
+        }
+        
+        // Handle back button click - make sure this works
+        if (backBtn) {
+            backBtn.addEventListener('click', function(e) {
+                console.log('Back button clicked');
+                e.preventDefault();
+                
+                // Flip back the card
+                if (wrapper) {
+                    wrapper.classList.remove('flipped');
+                    console.log('Unflipped wrapper');
+                }
+                
+                // Reset z-index after transition completes
+                setTimeout(function() {
+                    if (front) {
+                        front.style.zIndex = '3';
+                    }
+                    if (back) {
+                        back.style.zIndex = '1';
+                    }
+                    console.log('Reset z-indices');
+                }, 600);
+                
+                // Clear any error messages
+                const errorElements = document.querySelectorAll('.validation-errors .alert-danger, .toast.error.show');
+                errorElements.forEach(el => {
+                    el.style.display = 'none';
+                });
+                console.log('Cleared error messages');
+                
+                // Restore original height after transition
+                if (profileContainer && originalHeight) {
+                    setTimeout(function() {
+                        profileContainer.style.minHeight = originalHeight;
+                        profileContainer.style.marginBottom = '0';
+                        console.log('Restored original height:', originalHeight);
+                    }, 300);
+                }
+            });
+        }
+        
+        // Handle profile picture upload
+        if (editPicBtn && profilePicUpload) {
+            editPicBtn.addEventListener('click', function() {
+                profilePicUpload.click();
+                console.log('Profile pic upload triggered');
+            });
+        }
+        
+        // Preview selected image
+        if (profilePicUpload && profilePic) {
+            profilePicUpload.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        profilePic.setAttribute('src', e.target.result);
+                        console.log('Profile pic preview updated');
+                    }
+                    
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        }
+        
+        // Check if we need to force proper state after everything loads
+        window.addEventListener('load', function() {
+            console.log('Window fully loaded');
+            // Force proper z-index after everything else loads
+            if (wrapper && wrapper.classList.contains('flipped')) {
+                if (back) back.style.zIndex = '3';
+                if (front) front.style.zIndex = '1';
+            } else {
+                if (front) front.style.zIndex = '3';
+                if (back) back.style.zIndex = '1';
+            }
+            
+            // Adjust container height again after all assets load
+            adjustContainerHeight();
+        });
+    });
+    

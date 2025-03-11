@@ -4,7 +4,7 @@ from .models import Article, ArticleImages, CustomUser, Comment, Category, Custo
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import CommentForm
-import re, requests
+import re
 from django.http import JsonResponse
 from django.db.models import Q
 from django.template.loader import render_to_string

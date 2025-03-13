@@ -15,7 +15,7 @@
    
 </head>
 <body>
-    <div class="goback">
+    <div class="goback"  title="go back">
         <a href="{% url 'Homepage' %}"><i class='bx bxs-left-arrow-square'></i></a>
     </div>
     <div class="register-container">
@@ -59,12 +59,12 @@
        
         <div class="social-login">
             <div id="g_id_onload"
-                data-client_id="401461607164-iteo9mansh0couh6mfleifi6u3fn5adh.apps.googleusercontent.com"
-                data-context="signup"
-                data-ux_mode="redirect" 
-                data-login_uri="http://localhost:8000/google-authenticate/"
-                data-auto_prompt="false">
-            </div>
+            data-client_id="401461607164-iteo9mansh0couh6mfleifi6u3fn5adh.apps.googleusercontent.com"
+            data-context="signup"
+            data-ux_mode="popup"
+            data-callback="handleCredentialResponse"
+            data-auto_prompt="false">
+        </div>
             <div class="g_id_signin" data-type="standard"></div>
         </div>
         <div class="register-link">
@@ -85,28 +85,28 @@
         });    
             
         function handleCredentialResponse(response) {
+            console.log("Google response:", response);
+            
+            // Send the credential to your backend
             fetch("{% url 'google_authenticate' %}", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRFToken": getCSRFToken()  // Required for Django
+                    "X-CSRFToken": getCSRFToken()
                 },
-                credentials: "same-origin",
-                body: JSON.stringify({
-                    credential: response.credential  // Sending Google token
-                })
+                body: JSON.stringify({credential: response.credential})
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     window.location.href = "{% url 'Homepage' %}";
                 } else {
-                    alert("Google Sign-In failed: " + data.error);
+                    console.error("Error:", data.error);
+                    alert("Sign-in failed: " + data.error);
                 }
             })
             .catch(error => {
                 console.error("Error:", error);
-                alert("An error occurred during Google Sign-In.");
             });
         }
 

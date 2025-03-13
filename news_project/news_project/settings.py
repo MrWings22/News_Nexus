@@ -127,7 +127,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'newsapp.CustomUser'
 LOGIN_URL = '/login/'
 
-LOGIN_REDIRECT_URL = "http://localhost:8000/google-authenticate/"
+LOGIN_REDIRECT_URL = "http://localhost:8000/google-authenticate"
 
 GOOGLE_CLIENT_ID = "401461607164-iteo9mansh0couh6mfleifi6u3fn5adh.apps.googleusercontent.com"
 

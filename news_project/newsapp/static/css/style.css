@@ -310,15 +310,8 @@
     background: var(--bs-primary);
     color: var(--bs-white);
     border-radius: 10px;
-  
-}
 
-/* .latest-news .latest-news-item:hover{
-    position: relative;
-    z-index: 1;
-    height: 60px;
-    width: 300px;
-} */
+}
 
 /*** Latest News End ***/
 

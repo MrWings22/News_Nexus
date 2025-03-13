@@ -100,49 +100,66 @@ def Registration(request):
     
     return render(request, 'registration.html')
 
-@csrf_exempt  # Temporarily disable CSRF protection for testing
+@csrf_exempt
 def google_authenticate(request):
     if request.method == 'POST':
         try:
-            # Ensure request body is not empty
+            # Log received data for debugging
+            print("Request body:", request.body)
+            
+            # Parse JSON data
             if not request.body:
                 return JsonResponse({'success': False, 'error': 'Empty request body'}, status=400)
-
-            data = json.loads(request.body)  # This is where the error happens
+            
+            data = json.loads(request.body)
             token = data.get('credential')
-
             if not token:
                 return JsonResponse({'success': False, 'error': 'Missing credential token'}, status=400)
-
+            
             # Verify Google token
             idinfo = id_token.verify_oauth2_token(
-                token, 
-                google_requests.Request(), 
+                token,
+                google_requests.Request(),
                 settings.GOOGLE_CLIENT_ID
             )
+            
             if idinfo['aud'] != settings.GOOGLE_CLIENT_ID:
                 return JsonResponse({'success': False, 'error': 'Invalid client ID'}, status=400)
-
+            
+            # Get user info
             email = idinfo['email']
             name = idinfo.get('name', '')
-
-            # Check if user exists
-            user, created = CustomUser.objects.get_or_create(email=email, defaults={'username': name})
-            
-            if created:
-                user.set_password(None)  # User logs in with Google
+            if not name:
+                # Use email prefix as username if name not provided
+                name = email.split('@')[0]
+                
+            # Check if user exists, create if not
+            try:
+                user = CustomUser.objects.get(email=email)
+            except CustomUser.DoesNotExist:
+                # Create new user
+                user = CustomUser.objects.create(
+                    email=email, 
+                    username=name
+                )
+                user.set_unusable_password()  # Better than setting password=None
                 user.save()
-
+            
             # Log in the user
             login(request, user)
             return JsonResponse({'success': True, 'redirect': 'Homepage'})
-
+            
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'error': 'Invalid JSON format'}, status=400)
+        except ValueError as e:
+            return JsonResponse({'success': False, 'error': f'Token validation error: {str(e)}'}, status=400)
         except Exception as e:
+            print(f"Google authentication error: {str(e)}")
             return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    
+    # Handle GET requests (for completeness)
+    return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
 
-    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
 def Indexpage(request):
     return render(request, "index.html")
 

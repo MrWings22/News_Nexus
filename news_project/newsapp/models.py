@@ -4,6 +4,7 @@ from django.conf import settings
 
 class CustomUser(AbstractUser):
     phone = models.CharField(max_length=10, unique=True)
+    profile_pic = models.ImageField(upload_to='profile_pics/', default='default.jpg', blank=True, null=True)
 
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)

@@ -5,32 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NewsNexus - Register</title>
-    
+   
     <!-- Google Sign-In API -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-
     <!-- intl-tel-input CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="{% static 'css/loginreg.css' %}">  
-
-    <style>
-        /* Ensure phone input field is visible and properly styled */
-        .iti {
-            width: 100%;
-        }
-        .iti__selected-flag {
-            padding: 10px;
-        }
-    </style>
+   
 </head>
 <body>
-    <div class="goback">
+    <div class="goback"  title="go back">
         <a href="{% url 'Homepage' %}"><i class='bx bxs-left-arrow-square'></i></a>
     </div>
     <div class="register-container">
         <h2>Register for NewsApp</h2>
-
         {% if messages %}
             <div class="messages">
                 {% for message in messages %}
@@ -38,65 +27,56 @@
                 {% endfor %}
             </div>
         {% endif %}
-
         <form id="registerForm" method="POST" action="{% url 'register' %}">
             {% csrf_token %}
-
             <!-- Full Name -->
             <div class="form-group">
                 <input type="text" id="username" name="username" placeholder="" required>
                 <label for="username">Username</label>
             </div>
-
             <!-- Email -->
             <div class="form-group">
                 <input type="email" id="email" name="email" placeholder="" required>
                 <label for="email">Email</label>
             </div>
-
             <!-- Phone Number -->
             <div class="form-group">
                 <input type="tel" id="phone" name="phone" placeholder="Enter phone number">
             </div>
-
             <!-- Password -->
             <div class="form-group">
                 <input type="password" id="password" name="password" placeholder="" required>
                 <label for="password">Password</label>
             </div>
-
             <!-- Confirm Password -->
             <div class="form-group">
                 <input type="password" id="confirmPassword" name="confirmpassword" placeholder="" required>
                 <label for="confirmPassword">Confirm Password</label>
             </div>
-
             <button type="submit" class="btn">Register</button>
         </form>
-
         <div class="divider"><span>or</span></div>
-        
+       
         <div class="social-login">
             <div id="g_id_onload"
-                data-client_id="17220004254-2qn2ck2rjorqrfp90eukhadat3cah9lr.apps.googleusercontent.com"
-                data-callback="handleCredentialResponse"
-                data-auto_prompt="false">
-            </div>
+            data-client_id="401461607164-iteo9mansh0couh6mfleifi6u3fn5adh.apps.googleusercontent.com"
+            data-context="signup"
+            data-ux_mode="popup"
+            data-callback="handleCredentialResponse"
+            data-auto_prompt="false">
+        </div>
             <div class="g_id_signin" data-type="standard"></div>
         </div>
-
         <div class="register-link">
             Already have an account? <a href="{% url 'login' %}">Login here</a>
         </div>
     </div>
-
     <!-- intl-tel-input JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const phoneInput = document.querySelector("#phone");
-
+            const phoneInputField = document.getElementById("phone");
+           
             // Initialize intl-tel-input with India as the default country
             const iti = window.intlTelInput(phoneInput, {
                 initialCountry: "in", // Set India as default
@@ -104,13 +84,48 @@
                 separateDialCode: true, // Display the dial code separately
                 utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
             });
-        });
-
-        // Google Sign-in
+        });    
+            
         function handleCredentialResponse(response) {
-            console.log("Encoded JWT ID token: " + response.credential);
-            alert("Google Registration Successful");
+            console.log("Google response:", response);
+            
+            // Send the credential to your backend
+            fetch("{% url 'google_authenticate' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                },
+                body: JSON.stringify({credential: response.credential})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = "{% url 'Homepage' %}";
+                } else {
+                    console.error("Error:", data.error);
+                    alert("Sign-in failed: " + data.error);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
         }
+
+        // Function to get CSRF token
+        function getCSRFToken() {
+            let cookieValue = null;
+            let cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.startsWith("csrftoken=")) {
+                    cookieValue = cookie.substring("csrftoken=".length, cookie.length);
+                    break;
+                }
+            }
+            return cookieValue;
+        }
+
     </script>
 </body>
 </html>

@@ -10,12 +10,12 @@ urlpatterns = [
     path('contact/', views.contactus, name='contactus'),
     path('login/', views.Login, name='login'),
     path('register/', views.Registration, name='register'),
+    path('google-authenticate/', views.google_authenticate, name='google_authenticate'),
     path('logout/', views.Logout, name='logout'),
     path('searchresult/', views.Searchresult, name='searchresults'),
     path('profile/', views.profile, name='profile'),
     path('article/<int:article_id>/comment/', views.add_comment, name='add_comment'),
-    path('weather/', views.weatherpage, name='weather'),
-  
+   
 ]
 
 if settings.DEBUG:

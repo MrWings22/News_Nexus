@@ -144,8 +144,8 @@ def google_authenticate(request):
 
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
 def Indexpage(request):
-    return render(request, "index.html")
 
+    return render(request, "index.html")
 
 def Homepage(request):
     category_name = request.GET.get('category', None)
@@ -157,6 +157,7 @@ def Homepage(request):
     else:
         latestnews = Article.objects.order_by('-created_at').first()
         topfivenews = Article.objects.order_by('-created_at').exclude(pk=latestnews.pk)[:5]
+    
 
     if latestnews:
         latestnews.views += 1

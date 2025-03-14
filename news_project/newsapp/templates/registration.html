@@ -12,7 +12,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="{% static 'css/loginreg.css' %}">  
+<<<<<<< HEAD
    
+=======
+
+    <style>
+        /* Ensure phone input field is visible and properly styled */
+        .iti {
+            width: 100%;
+        }
+        .iti__selected-flag {
+            padding: 10px;
+        }
+    </style>
+>>>>>>> 61501395a45d0896ed30937ad013d8b1af95e297
 </head>
 <body>
     <div class="goback">
@@ -41,7 +54,7 @@
             </div>
             <!-- Phone Number -->
             <div class="form-group">
-                <input type="tel" id="phone" name="phone" placeholder="PhoneNumber">
+                <input type="tel" id="phone" name="phone" placeholder="Enter phone number">
             </div>
             <!-- Password -->
             <div class="form-group">
@@ -75,15 +88,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+<<<<<<< HEAD
             const phoneInputField = document.getElementById("phone");
            
+=======
+            const phoneInput = document.querySelector("#phone");
+
+>>>>>>> 61501395a45d0896ed30937ad013d8b1af95e297
             // Initialize intl-tel-input with India as the default country
-            const iti = window.intlTelInput(phoneInputField, {
+            const iti = window.intlTelInput(phoneInput, {
                 initialCountry: "in", // Set India as default
+                preferredCountries: ["in", "us", "gb"], // Optional: prioritize some countries
+                separateDialCode: true, // Display the dial code separately
                 utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
             });
+<<<<<<< HEAD
         });    
             
+=======
+        });
+
+        // Google Sign-in
+>>>>>>> 61501395a45d0896ed30937ad013d8b1af95e297
         function handleCredentialResponse(response) {
             fetch("{% url 'google_authenticate' %}", {
                 method: "POST",

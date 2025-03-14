@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsNexus Weather</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2980b9, #6dd5fa, #ffffff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            color: #fff;
+        }
+
+        .weather-container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .current-weather {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+            margin-bottom: 15px;
+        }
+        img {
+            width: 100px;
+        }
+        .goback i {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 50px;
+    color: rgb(118, 150, 255);
+    background: transparent;
+    transition: color 0.3s ease;
+    
+    
+}
+
+.goback i:hover {
+    color: rgb(28, 80, 251);
+}
+    </style>
+</head>
+<body>
+    <div class="goback">
+        <a href="{% url 'Homepage' %}"><i class='bx bxs-left-arrow-square'></i></a>
+    </div>
+    <div class="weather-container">
+        <h2>Live Weather</h2>
+        <p id="weather-date"></p>
+        <h3 id="location">Fetching location...</h3>
+        <img id="weather-icon" src="" alt="Weather Icon">
+        <h2 id="temperature">--°C</h2>
+        <p id="description"></p>
+        <p>Humidity: <span id="humidity">--</span>%</p>
+        <p>Wind Speed: <span id="wind-speed">--</span> m/s</p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function updateDate() {
+                const now = new Date();
+                const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+                document.getElementById("weather-date").innerText = now.toLocaleDateString("en-US", options);
+            }
+            updateDate();
+
+            function fetchWeather() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(async (position) => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        const apiKey = "47eed1a31f80d6bd24e9a10c56ab12fa"; 
+                        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+
+                        try {
+                            const response = await fetch(url);
+                            const data = await response.json();
+                            document.getElementById("temperature").innerText = `${Math.round(data.main.temp)}°C`;
+                            document.getElementById("location").innerText = data.name + ",";
+                            document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+                            document.getElementById("description").innerText = data.weather[0].description;
+                            document.getElementById("humidity").innerText = data.main.humidity;
+                            document.getElementById("wind-speed").innerText = data.wind.speed;
+                        } catch (error) {
+                            document.getElementById("temperature").innerText = "Error";
+                            document.getElementById("location").innerText = "Weather Unavailable";
+                        }
+                    });
+                }
+            }
+            fetchWeather();
+        });
+    </script>
+</body>
+</html>

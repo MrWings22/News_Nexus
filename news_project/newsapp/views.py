@@ -154,6 +154,10 @@ def loginemail(request):
 def register(request):
     return render(request, 'registration.html')
 
+def weatherpage(request):
+    return render(request, 'weather.html')
+
+
 def Searchresult(request):
     query = request.GET.get('q', '').strip()
     

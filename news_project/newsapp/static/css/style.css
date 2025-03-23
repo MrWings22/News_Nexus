@@ -275,6 +275,14 @@
 
 
 /*** Latest News Start ***/
+#topnews-images{
+    height: 120px;
+}
+.latnews{
+    height: 200px;
+}
+
+
 .latest-news .latest-news-carousel.owl-carousel{
     position: relative;
 }
@@ -315,74 +323,97 @@
 
 /*** Latest News End ***/
 
-
-/*** Whats New Start ***/
-.populer-news .whats-carousel.owl-carousel {
-    position: relative;
+/* Popular news */
+.popular_news{
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
-.populer-news .whats-carousel.owl-carousel .owl-nav .owl-prev {
-    position: absolute;
-    top: -80px;
-    right: 70px;
-    font-size: 20px;
-    padding: 2px 20px;
-    transition: 0.5s;
-    margin-right: 10px;
-    border: 1px solid var(--bs-primary);
-    color: var(--bs-dark);
-    border-radius: 20px;
-}
-
-.populer-news .whats-carousel.owl-carousel .owl-nav .owl-next {
-    position: absolute;
-    top: -80px;
-    right: 0;
-    font-size: 20px;
-    margin-left: 10px;
-    padding: 2px 20px;
-    transition: 0.5s;
-    border: 1px solid var(--bs-primary);
-    color: var(--bs-dark);
-    border-radius: 20px;
-}
-
-.populer-news .whats-carousel.owl-carousel .owl-nav .owl-prev:hover,
-.populer-news .whats-carousel.owl-carousel .owl-nav .owl-next:hover {
-    background: var(--bs-primary);
-    color: var(--bs-white);
-    border-radius: 10px;
-}
-
-.populer-news .tab-class .nav-item a.active {
-    background: var(--bs-primary) !important;
-}
-
-.lifestyle .lifestyle-item {
-    position: relative;
+.popular_news_item{
+    background: #a0cff6;
+    height: 180px;
+    width: 344px;
+    border-radius: 15px;
     overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease-in-out;
 }
 
-.lifestyle .lifestyle-item img {
-    transition: 0.5s;
+.popular_news_item:hover{
+    transform: scale(1.05);
 }
 
-.lifestyle .lifestyle-item:hover img {
-    transform: scale(1.2);
+.news-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    transition: transform 0.3s ease-in-out;
 }
 
-.lifestyle .lifestyle-item .lifestyle-content {
+
+.headline-overlay {
     position: absolute;
-    width: 100%; 
-    height: 100%; 
-    top: 0; 
-    left: 0; 
-    padding: 20px; 
-    display: flex; 
-    flex-direction: column; 
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+    height: 40%;
+    display: flex;
+    align-items: flex-end;
+    padding: 10px;
+    text-align: center;
 }
+
+
+.headline-overlay h4 {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
+   
+}
+
+.othernews{
+    width: 100%;
+    padding:20px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.othernews-items{
+    height: 150px;
+    width:49%;
+    background: #82a2c1;
+    display: flex;
+    overflow: hidden;
+    border-radius: 20px;
+}
+
+.othernews-items img{
+    width: 150px;
+    height: 150px;
+}
+
+.othnews{
+    width: 100%;
+    padding: 10px;
+    background: #4eaafa;
+}
+
+.othnews h4 {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    filter: blur(0px);
+}
+
 /*** Whats New End ***/
 
 
@@ -636,25 +667,25 @@ body.modal-open .custom-modal {
 
 .search-wrapper {
     z-index: 999;
-    position: absolute; /* Change to absolute positioning */
-    top: 18px; /* Adjust top position to align with the weather section */
-    right: -30px; /* Adjust right position to align with the weather section */
-    transform: none; /* Remove transform since we're using absolute positioning */
+    position: absolute; 
+    top: 18px; 
+    right: -30px; 
+    transform: none; 
 }
 
 .search-wrapper .input-holder {
-    height: 60px; /* Further reduced height */
-    width: 60px; /* Further reduced width */
+    height: 60px;
+    width: 60px; 
     overflow: hidden;
     background: rgb(255, 249, 249);
-    border-radius: 50px; /* Adjusted border radius */
+    border-radius: 50px;
     transition: all 0.3s ease-in-out;
     z-index: 999;
 }
 
 .search-wrapper.active .input-holder {
-    width: 350px; /* Reduced width when active */
-    border-radius: 50px; /* Adjusted border radius */
+    width: 350px; 
+    border-radius: 50px;
     background: rgb(255, 255, 255);
     transition: all .5s cubic-bezier(0.000, 0.105, 0.035, 1.570);
     z-index: 999;
@@ -662,21 +693,20 @@ body.modal-open .custom-modal {
 
 .search-wrapper .input-holder .search-input {
     width: 100%;
-    height: 35px; /* Further reduced height */
-    padding: 0px 40px 0 10px; /* Adjusted padding */
+    height: 35px; 
+    padding: 27px; 
     opacity: 0;
     position: absolute;
     top: 0px;
     left: 0px;
     background: transparent;
-    box-sizing: border-box;
     border: none;
     outline: none;
     font-family: "Open Sans", Arial, Verdana;
-    font-size: 14px; /* Reduced font size */
+    font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    color: #000; /* Changed color for better visibility */
+    color: #000; 
     transform: translate(0, 60px);
     transition: all .3s cubic-bezier(0.000, 0.105, 0.035, 1.570);
     transition-delay: 0.3s;
@@ -685,18 +715,18 @@ body.modal-open .custom-modal {
 
 .search-wrapper.active .input-holder .search-input {
     opacity: 1;
-    transform: translate(0, 0); /* Ensures it's in the correct position */
-    pointer-events: auto; /* Ensures it's clickable */
+    transform: translate(0, 0); 
+    pointer-events: auto; 
 }
 
 
 .search-wrapper .input-holder .search-icon {
-    width: 60px; /* Further reduced width */
-    height: 60px; /* Further reduced height */
+    width: 60px; 
+    height: 60px;
     border: none;
-    border-radius: 50px; /* Adjusted border radius */
+    border-radius: 50px; 
     background: #FFF;
-    padding: 0px;
+    padding: 10px;
     outline: none;
     position: relative;
     z-index: 2;
@@ -705,21 +735,28 @@ body.modal-open .custom-modal {
     transition: all 0.3s ease-in-out;
 }
 
+.search-icon i{
+    font-size: large;
+    color: #1b91ff;
+    z-index: 111;
+}
 .search-wrapper.active .input-holder .search-icon {
-    width: 30px; /* Further reduced width when active */
-    height: 30px; /* Further reduced height when active */
-    margin: 5px; /* Adjusted margin */
-    border-radius: 15px; /* Adjusted border radius */
+    width: 30px; 
+    height: 30px; 
+    margin: 5px; 
+    border-radius: 15px; 
+   
 }
 
 .search-wrapper .input-holder .search-icon span {
-    width: 16px; /* Further reduced width */
-    height: 16px; /* Further reduced height */
+    width: 16px; 
+    height: 16px; 
     display: inline-block;
     vertical-align: middle;
     position: relative;
     transform: rotate(45deg);
     transition: all .4s cubic-bezier(0.650, -0.600, 0.240, 1.650);
+  
 }
 
 .search-wrapper.active .input-holder .search-icon span {
@@ -730,67 +767,209 @@ body.modal-open .custom-modal {
 .search-wrapper .input-holder .search-icon span::after {
     position: absolute;
     content: '';
+    
 }
 
 .search-wrapper .input-holder .search-icon span::before {
-    width: 3px; /* Further reduced width */
-    height: 8px; /* Further reduced height */
-    left: 6px; /* Adjusted left position */
-    top: 12px; /* Adjusted top position */
+    width: 3px;
+    height: 8px;
+    left: 6px; 
+    top: 12px; 
     border-radius: 2px;
     background: #1b91ff;
 }
 
 .search-wrapper .input-holder .search-icon span::after {
-    width: 10px; /* Further reduced width */
-    height: 10px; /* Further reduced height */
+    width: 10px; 
+    height: 10px; 
     left: 0px;
     top: 0px;
-    border-radius: 12px; /* Adjusted border radius */
-    border: 3px solid #1b91ff; /* Reduced border width */
+    border-radius: 12px; 
+    border: 3px solid #1b91ff; 
 }
 
 .search-wrapper .close {
     position: absolute;
     z-index: 1;
-    top: 15px; /* Further adjusted top position */
-    right: 10px; /* Further adjusted right position */
-    width: 18px; /* Further reduced width */
-    height: 18px; /* Further reduced height */
+    top:24px;
+    right:20px;
+    width:25px;
+    height:25px;
+    cursor: pointer;
+    transform: rotate(-180deg);
+    transition: all .3s cubic-bezier(0.285, -0.450, 0.935, 0.110);
+    transition-delay: 0.2s;
+    visibility: hidden;
+}
+.search-wrapper.active .close {
+    right:-50px;
+    transform: rotate(45deg);
+    transition: all .6s cubic-bezier(0.000, 0.105, 0.035, 1.570);
+    transition-delay: 0.5s;
+
+}
+.search-wrapper .close::before, .search-wrapper .close::after {
+    position:absolute;
+    content:'';
+    background: #1b91ff;
+    border-radius: 2px;
+    visibility: visible;
+}
+.search-wrapper .close::before {
+    width: 5px;
+    height: 25px;
+    left: 10px;
+    top: 0px;
+
+    z-index: 0;
+}
+.search-wrapper .close::after {
+    width: 25px;
+    height: 5px;
+    left: 0px;
+    top: 10px;
+  
+} 
+
+/* .search-wrapper {
+    position: absolute;
+    transform: none;
+    z-index: 999;
+    top: 18px; 
+    right: -30px; 
+
+}
+.search-wrapper.active {}
+
+.search-wrapper .input-holder {    
+    height: 70px;
+    width:70px;
+    overflow: hidden;
+    background: rgb(255, 255, 255);
+    border-radius: 50px;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+}
+.search-wrapper.active .input-holder {
+    width:450px;
+    border-radius: 50px;
+    background: rgb(255, 255, 255);
+    transition: all .5s cubic-bezier(0.000, 0.105, 0.035, 1.570);
+}
+.search-wrapper .input-holder .search-input {
+    width:100%;
+    height: 50px;
+    padding:0px 70px 0 20px;
+    opacity: 0;
+    position: absolute;
+    top:0px;
+    left:0px;
+    background: transparent;
+    box-sizing: border-box;
+    border:none;
+    outline:none;
+    font-family:"Open Sans", Arial, Verdana;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20px;
+    color:#FFF;
+    transform: translate(0, 60px);
+    transition: all .3s cubic-bezier(0.000, 0.105, 0.035, 1.570);
+    transition-delay: 0.3s;
+}
+.search-wrapper.active .input-holder .search-input {
+    opacity: 1;
+    transform: translate(0, 10px);
+}
+.search-wrapper .input-holder .search-icon {
+    width:70px;
+    height:70px;
+    border:none;
+    border-radius:6px;
+    background: #FFF;
+    padding:0px;
+    outline:none;
+    position: relative;
+    z-index: 2;
+    float:right;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+.search-wrapper.active .input-holder .search-icon {
+    width: 50px;
+    height:50px;
+    margin: 10px;
+    border-radius: 30px;
+}
+.search-wrapper .input-holder .search-icon span {
+    width:22px;
+    height:22px;
+    display: inline-block;
+    vertical-align: middle;
+    position:relative;
+    transform: rotate(45deg);
+    transition: all .4s cubic-bezier(0.650, -0.600, 0.240, 1.650);
+}
+.search-wrapper.active .input-holder .search-icon span {
+    transform: rotate(-45deg);
+}
+.search-wrapper .input-holder .search-icon span::before, .search-wrapper .input-holder .search-icon span::after {
+    position: absolute; 
+    content:'';
+}
+.search-wrapper .input-holder .search-icon span::before {
+    width: 4px;
+    height: 11px;
+    left: 9px;
+    top: 18px;
+    border-radius: 2px;
+    background: #1b91ff;
+}
+.search-wrapper .input-holder .search-icon span::after {
+    width: 14px;
+    height: 14px;
+    left: 0px;
+    top: 0px;
+    border-radius: 16px;
+    border: 4px solid #1b91ff;
+}
+.search-wrapper .close {
+    position: absolute;
+    z-index: 1;
+    top:24px;
+    right:20px;
+    width:25px;
+    height:25px;
     cursor: pointer;
     transform: rotate(-180deg);
     transition: all .3s cubic-bezier(0.285, -0.450, 0.935, 0.110);
     transition-delay: 0.2s;
 }
-
 .search-wrapper.active .close {
-    right: -30px; /* Further adjusted right position */
+    right:-50px;
     transform: rotate(45deg);
     transition: all .6s cubic-bezier(0.000, 0.105, 0.035, 1.570);
     transition-delay: 0.5s;
 }
-
-.search-wrapper .close::before,
-.search-wrapper .close::after {
-    position: absolute;
-    content: '';
+.search-wrapper .close::before, .search-wrapper .close::after {
+    position:absolute;
+    content:'';
     background: #1b91ff;
     border-radius: 2px;
 }
-
 .search-wrapper .close::before {
-    width: 3px; /* Further reduced width */
-    height: 25px; /* Further reduced height */
-    left: 10px; /* Adjusted left position */
+    width: 5px;
+    height: 25px;
+    left: 10px;
     top: 0px;
 }
-
 .search-wrapper .close::after {
-    width: 25px; /* Further reduced width */
-    height: 3px; /* Further reduced height */
-    left: 2px;
-    top: 13px; /* Adjusted top position */
-}
+    width: 25px;
+    height: 5px;
+    left: 0px;
+    top: 10px;
+}  */
+
 
 /* light mode and dark mode */
 .detailpage-comment-fields {

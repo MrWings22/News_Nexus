@@ -137,7 +137,7 @@
 
 
 <!-- Main Post Section Start -->
-<div class="container-fluid py-5">
+<div class="container-fluid ">
     <div class="container py-5">
         <div class="row g-4">
             <!-- <div class="col-lg-7 col-xl-8 mt-0">
@@ -256,101 +256,43 @@
             <div class="col-lg-5 col-xl-4">
                <div class="bg-light rounded p-4 pt-0">
                     <div class="row g-4">
+                   
+                    {% with shoppingnews.0 as topnews %}
+                        {% with img=topnews.articleimages_set.first %}
                         <div class="col-12">
                             <div class="rounded overflow-hidden">
-                                <img src="{% static 'img/news-3.jpg' %}" class="img-fluid rounded img-zoomin w-100" alt="">
+                                <img src="{{ img.image.url }}" class="img-fluid rounded img-zoomin w-100" alt="">
                             </div>
                         </div>
+                        {% endwith %}
                         <div class="col-12">
                             <div class="d-flex flex-column">
-                                <a href="#" class="h4 mb-2">Get the best speak market, news.</a>
-                                <p class="fs-5 mb-0"><i class="fa fa-clock"> 06 minute read</i> </p>
-                                <p class="fs-5 mb-0"><i class="fa fa-eye"> 3.5k Views</i></p>
+                                <a href="#" class="h4 mb-2">{{ topnews.head_line }}</a>
+                                <p class="fs-5 mb-0"><i class="fa fa-eye">{{ topnews.views }}views</i></p>
                             </div>
                         </div>
+                    {%endwith%}
+                    {% for shopnews in shoppingnews|slice:"1:" %}
                         <div class="col-12">
                             <div class="row g-4 align-items-center">
+                                {% with img=shopnews.articleimages_set.first %}
                                 <div class="col-5">
                                     <div class="overflow-hidden rounded">
-                                        <img src="{% static 'img/news-3.jpg' %}" class="img-zoomin img-fluid rounded w-100" alt="">
-                                    </div>
+                                        <img src="{{ img.image.url }}" class="img-zoomin img-fluid rounded w-100" alt="">
+                                    </div>  
                                 </div>
+                                {% endwith %}
                                 <div class="col-7">
                                     <div class="features-content d-flex flex-column">
-                                        <a href="#" class="h6">Get the best speak market, news.</a>
-                                        <small><i class="fa fa-clock"> 06 minute read</i> </small>
-                                        <small><i class="fa fa-eye"> 3.5k Views</i></small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="row g-4 align-items-center">
-                                <div class="col-5">
-                                    <div class="overflow-hidden rounded">
-                                        <img src="{% static 'img/news-4.jpg' %}" class="img-zoomin img-fluid rounded w-100" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-7">
-                                    <div class="features-content d-flex flex-column">
-                                        <a href="#" class="h6">Get the best speak market, news.</a>
-                                        <small><i class="fa fa-clock"> 06 minute read</i> </small>
-                                        <small><i class="fa fa-eye"> 3.5k Views</i></small>
+                                        <a href="{% url 'articledetail' shopnews.article_id %}" class="h6">{{ shopnews.head_line }}</a>
+                                        <small><i class="fa fa-eye">{{ shopnews.views }}views</i></small>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12">
-                            <div class="row g-4 align-items-center">
-                                <div class="col-5">
-                                    <div class="overflow-hidden rounded">
-                                        <img src="{% static 'img/news-5.jpg' %}" class="img-zoomin img-fluid rounded w-100" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-7">
-                                    <div class="features-content d-flex flex-column">
-                                        <a href="#" class="h6">Get the best speak market, news.</a>
-                                        <small><i class="fa fa-clock"> 06 minute read</i> </small>
-                                        <small><i class="fa fa-eye"> 3.5k Views</i></small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="row g-4 align-items-center">
-                                <div class="col-5">
-                                    <div class="overflow-hidden rounded">
-                                        <img src="{% static 'img/news-6.jpg' %}" class="img-zoomin img-fluid rounded w-100" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-7">
-                                    <div class="features-content d-flex flex-column">
-                                        <a href="#" class="h6">Get the best speak market, news.</a>
-                                        <small><i class="fa fa-clock"> 06 minute read</i> </small>
-                                        <small><i class="fa fa-eye"> 3.5k Views</i></small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="row g-4 align-items-center">
-                                <div class="col-5">
-                                    <div class="overflow-hidden rounded">
-                                        <img src="{% static 'img/news-7.jpg' %}" class="img-zoomin img-fluid rounded w-100" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-7">
-                                    <div class="features-content d-flex flex-column">
-                                        <a href="#" class="h6">Get the best speak market, news.</a>
-                                        <small><i class="fa fa-clock"> 06 minute read</i> </small>
-                                        <small><i class="fa fa-eye"> 3.5k Views</i></small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>     
+                    {%endfor%} 
                     </div>
-
-               </div>
+                </div>
             </div>
         </div>
     </div>
@@ -366,24 +308,23 @@
 
 <!-- Latest News Start -->
 
-<div class="container-fluid latest-news py-5">
+<div class="container-fluid latest-news ">
     <div class="container py-5">
         <h2 class="mb-4">Latest News</h2>
         <div class="latest-news-carousel owl-carousel">
             {%for news in topfivenews%}         
             <div class="latest-news-item">
-                <div class="bg-light rounded">
+                <div class="bg-light rounded latest-news">
                     <div class="rounded-top overflow-hidden">
                         {% with img=news.articleimages_set.first %}
                         <img src="{{ img.image.url }}" id="topnews-images" class="img-zoomin img-fluid rounded-top w-100" alt="{{ news.head_line }}">
                         {% endwith %}
                     </div>
-                    <div class="d-flex flex-column p-4">
-                        <!--  -->
-                        <a href="{% url 'articledetail' news.article_id %}" class="h4">{{ news.head_line|truncatechars:80 }}</a>
+                    <div class="d-flex flex-column p-4 latnews">
+                        <a href="{% url 'articledetail' news.article_id %}" class="h4">{{ news.head_line|truncatechars:70 }}</a>
                         <div class="d-flex justify-content-between">
                             <a href="#" class="small text-body link-hover">by Willum Skeem</a>
-                            <small class="text-body d-block"><i class="fas fa-calendar-alt me-1"></i> Dec 9, 2024</small>
+                            <small class="text-body d-block"><i class="fas fa-calendar-alt me-1"></i>{{ news.created_at|date:"Y-m-d"}}</small>
                         </div>
                     </div>
                 </div>
@@ -396,7 +337,7 @@
 
 
 <!-- Most Populer News Start -->
-<div class="container-fluid populer-news py-5">
+<!-- <div class="container-fluid populer-news py-5">
     <div class="container py-5">
         <div class="tab-class mb-4">
             <div class="row g-4">
@@ -1266,8 +1207,41 @@
             </div>
         </div>
     </div>
+</div> -->
+<div class="container-fluid">
+    <div class="container py-5">
+        <h2 class="mb-4">Popular News</h2>
+        <div class="popular_news">
+            {% for popnews in popularnews %}
+            <div class="popular_news_item">
+                {% with img=popnews.articleimages_set.first %}
+                    <div class="news-image" style="background-image: url('{{ img.image.url }}');"></div>
+                {%endwith%}
+                <div class="headline-overlay">
+                    <a href="{% url 'articledetail' popnews.article_id %}"><h4 class="text-white m-0">{{ popnews.head_line }}</h4></a>
+                </div>
+            </div>
+            {%endfor%}
+        </div>
+    </div>
 </div>
- 
+
+<div class="container-fluid">
+    <div class="container py-5" style="border-top: 5px solid rgb(0, 119, 158)">
+        <div class="othernews">
+            {% for onews in othernews %}
+            <div class="othernews-items">
+                {% with img=onews.articleimages_set.first %}
+                <img src="{{ img.image.url }}" alt="">
+                <div class="othnews" >
+                {%endwith%}
+                    <a href="{% url 'articledetail' onews.article_id %}"><h4 class="text-white m-0" style="filter: blur(0px);">{{ onews.head_line|truncatechars:100 }}</h4></a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}
 <!-- Most Populer News End -->
         

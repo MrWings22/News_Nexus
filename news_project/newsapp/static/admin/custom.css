@@ -1,0 +1,65 @@
+/* Background Image */
+body {
+    background-image: url('/static/admin/backgroundlandscape.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Make content slightly opaque for readability */
+#content {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Logo and Branding */
+#custom-branding {
+    display: flex;
+    align-items: center;
+}
+
+#custom-branding #site-name {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+/* Header Background */
+#header {
+    background-color: rgba(0, 0, 0, 0.7);
+    border-bottom: none;
+}
+
+/* Change central content area */
+#content {
+    background-color: #f0f4f8;  /* Soft blue/gray - change to your desired color */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Optional: style table */
+#content-main {
+    background-color: white;  /* Keep the table on white or another contrast */
+    padding: 20px;
+    border-radius: 5px;
+}
+#container, #content, #content-main {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Optional: Make the left sidebar transparent or colored */
+#nav-sidebar {
+    background-color: rgba(255, 255, 255, 0.7);  /* Semi-transparent white */
+    backdrop-filter: blur(4px); /* Soft blur effect */
+}
+
+#content h1 {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: white !important;
+}

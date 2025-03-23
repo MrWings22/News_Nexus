@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Article, ArticleImages, CustomUser, Comment, Category, CustomUser
+from .models import Article, ArticleImages, CustomUser, Comment, Category, CustomUser ,ArticleTags
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import CommentForm
@@ -166,15 +166,15 @@ def Indexpage(request):
 
 def Homepage(request):
     category_name = request.GET.get('category', None)
+    shoppings = Category.objects.filter(category_name="shopping").first()
 
     if category_name:
         category = get_object_or_404(Category, category_name=category_name)
-        latestnews = Article.objects.filter(category=category).order_by('-created_at').first()
-        topfivenews = Article.objects.filter(category=latestnews.category).order_by('-created_at').exclude(pk=latestnews.pk)[:5]
+        latestnews = Article.objects.filter(category=category).exclude(category=shoppings).order_by('-created_at').first()
+        topfivenews = Article.objects.filter(category=latestnews.category).order_by('-created_at').exclude(pk=latestnews.pk).exclude(category=shoppings)[:5]
     else:
-        latestnews = Article.objects.order_by('-created_at').first()
-        topfivenews = Article.objects.order_by('-created_at').exclude(pk=latestnews.pk)[:5]
-    
+        latestnews = Article.objects.order_by('-created_at').exclude(category=shoppings).first()
+        topfivenews = Article.objects.order_by('-created_at').exclude(pk=latestnews.pk).exclude(category=shoppings)[:5]
 
     if latestnews:
         latestnews.views += 1
@@ -190,8 +190,29 @@ def Homepage(request):
 
     form = CommentForm()
     categories = Category.objects.all()
+    displayed_article_ids = set(news.pk for news in topfivenews)
 
-    return render(request, 'home.html', {'latestnews': latestnews ,'latestnews_images': latestnews_images,'topfivenews': topfivenews,'comments': comments,'form': form,'selected_category': category_name, 'categories': categories})
+    if latestnews:
+        displayed_article_ids.add(latestnews.pk)
+
+    shoppingnews = Article.objects.filter(category=shoppings).order_by('-created_at')[:5]
+    popularnews = Article.objects.exclude(category=shoppings).exclude(pk=latestnews.pk).exclude(pk__in=displayed_article_ids).order_by('-created_at')[:6]
+
+    displayed_article_ids.update(shoppingnews.values_list('pk', flat=True))
+    displayed_article_ids.update(popularnews.values_list('pk', flat=True))
+
+    othernews = Article.objects.exclude(pk__in=displayed_article_ids).order_by('-created_at')
+
+    return render(request, 'home.html', {'latestnews': latestnews ,
+                                         'latestnews_images': latestnews_images,
+                                         'topfivenews': topfivenews,
+                                         'comments': comments,
+                                         'form': form,
+                                         'selected_category': category_name, 
+                                         'categories': categories,
+                                         'shoppingnews': shoppingnews,
+                                         'popularnews': popularnews,
+                                         'othernews': othernews})
 
 
 

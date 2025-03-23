@@ -390,12 +390,17 @@
 .othernews-items{
     height: 150px;
     width:49%;
-    background: #82a2c1;
+    background: linear-gradient(to right, rgb(220, 238, 243), rgb(150, 181, 201));
     display: flex;
     overflow: hidden;
     border-radius: 20px;
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 5px 5px 2px rgb(111, 111, 111);
 }
 
+.othernews-items:hover{
+    transform: scale(1.05);
+}
 .othernews-items img{
     width: 150px;
     height: 150px;
@@ -404,15 +409,8 @@
 .othnews{
     width: 100%;
     padding: 10px;
-    background: #4eaafa;
 }
 
-.othnews h4 {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    filter: blur(0px);
-}
 
 /*** Whats New End ***/
 

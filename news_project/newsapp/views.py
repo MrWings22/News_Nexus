@@ -195,7 +195,7 @@ def Homepage(request):
     if latestnews:
         displayed_article_ids.add(latestnews.pk)
 
-    shoppingnews = Article.objects.filter(category=shoppings).order_by('-created_at')[:4]
+    shoppingnews = Article.objects.filter(category=shoppings).order_by('-created_at')[:5]
     popularnews = Article.objects.exclude(category=shoppings).exclude(pk=latestnews.pk).exclude(pk__in=displayed_article_ids).order_by('-created_at')[:6]
 
     displayed_article_ids.update(shoppingnews.values_list('pk', flat=True))

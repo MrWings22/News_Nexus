@@ -1228,14 +1228,14 @@
 
 <div class="container-fluid">
     <div class="container py-5" style="border-top: 5px solid rgb(0, 119, 158)">
-        <div class="othernews">
+        <div class="othernews" >
             {% for onews in othernews %}
             <div class="othernews-items">
                 {% with img=onews.articleimages_set.first %}
                 <img src="{{ img.image.url }}" alt="">
-                <div class="othnews" >
+                <div class="othnews">
                 {%endwith%}
-                    <a href="{% url 'articledetail' onews.article_id %}"><h4 class="text-white m-0" style="filter: blur(0px);">{{ onews.head_line|truncatechars:100 }}</h4></a>
+                    <a href="{% url 'articledetail' onews.article_id %}"><h4 class="text-white m-0">{{ onews.head_line|truncatechars:100 }}</h4></a>
                 </div>
             </div>
             {% endfor %}

@@ -161,20 +161,14 @@ def google_authenticate(request):
     return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
 
 def Indexpage(request):
+    
     return render(request, "index.html")
 
 
 def Homepage(request):
-    category_name = request.GET.get('category', None)
     shoppings = Category.objects.filter(category_name="shopping").first()
-
-    if category_name:
-        category = get_object_or_404(Category, category_name=category_name)
-        latestnews = Article.objects.filter(category=category).exclude(category=shoppings).order_by('-created_at').first()
-        topfivenews = Article.objects.filter(category=latestnews.category).order_by('-created_at').exclude(pk=latestnews.pk).exclude(category=shoppings)[:5]
-    else:
-        latestnews = Article.objects.order_by('-created_at').exclude(category=shoppings).first()
-        topfivenews = Article.objects.order_by('-created_at').exclude(pk=latestnews.pk).exclude(category=shoppings)[:5]
+    latestnews = Article.objects.order_by('-created_at').exclude(category=shoppings).first()
+    topfivenews = Article.objects.order_by('-created_at').exclude(pk=latestnews.pk).exclude(category=shoppings)[:5]
 
     if latestnews:
         latestnews.views += 1
@@ -208,7 +202,6 @@ def Homepage(request):
                                          'topfivenews': topfivenews,
                                          'comments': comments,
                                          'form': form,
-                                         'selected_category': category_name, 
                                          'categories': categories,
                                          'shoppingnews': shoppingnews,
                                          'popularnews': popularnews,
@@ -230,10 +223,13 @@ def articledetail(request, article_id):
         news.article_id: ArticleImages.objects.filter(article=news).first()
         for news in related_news
     }
-    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images, 'related_news':related_news, 'related_news_images': related_news_images, 'comments':comments})
+
+    categories = Category.objects.all()
+    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images, 'related_news':related_news, 'related_news_images': related_news_images, 'comments':comments, 'categories': categories})
 
 def contactus(request):
-    return render(request, 'contact.html')
+    categories = Category.objects.all()
+    return render(request, 'contact.html', {'categories': categories})
 
 def loginemail(request):
     return render(request, 'login.html')
@@ -268,12 +264,15 @@ def add_comment(request, article_id):
             comment.article = article
             comment.user = request.user
             comment.save()
-            print("Comment saved:", comment.comments)
+            # print("Comment saved:", comment.comments)
+            comment_count = Comment.objects.filter(article=article).count()
+
             return JsonResponse({
                 'success': True,
                 'username': request.user.username,
                 'comment': comment.comments,
-                'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S')
+                'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'comment_count': comment_count
             })
         else:
             print("Form errors:", form.errors)
@@ -282,9 +281,10 @@ def add_comment(request, article_id):
 
 
 def profile(request):
+    
     # Create a context variable to track if we should show the edit form (back side)
     context = {'show_edit_form': False}
-    
+
     if request.method == 'POST':
         username = request.POST.get('username')
         email = request.POST.get('email')
@@ -322,7 +322,7 @@ def profile(request):
         # If there are errors, show the edit form again
         if has_errors:
             context['show_edit_form'] = True
-            return render(request, 'profile.html', context)
+            return render(request, 'profile.html',context)
         
         # No errors, proceed with update
         user.username = username
@@ -351,5 +351,16 @@ def profile(request):
                 login(request, user)
         
         return redirect('profile')
-
+    
     return render(request, 'profile.html', context)
+
+def categorypage(request):
+    category_name = request.GET.get('category', None)
+    categories = Category.objects.all()
+    if category_name:
+        category = get_object_or_404(Category, category_name=category_name)
+        articles = Article.objects.filter(category=category).order_by('-created_at')
+    else:
+        articles = Article.objects.all().order_by('-created_at')
+
+    return render(request, 'categorysort.html', {'articles': articles, 'category_name': category_name, 'categories': categories})

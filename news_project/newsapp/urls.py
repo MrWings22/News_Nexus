@@ -15,7 +15,7 @@ urlpatterns = [
     path('searchresult/', views.Searchresult, name='searchresults'),
     path('profile/', views.profile, name='profile'),
     path('article/<int:article_id>/comment/', views.add_comment, name='add_comment'),
-   
+    path('category/', views.categorypage, name='categorypage'),
 ]
 
 if settings.DEBUG:

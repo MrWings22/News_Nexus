@@ -84,7 +84,7 @@
                                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" id="selected-category">Categories</a>
                                     <div class="dropdown-menu m-0 bg-secondary rounded-0">
                                         {% for category in categories %}
-                                            <a href="{% url 'Homepage' %}?category={{ category.category_name }}" class="dropdown-item category-item">{{ category.category_name }}</a>
+                                            <a href="{% url 'categorypage' %}?category={{ category.category_name }}" class="dropdown-item category-item">{{ category.category_name }}</a>
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -231,7 +231,7 @@
                         <div class="d-flex flex-column text-start footer-item-3">
                             <h4 class="mb-4 text-white">Categories</h4>
                             {% for category in categories %}
-                                <a class="btn-link text-white" href="{% url 'Homepage' %}?category={{ category.category_name }}"><i class="fas fa-angle-right text-white me-2"></i>{{ category.category_name }}</a>
+                                <a class="btn-link text-white" href="{% url 'categorypage' %}?category={{ category.category_name }}"><i class="fas fa-angle-right text-white me-2"></i>{{ category.category_name }}</a>
                             {% endfor %}
                         </div>
                     </div>

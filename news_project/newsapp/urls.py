@@ -15,8 +15,8 @@ urlpatterns = [
     path('searchresult/', views.Searchresult, name='searchresults'),
     path('profile/', views.profile, name='profile'),
     path('article/<int:article_id>/comment/', views.add_comment, name='add_comment'),
-    path('weather/', views.weatherpage, name='weather'), 
     path('category/', views.categorypage, name='categorypage'),
+    path('weather/', views.weatherpage, name='weather'),
 
 ]
 

@@ -87,3 +87,7 @@ local_settings.py
 
 .env
 db.sqlite3
+
+# Ignore admin folder inside static
+/news_project/newsapp/static/admin/
+/news_project/newsapp/templates/admin/

@@ -45,97 +45,7 @@
     <body>
 <!-- Features Start -->
 {%block contents%}
-<!-- <div class="container-fluid features mb-5">
-    <div class="container py-5">
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="row g-4 align-items-center features-item">
-                    <div class="col-4">
-                        <div class="rounded-circle position-relative">
-                            <div class="overflow-hidden rounded-circle">
-                                <img src="{% static 'img/features-sports-1.jpg' %}" class="img-zoomin img-fluid rounded-circle w-100" alt="">
-                            </div>
-                            <span class="rounded-circle border border-2 border-white bg-primary btn-sm-square text-white position-absolute" style="top: 10%; right: -10px;">3</span>
-                        </div>
-                    </div>
-                    <div class="col-8">
-                        <div class="features-content d-flex flex-column">
-                            <p class="text-uppercase mb-2">Sports</p>
-                            <a href="#" class="h6">
-                                Get the best speak market, news.
-                            </a>
-                            <small class="text-body d-block"><i class="fas fa-calendar-alt me-1"></i> December 9, 2024</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="row g-4 align-items-center features-item">
-                    <div class="col-4">
-                        <div class="rounded-circle position-relative">
-                            <div class="overflow-hidden rounded-circle">
-                                <img src="{% static 'img/features-technology.jpg' %}" class="img-zoomin img-fluid rounded-circle w-100" alt="">
-                            </div>
-                            <span class="rounded-circle border border-2 border-white bg-primary btn-sm-square text-white position-absolute" style="top: 10%; right: -10px;">3</span>
-                        </div>
-                    </div>
-                    <div class="col-8">
-                        <div class="features-content d-flex flex-column">
-                            <p class="text-uppercase mb-2">Technology</p>
-                            <a href="#" class="h6">
-                                Get the best speak market, news.
-                            </a>
-                            <small class="text-body d-block"><i class="fas fa-calendar-alt me-1"></i> December 9, 2024</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="row g-4 align-items-center features-item">
-                    <div class="col-4">
-                        <div class="rounded-circle position-relative">
-                            <div class="overflow-hidden rounded-circle">
-                                <img src="{% static 'img/features-fashion.jpg' %}" class="img-zoomin img-fluid rounded-circle w-100" alt="">
-                            </div>
-                            <span class="rounded-circle border border-2 border-white bg-primary btn-sm-square text-white position-absolute" style="top: 10%; right: -10px;">3</span>
-                        </div>
-                    </div>
-                    <div class="col-8">
-                        <div class="features-content d-flex flex-column">
-                            <p class="text-uppercase mb-2">Fashion</p>
-                            <a href="#" class="h6">
-                                Get the best speak market, news.
-                            </a>
-                            <small class="text-body d-block"><i class="fas fa-calendar-alt me-1"></i> December 9, 2024</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="row g-4 align-items-center features-item">
-                    <div class="col-4">
-                        <div class="rounded-circle position-relative">
-                            <div class="overflow-hidden rounded-circle">
-                                <img src="{% static 'img/features-life-style.jpg' %}" class="img-zoomin img-fluid rounded-circle w-100" alt="">
-                            </div>
-                            <span class="rounded-circle border border-2 border-white bg-primary btn-sm-square text-white position-absolute" style="top: 10%; right: -10px;">3</span>
-                        </div>
-                    </div>
-                    <div class="col-8">
-                        <div class="features-content d-flex flex-column">
-                            <p class="text-uppercase mb-2">Life Style</p>
-                            <a href="#" class="h6">
-                                Get the best speak market, news.
-                            </a>
-                            <small class="text-body d-block"><i class="fas fa-calendar-alt me-1"></i> December 9, 2024</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>  -->
-<!-- Features End -->
+
 
 
 <!-- Main Post Section Start -->
@@ -151,9 +61,6 @@
                         <a href="#" class="text-white me-3 link-hover"><i class="fa fa-clock"></i> 06 minute read</a>
                         <a href="#" class="text-white me-3 link-hover"><i class="fa fa-eye"></i> {{latestnews.views}} Views</a>
                         <button style="background: transparent; border: none;"type="button" class=" text-white me-3 link-hover" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa fa-comment-dots"></i> 05 Comment</button>
-                        <a href="#" class="text-dark link-hover" onclick="shareWebsite(); return false;">
-                            <i class="fa fa-arrow-up"></i>Share
-                        </a>
 
                         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog custom-modal">
@@ -275,7 +182,7 @@
                         {% endwith %}
                         <div class="col-12">
                             <div class="d-flex flex-column">
-                                <a href="#" class="h4 mb-2">{{ topnews.head_line }}</a>
+                                <a href="{% url 'articledetail' topnews.article_id %}" class="h4 mb-2">{{ topnews.head_line }}</a>
                                 <p class="fs-5 mb-0"><i class="fa fa-eye">{{ topnews.views }}views</i></p>
                             </div>
                         </div>
@@ -1291,9 +1198,46 @@
 
   <!-- Template Javascript -->
   <script src="{% static 'js/main.js' %}"></script>
-
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
- 
-    </script>
+  $(document).ready(function() {
+      $("#comment-form").submit(function(e) {
+          e.preventDefault();  // Prevent form submission
+  
+          var formData = $(this).serialize();
+          var articleId = $(this).data("article-id");  // Get article ID from data attribute
+  
+          $.ajax({
+              url: `/add_comment/${articleId}/`,
+              type: "POST",
+              data: formData,
+              headers: {
+                  "X-CSRFToken": "{{ csrf_token }}"  // Ensure CSRF token is included
+              },
+              success: function(response) {
+                  if (response.success) {
+                      // Append the new comment to the comment list
+                      $("#comment-list").prepend(`
+                          <div class="comment">
+                              <strong>${response.username}</strong>: ${response.comment}
+                              <br><small>${response.created_at}</small>
+                          </div>
+                      `);
+  
+                      // Update comment count dynamically
+                      $("#comment-count").text(response.comment_count);
+  
+                      // Clear the form after submission
+                      $("#comment-form")[0].reset();
+                  }
+              },
+              error: function(xhr) {
+                  console.error("Error:", xhr.responseText);
+              }
+          });
+      });
+  });
+  </script>
+  
 </body>
 </html>

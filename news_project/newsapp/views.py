@@ -13,6 +13,9 @@ from django.conf import settings
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 import json
+from django.core.mail import send_mail, EmailMessage
+from .forms import ContactForm  # if you're using a custom form
+
 
 def Login(request):
     if request.method == "POST":
@@ -366,3 +369,46 @@ def categorypage(request):
         articles = Article.objects.all().order_by('-created_at')
 
     return render(request, 'categorysort.html', {'articles': articles, 'category_name': category_name, 'categories': categories})
+
+def contact_view(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            sender_email = form.cleaned_data['email']  # optional
+            phone = form.cleaned_data.get('phone', 'No phone number provided')
+
+            # Format the email content
+            full_message = f"Name: {name}\nEmail: {sender_email}\nPhone: {phone}\n\nMessage:\n{message}"
+
+
+            # Use EmailMessage to set the Reply-To header
+            email = EmailMessage(
+                subject=subject,
+                body=full_message,
+                from_email=f"NewsNexus {settings.EMAIL_HOST_USER}",
+                to=['itzmealbinthomas@gmail.com'],  # Receiver
+                headers={'Reply-To': sender_email}  # Allows replying directly to the sender
+            )
+
+            email.send(fail_silently=False)
+            return render(request, 'contact_success.html')
+
+    else:
+        form = ContactForm()
+
+    return render(request, 'contact.html', {'form': form})
+
+
+from django.contrib.auth.views import PasswordResetView
+
+class CustomPasswordResetView(PasswordResetView):
+    email_subject_template_name = "registration/password_reset_subject.txt"
+    def get_email_context(self, context):
+        context = super().get_email_context(context)
+        context['domain'] = settings.DEFAULT_DOMAIN  # Override the domain here
+        return context
+    
+    

@@ -130,10 +130,24 @@ LOGIN_URL = '/login/'
 
 LOGIN_REDIRECT_URL = "http://localhost:8000/google-authenticate"
 
-GOOGLE_CLIENT_ID = "401461607164-iteo9mansh0couh6mfleifi6u3fn5adh.apps.googleusercontent.com"
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
     'https://accounts.google.com'
+]
+
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'albinthomas6210@gmail.com'  # Your Gmail
+EMAIL_HOST_PASSWORD = 'yfki tbjp pjjj nlrj'  # App Password (not Gmail password!)
+
+DEFAULT_FROM_EMAIL = "NewsNexus <albinthomas6210@gmail.com>"
+DEFAULT_DOMAIN = "newsnexus.com"
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
 ]

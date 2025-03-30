@@ -41,6 +41,38 @@
         </div>
         <!-- Spinner End -->
 
+<!-- Hidden Translate Widget -->
+<div id="google_translate_element" style="display:none;"></div>
+
+<style>
+  .goog-te-banner-frame, .goog-te-balloon-frame, .goog-te-menu-frame,
+  #goog-gt-tt, .goog-te-combo, .skiptranslate, .VIpgJd-ZVi9od-ORHb-OEVmcd {
+    display: none !important;
+  }
+  body { top: 0px !important; }
+</style>
+
+<script>
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,ml,ta,hi'}, 'google_translate_element');
+  }
+
+  function translatePage(lang) {
+  const i = setInterval(() => {
+    const s = document.querySelector('.goog-te-combo');
+    if (s) {
+      if (lang === 'en') {
+        document.cookie = "googtrans=/en/en; path=/;";
+        location.reload(); // reloads page to original language
+      } else {
+        s.value = lang;
+        s.dispatchEvent(new Event('change'));
+      }
+      clearInterval(i);
+    }
+  }, 100);
+}
+</script>
 
         <!-- Navbar start -->
         <div class="container-fluid sticky-top px-0">
@@ -67,6 +99,12 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="top-link language-buttons"  style="width: 110px;">
+                            <button onclick="translatePage('en')">English</button>
+                            <button onclick="translatePage('ml')">മലയാളം</button>
+                            <button onclick="translatePage('ta')">தமிழ்</button>
+                            <button onclick="translatePage('hi')">हिन्दी</button>
+                          </div>                          
                     </div>
                 </div>
             </div>
@@ -329,7 +367,9 @@
         <script src="{% static 'lib/easing/easing.min.js' %}"></script>
         <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
         <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-        
+
+        <!-- google_translate_element Javascript -->
+        <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
         <!-- Template Javascript -->
         <script src="{% static 'js/main.js' %}"></script>
     </body>

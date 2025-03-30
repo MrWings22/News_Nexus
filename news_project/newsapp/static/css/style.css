@@ -1329,3 +1329,22 @@ h3:hover{
     transform: scale(1.03);
     transition: transform 0.5s ease-in-out;
 }
+
+.language-buttons {
+    display: flex;
+    align-items: flex-start;  /* Align to the left (optional) */
+    gap: 8px;                 /* Space between buttons */
+  }
+.language-buttons button {
+    all: unset;               /* Remove all default button styles */
+    color: #74bbf2;              /* Black text (you can change this) */
+    cursor: pointer;
+    font-size: 10px;
+    font-family: inherit;
+    padding: 4px 0;
+  }
+  
+  .language-buttons button:hover {
+    color: #f7f2f2;              /* Optional: hover color effect */
+  }
+  

@@ -146,7 +146,7 @@ EMAIL_HOST_USER = 'albinthomas6210@gmail.com'  # Your Gmail
 EMAIL_HOST_PASSWORD = 'yfki tbjp pjjj nlrj'  # App Password (not Gmail password!)
 
 DEFAULT_FROM_EMAIL = "NewsNexus <albinthomas6210@gmail.com>"
-DEFAULT_DOMAIN = "newsnexus.com"
+# DEFAULT_DOMAIN = "newsnexus.com"
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',

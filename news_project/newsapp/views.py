@@ -15,6 +15,7 @@ from google.auth.transport import requests as google_requests
 import json
 from django.core.mail import send_mail, EmailMessage
 from .forms import ContactForm  # if you're using a custom form
+from django.contrib.auth.views import PasswordResetView
 
 
 def Login(request):
@@ -402,8 +403,7 @@ def contact_view(request):
     return render(request, 'contact.html', {'form': form})
 
 
-from django.contrib.auth.views import PasswordResetView
-
+#password resent view setup
 class CustomPasswordResetView(PasswordResetView):
     email_subject_template_name = "registration/password_reset_subject.txt"
     def get_email_context(self, context):

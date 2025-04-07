@@ -12,7 +12,8 @@
     <!-- intl-tel-input CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="{% static 'css/loginreg.css' %}">  
+    <link rel="stylesheet" href="{% static 'css/loginreg.css' %}">
+
    
 </head>
 <body>
@@ -36,10 +37,18 @@
                 <label for="username">Username</label>
             </div>
             <!-- Email -->
-            <div class="form-group">
-                <input type="email" id="email" name="email" placeholder="" required>
+            <div class="form-group" id="email-group">
+                <input type="email" id="email" name="email" placeholder="" required oninput="showVerifyBtn()">
                 <label for="email">Email</label>
+                <button type="button" id="verify-btn" class="verify-btn" style="display: none;" onclick="sendOTP()">Send OTP</button>
             </div>
+            
+            <div class="form-group" id="otp-section" style="display: none;">
+                <input type="text" id="otp" name="otp" placeholder="Enter OTP">
+                <button type="button" class="confirm-otp-btn" onclick="verifyOTP()">Confirm OTP</button>
+                <p id="otp-message" style="color: red;"></p>
+            </div>
+            
             <!-- Phone Number -->
             <div class="form-group">
                 <input type="tel" id="phone" name="phone" placeholder="Enter phone number">
@@ -126,7 +135,76 @@
             }
             return cookieValue;
         }
+        let verifiedEmail = false;
 
+function showVerifyBtn() {
+    const email = document.getElementById('email').value;
+    const verifyBtn = document.getElementById('verify-btn');
+    verifyBtn.style.display = email ? 'inline-block' : 'none';
+}
+
+function sendOTP() {
+    const email = document.getElementById('email').value;
+    fetch("{% url 'send_otp' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()
+        },
+        body: JSON.stringify({ email: email })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('otp-section').style.display = 'block';
+        } else {
+            alert('Error sending OTP: ' + data.message);
+        }
+    });
+}
+
+function verifyOTP() {
+    const email = document.getElementById('email').value;
+    const otp = document.getElementById('otp').value;
+
+    fetch("{% url 'verify_otp' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()
+        },
+        body: JSON.stringify({ email: email, otp: otp })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const msg = document.getElementById('otp-message');
+        if (data.verified) {
+            msg.style.color = 'green';
+            msg.textContent = 'Email verified ✔';
+            verifiedEmail = true;
+        } else {
+            msg.style.color = 'red';
+            msg.textContent = 'Wrong OTP ❌';
+        }
+    });
+}
+
+// ✅ Block form submission if email not verified
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    if (!verifiedEmail) {
+        e.preventDefault();
+        alert('Please verify your email before registering.');
+    }
+});
+
+function getCSRFToken() {
+    let cookieValue = null;
+    document.cookie.split(';').forEach(cookie => {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'csrftoken') cookieValue = value;
+    });
+    return cookieValue;
+}
     </script>
 </body>
 </html>

@@ -136,3 +136,24 @@ h2 {
 .goback i:hover {
     color: rgb(28, 80, 251);
 }
+
+.verify-btn, .confirm-otp-btn {
+    background-color: #1e90ff;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    margin-top: 8px;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.verify-btn:hover,
+.confirm-otp-btn:hover {
+    background-color: #0d70d1;
+}
+
+#otp-section button.confirm-otp-btn {
+    margin-left: 10px;
+}

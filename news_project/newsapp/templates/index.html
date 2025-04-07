@@ -214,12 +214,24 @@
                                 <small class="text-light" style="letter-spacing: 11px; line-height: 0;">Newspaper</small>
                             </a>
                         </div>
-                        <!-- <div class="col-lg-9">
-                            <div class="d-flex position-relative rounded-pill overflow-hidden">
-                                <input class="form-control border-0 w-100 py-3 rounded-pill" type="email" placeholder="example@gmail.com">
-                                <button type="submit" class="btn btn-primary border-0 py-3 px-5 rounded-pill text-white position-absolute" style="top: 0; right: 0;">Subscribe Now</button>
-                            </div>
-                        </div> -->
+                        <div class="col-lg-9">
+                            <!-- <div class="d-flex position-relative rounded-pill overflow-hidden" style="height: 60px;"> -->
+                                {% if user.is_authenticated %}
+                                    <!-- Normal Subscribe Button for Logged-in Users -->
+                                    <a href="{% url 'newsletter' %}" class="btn btn-primary border-0 py-3 px-5 rounded-pill text-white w-100 text-center">
+                                        Subscribe Now
+                                    </a>
+                                {% else %}
+                                    <!-- Moving Button for Guests -->
+                                    <a id="subscribe-btn" class="btn btn-primary border-0 py-3 px-5 rounded-pill text-white position-absolute" 
+                                        style="align-items: center; cursor: pointer;">
+                                        Subscribe Now
+                                    </a>
+                                    <small id="login-warning" class="text-danger d-none">⚠️ You need to log in first!</small>
+                                {% endif %}
+                            <!-- </div> -->
+                        </div>
+                        
                     </div>
                 </div>
                 <div class="row g-5">
@@ -359,6 +371,35 @@
         
         showToast(message.message, type);
       });
+    });
+
+    // Moving Button for Guests  Subscribe Button for Logged-in Users
+    document.addEventListener("DOMContentLoaded", function () {
+        const button = document.getElementById("subscribe-btn");
+
+
+        if (button) {
+            button.addEventListener("mouseover", function () {
+                const parent = button.parentElement;
+                const maxX = parent.clientWidth - button.clientWidth - 20;  // Prevent going outside
+                const maxY = parent.clientHeight - button.clientHeight - 20; // Prevent going outside
+
+                // Ensure a minimum movement so the button doesn't just jitter in place
+                const newX = Math.max(10, Math.random() * maxX);
+                const newY = Math.max(10, Math.random() * maxY);
+
+                button.style.transform = `translate(${newX}px, ${newY}px)`;
+
+                // Show warning message
+                warning.classList.remove("d-none");
+            });
+
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                alert("⚠️ You need to log in first!");
+                window.location.href = "{% url 'login' %}";  // Redirect to login page
+            });
+        }
     });
   </script>
         <!-- JavaScript Libraries -->

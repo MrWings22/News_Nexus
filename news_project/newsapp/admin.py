@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Article, Comment, Tags, ArticleTags, ArticleImages, CustomUser
+from .models import Category, Article, Comment, Tags, ArticleTags, ArticleImages, CustomUser, Subscriber
 class ArticlAdmin(admin.ModelAdmin):
     list_display = ['head_line', 'category', 'user', 'created_at', 'updated_at']
     list_filter = ['category', 'user', 'created_at', 'updated_at']
@@ -14,3 +14,11 @@ admin.site.register(Tags)
 admin.site.register(ArticleTags)
 admin.site.register(ArticleImages)
 admin.site.register(CustomUser)
+
+
+admin.site.register(Subscriber)
+class SubscriberAdmin(admin.ModelAdmin):
+    list_display = ('email',)  # Show emails in the admin panel
+    search_fields = ('email',)  # Enable search by email
+    filter_horizontal = ('categories',)  
+

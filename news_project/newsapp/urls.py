@@ -42,6 +42,13 @@ urlpatterns = [
         name="password_reset_complete",
     ),
     path("password_reset/", CustomPasswordResetView.as_view(), name="password_reset"),
+    path('tts/<int:article_id>/', views.text_to_speech, name='text_to_speech'),
+    path('subscribe/', views.subscribe, name='subscribe'),
+    path("newsletter/", views.newsletter_view, name="newsletter"),
+    path('unsubscribe/', views.unsubscribe, name='unsubscribe'),
+    path('send-otp/', views.send_otp, name='send_otp'),
+    path('verify-otp/', views.verify_otp, name='verify_otp'),
+
 ]
 
 

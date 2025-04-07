@@ -53,7 +53,7 @@
                             {% endif %} 
                         </div>
                         <div class="d-flex justify-content-between">
-                            <a href="#" class="text-dark link-hover me-3"><i class="fa fa-clock"></i> {{ latestnews.content|reading_time }} minute read</a>
+                            <a href="#" class="text-dark link-hover me-3"><i class="fa fa-clock"></i> {{ article.content|reading_time }} minute read</a>
                             <a href="#" class="text-dark link-hover me-3"><i class="fa fa-eye"></i> {{article.views}} Views</a>
                             <button style="background: transparent; border: none;" type="button" class="text-black me-3 link-hover" data-bs-toggle="modal" >
                                 <i class="fa fa-comment-dots"></i> {{ comments.count }} Comments
@@ -61,11 +61,102 @@
                             <a href="#" class="text-dark link-hover" onclick="shareWebsite(); return false;">
                                 <i class="fa fa-arrow-up"></i>Share
                             </a>
+
+                            
+                            <!-- Play/Pause Button -->
+                            <button style="background: transparent; border: none;" id="ttsButton" onclick="toggleTTS()" class="play-btn" >
+                                <i class="fa fa-volume-up"></i>Read
+                            </button>
+                            
+                            <style>
+                                /* Highlighted text while reading */
+                                .highlight {
+                                    background-color: yellow;
+                                }
+                            </style>
+                            <script>
+                            let isPlaying = false;
+                            let words = [];
+                            let currentWordIndex = 0;
+                            let utterance = null;
+
+                            function toggleTTS() {
+                                let headline = document.querySelector(".h1.display-5").innerText;
+                                let content = document.getElementById("article-content").innerText;
+                                let button = document.getElementById("ttsButton");
+
+                                if (!isPlaying) {
+                                    startTTS(headline, content, button);
+                                } else {
+                                    stopTTS(button);
+                                }
+                            }
+
+                            function startTTS(headline, content, button) {
+                                let headlineUtterance = new SpeechSynthesisUtterance(headline);
+                                let transitionUtterance = new SpeechSynthesisUtterance("Now let's read the content.");
+                                let contentUtterance = new SpeechSynthesisUtterance(content);
+                                
+                                words = content.split(" ");
+                                currentWordIndex = 0;
+                                highlightText();
+
+                                headlineUtterance.onend = () => {
+                                    speechSynthesis.speak(transitionUtterance);
+                                };
+                                
+                                transitionUtterance.onend = () => {
+                                    speechSynthesis.speak(contentUtterance);
+                                };
+
+                                contentUtterance.rate = 1.0;
+                                contentUtterance.onboundary = (event) => {
+                                    if (event.name === "word") {
+                                        highlightNextWord();
+                                    }
+                                };
+
+                                contentUtterance.onend = () => {
+                                    isPlaying = false;
+                                    button.innerHTML = '<i class="fa fa-volume-up"></i>Read';
+                                    clearHighlight();
+                                };
+                                
+                                speechSynthesis.speak(headlineUtterance);
+                                isPlaying = true;
+                                button.innerHTML = '<i class="fa fa-pause"></i>Stop';
+                            }
+
+                            function stopTTS(button) {
+                                speechSynthesis.cancel();
+                                isPlaying = false;
+                                button.innerHTML = '<i class="fa fa-volume-up"></i>Read';
+                                clearHighlight();
+                            }
+
+                            function highlightText() {
+                                let article = document.getElementById("article-content");
+                                article.innerHTML = words.map((word, index) => `<span id='word-${index}'>${word}</span>`).join(" ");
+                            }
+
+                            function highlightNextWord() {
+                                if (currentWordIndex > 0) {
+                                    document.getElementById(`word-${currentWordIndex - 1}`)?.classList.remove("highlight");
+                                }
+                                if (currentWordIndex < words.length) {
+                                    document.getElementById(`word-${currentWordIndex}`)?.classList.add("highlight");
+                                    currentWordIndex++;
+                                }
+                            }
+
+                            function clearHighlight() {
+                                document.getElementById("article-content").innerHTML = words.join(" ");
+                            }
+                            </script>
                         </div>
-                        <p class="my-4"></p>
-                        <p class="my-4">
-                            {{ article.description}}
-                        </p>
+                        <div class="my-4" id="article-content">
+                            {{ article.description }}
+                        </div>
                         
                         
                         <!-- <div class="tab-class">
@@ -132,17 +223,17 @@
                         <div class="tab-class">
                             <div class="d-flex justify-content-between border-bottom mb-4">
                                 <ul class="nav nav-pills d-inline-flex text-center">
-                                    <li class="nav-item mb-3">
+                                    <li class="nav-item mb-3"><br>
                                         <h5 class="mt-2 me-3 mb-0">Tags:</h5>
                                     </li>
                                     {% for tag in tags %}
-                                        <li class="nav-item mb-3">
+                                        <li class="nav-item mb-3"><br>
                                             <a class="d-flex py-2 bg-light rounded-pill me-2" data-bs-toggle="pill" href="#">
                                                 <span class="text-dark" style="width: 100px;">{{ tag.tag_name }}</span>
                                             </a>
                                         </li>
                                     {% empty %}
-                                        <li class="nav-item mb-3">
+                                        <li class="nav-item mb-3"><br>
                                             <span class="text-muted">No tags available for this post.</span>
                                         </li>
                                     {% endfor %}

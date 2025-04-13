@@ -175,18 +175,22 @@ updateDate();
             }
     }
 
-    //search
-    function searchToggle(obj, event) {
-        var wrapper = document.querySelector('.search-wrapper');
-        if (!wrapper.classList.contains('active')) {
-            wrapper.classList.add('active');
-            event.stopPropagation();
-        } else {
-            wrapper.classList.remove('active');
-            event.stopPropagation();
-        }
-    }
+    // //search
+    // function searchToggle(obj, event) {
+    //     var wrapper = document.querySelector('.search-wrapper');
+    //     if (!wrapper.classList.contains('active')) {
+    //         wrapper.classList.add('active');
+    //         event.stopPropagation();
+    //     } else {
+    //         wrapper.classList.remove('active');
+    //         event.stopPropagation();
+    //     }
+    // }
     
+   
+    
+    
+
     document.addEventListener('DOMContentLoaded', function() {
         const commentForm = document.getElementById('commentForm');
         const sendButton = document.getElementById('sendButton');
@@ -485,3 +489,58 @@ updateDate();
         });
     });
     
+
+//search pagination strat
+let page = 2; // Start from the second page since the first 6 are already loaded
+let loading = false;
+let hasNextPage = true;
+
+async function loadMoreArticles() {
+    if (loading || !hasNextPage) return;
+    loading = true;
+    document.getElementById('loader').style.display = 'block';
+
+    try {
+        const query = new URLSearchParams(window.location.search).get('q') || '';
+        const response = await fetch(`?q=${query}&page=${page}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch data');
+
+        const data = await response.json();
+        hasNextPage = data.has_next;
+
+        data.articles.forEach(article => {
+            const articleHtml = `
+                <div class="row-sm-12 mb-4 article scale-hover">
+                    <div class="row rounded" style="box-shadow: 5px 4px 5px 2px rgb(121, 121, 121);">
+                        <div class="col-sm-5 p-0" style="height: 200px; border-radius: 10px 0 0 10px;">
+                            ${article.image_url ? `<img src="${article.image_url}" alt="${article.head_line}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px 0 0 10px;">` : ''}
+                        </div>
+                        <div class="col-sm-7 p-3" style="height: 200px; border-radius: 0 10px 10px 0; background: linear-gradient(to top right, white, rgb(227, 243, 252));">
+                            <h4><a href="/articledetail/${article.id}/">${article.head_line}</a></h4>
+                            <p>${article.description.substring(0, 150)}...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('article-container').insertAdjacentHTML('beforeend', articleHtml);
+        });
+
+        page++;
+    } catch (error) {
+        console.error(error);
+    } finally {
+        document.getElementById('loader').style.display = 'none';
+        loading = false;
+    }
+}
+
+window.addEventListener('scroll', () => {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+        loadMoreArticles();
+    }
+});
+//search pagination end
+

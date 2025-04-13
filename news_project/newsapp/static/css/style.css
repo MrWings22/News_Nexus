@@ -278,13 +278,26 @@
 #topnews-images{
     height: 120px;
 }
-.latnews{
-    height: 200px;
+
+.latest-news-item{
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px 2px rgb(154, 154, 154);
+    overflow: hidden;
 }
 
+.latnews{
+    height: 200px;
+    background: white;
+    text-align: center;
+}
 
 .latest-news .latest-news-carousel.owl-carousel{
     position: relative;
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px 2px rgb(109, 109, 109);
+    padding: 0 4px;
 }
 
 .latest-news .latest-news-carousel.owl-carousel .owl-nav .owl-prev {
@@ -666,8 +679,8 @@ body.modal-open .custom-modal {
 .search-wrapper {
     z-index: 999;
     position: absolute; 
-    top: 18px; 
-    right: -30px; 
+    top: 20%; 
+    right: -35px; 
     transform: none; 
 }
 
@@ -1322,5 +1335,20 @@ h3:hover{
 
 .scale-hover:hover{
     transform: scale(1.03);
-    transition: transform 0.5s ease-in-out;
+    transition: transform 0.3s ease-in-out;
+}
+
+.text-hover:hover{
+    color: rgb(47, 132, 218);
+}
+
+.backdrop-blur{
+    backdrop-filter: blur(20px);
+}
+
+.columns{
+    display: flex;
+    gap: 15px;
+    flex-direction: column;
+    width: fit-content;
 }

@@ -13,6 +13,7 @@ from django.conf import settings
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 import json
+from django.core.paginator import Paginator
 
 def Login(request):
     if request.method == "POST":
@@ -167,6 +168,9 @@ def Indexpage(request):
 
 def Homepage(request):
     shoppings = Category.objects.filter(category_name="shopping").first()
+    sports = Category.objects.filter(category_name="sports").first()
+    politics = Category.objects.filter(category_name="politics").first()
+    entertainment = Category.objects.filter(category_name="entertainment").first()
     latestnews = Article.objects.order_by('-created_at').exclude(category=shoppings).first()
     topfivenews = Article.objects.order_by('-created_at').exclude(pk=latestnews.pk).exclude(category=shoppings)[:5]
 
@@ -190,10 +194,15 @@ def Homepage(request):
         displayed_article_ids.add(latestnews.pk)
 
     shoppingnews = Article.objects.filter(category=shoppings).order_by('-created_at')[:5]
-    popularnews = Article.objects.exclude(category=shoppings).exclude(pk=latestnews.pk).exclude(pk__in=displayed_article_ids).order_by('-created_at')[:6]
+    sportsnews = Article.objects.filter(category=sports).exclude(pk=latestnews.pk).exclude(pk__in=displayed_article_ids).order_by('-created_at')[:3]
+    politicsnews = Article.objects.filter(category=politics).exclude(pk=latestnews.pk).exclude(pk__in=displayed_article_ids).order_by('-created_at')[:3]
+    entertainmentnews = Article.objects.filter(category=entertainment).exclude(pk=latestnews.pk).exclude(pk__in=displayed_article_ids).order_by('-created_at')[:3]
+
 
     displayed_article_ids.update(shoppingnews.values_list('pk', flat=True))
-    displayed_article_ids.update(popularnews.values_list('pk', flat=True))
+    displayed_article_ids.update(sportsnews.values_list('pk', flat=True))
+    displayed_article_ids.update(politicsnews.values_list('pk', flat=True))
+    displayed_article_ids.update(entertainmentnews.values_list('pk', flat=True))
 
     othernews = Article.objects.exclude(pk__in=displayed_article_ids).order_by('-created_at')
 
@@ -204,7 +213,9 @@ def Homepage(request):
                                          'form': form,
                                          'categories': categories,
                                          'shoppingnews': shoppingnews,
-                                         'popularnews': popularnews,
+                                         'sportsnews': sportsnews,
+                                         'politicsnews': politicsnews,
+                                         'entertainmentnews': entertainmentnews,
                                          'othernews': othernews})
 
 
@@ -237,18 +248,37 @@ def loginemail(request):
 def register(request):
     return render(request, 'registration.html')
 
+
 def Searchresult(request):
     query = request.GET.get('q', '').strip()
-    
+    page_number = request.GET.get('page', 1)
+    categories = Category.objects.all()
+
     if query:
         articles = Article.objects.filter(
-            Q(head_line__icontains=query) |  # Search in headline
-            Q(category__category_name__icontains=query)  # Search in category name
-        ).distinct()
+            Q(head_line__icontains=query) |
+            Q(category__category_name__icontains=query)
+        ).distinct().order_by('-created_at')
     else:
-        articles = Article.objects.all()
-    
-    return render(request, 'search_results.html', {'articles': articles, 'query': query})
+        articles = Article.objects.all().order_by('-created_at')
+
+    paginator = Paginator(articles, 6)  # 6 articles per page
+    page_obj = paginator.get_page(page_number)
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':  # Check if AJAX request
+        articles_data = [
+            {
+                'id': article.article_id,
+                'head_line': article.head_line,
+                'description': article.description,
+                'image_url': article.articleimages_set.first().image.url if article.articleimages_set.exists() else None
+            }
+            for article in page_obj
+        ]
+        return JsonResponse({'articles': articles_data, 'has_next': page_obj.has_next()})
+
+    return render(request, 'search_results.html', {'articles': page_obj, 'query': query, 'categories': categories})
+
 
 
 @login_required

@@ -24,7 +24,7 @@ class Article(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    views = models.PositiveIntegerField(default=0) 
+    views = models.PositiveIntegerField(default=0,)
 
     def __str__(self):
         return self.head_line
@@ -43,7 +43,9 @@ class Tags(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
+    def __str__(self):
+        return self.tag_name
+    
 class ArticleTags(models.Model):
     articletag_id = models.AutoField(primary_key=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
@@ -51,7 +53,9 @@ class ArticleTags(models.Model):
     created_at  = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
+    def __str__(self):
+        return f"{self.article.head_line} - {self.tag.tag_name}"
+        
 class ArticleImages(models.Model):
     image_id = models.AutoField(primary_key=True)
     image_name = models.CharField(max_length=100)
@@ -64,3 +68,9 @@ class ArticleImages(models.Model):
         return self.image_name
 
 
+class Subscriber(models.Model):
+    email = models.EmailField(unique=True)
+    categories = models.ManyToManyField('Category')
+
+    def __str__(self):
+        return self.email

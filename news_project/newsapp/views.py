@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Article, ArticleImages, CustomUser, Comment, Category, CustomUser
+from .models import Article, ArticleImages, CustomUser, Comment, Category, CustomUser , ArticleTags, Tags
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import CommentForm
@@ -13,7 +13,19 @@ from django.conf import settings
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 import json
+from django.core.mail import send_mail, EmailMessage
+from .forms import ContactForm  # if you're using a custom form
+from django.contrib.auth.views import PasswordResetView
+from django.http import StreamingHttpResponse
+from django.core.mail import send_mail, BadHeaderError
+from gtts import gTTS
+import io
+from .models import Category, Subscriber
+from django.http import HttpResponse
+import random
+import time
 from django.core.paginator import Paginator
+
 
 def Login(request):
     if request.method == "POST":
@@ -162,9 +174,7 @@ def google_authenticate(request):
     return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
 
 def Indexpage(request):
-    
     return render(request, "index.html")
-
 
 def Homepage(request):
     shoppings = Category.objects.filter(category_name="shopping").first()
@@ -223,7 +233,7 @@ def Homepage(request):
 
 def articledetail(request, article_id):
     article = Article.objects.get(article_id=article_id)
-
+    tags = Tags.objects.filter(articletags__article=article)
     article.views += 1
     article.save(update_fields=['views'])
 
@@ -236,7 +246,7 @@ def articledetail(request, article_id):
     }
 
     categories = Category.objects.all()
-    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images, 'related_news':related_news, 'related_news_images': related_news_images, 'comments':comments, 'categories': categories})
+    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images, 'related_news':related_news, 'related_news_images': related_news_images, 'comments':comments, 'categories': categories, 'tags': tags})
 
 def contactus(request):
     categories = Category.objects.all()
@@ -247,6 +257,9 @@ def loginemail(request):
 
 def register(request):
     return render(request, 'registration.html')
+
+def weatherpage(request):
+    return render(request, 'weather.html')
 
 
 def Searchresult(request):
@@ -394,3 +407,163 @@ def categorypage(request):
         articles = Article.objects.all().order_by('-created_at')
 
     return render(request, 'categorysort.html', {'articles': articles, 'category_name': category_name, 'categories': categories})
+
+def contact_view(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            sender_email = form.cleaned_data['email']  # optional
+            phone = form.cleaned_data.get('phone', 'No phone number provided')
+
+            # Format the email content
+            full_message = f"Name: {name}\nEmail: {sender_email}\nPhone: {phone}\n\nMessage:\n{message}"
+
+
+            # Use EmailMessage to set the Reply-To header
+            email = EmailMessage(
+                subject=subject,
+                body=full_message,
+                from_email=f"NewsNexus {settings.EMAIL_HOST_USER}",
+                to=['itzmealbinthomas@gmail.com'],  # Receiver
+                headers={'Reply-To': sender_email}  # Allows replying directly to the sender
+            )
+
+            email.send(fail_silently=False)
+            return render(request, 'contact_success.html')
+
+    else:
+        form = ContactForm()
+
+    return render(request, 'contact.html', {'form': form})
+
+
+#password resent view setup
+class CustomPasswordResetView(PasswordResetView):
+    email_subject_template_name = "registration/password_reset_subject.txt"
+    def get_email_context(self, context):
+        context = super().get_email_context(context)
+        context['domain'] = settings.DEFAULT_DOMAIN  # Override the domain here
+        return context
+    
+def text_to_speech(request, article_id):
+    """Convert text to speech and stream the audio without saving."""
+    article = Article.objects.get(article_id=article_id)
+    
+    tts = gTTS(text=article.description, lang='en', slow=False)  # Adjust speed
+    audio_stream = io.BytesIO()
+    tts.write_to_fp(audio_stream)
+    audio_stream.seek(0)
+    
+    return StreamingHttpResponse(audio_stream, content_type="audio/mpeg")
+
+
+# Subscribe view
+def subscribe(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        category_ids = request.POST.getlist("categories")  # Fetch selected category IDs
+
+        if not category_ids:
+            messages.error(request, "Please select at least one category.")
+            return redirect("newsletter")
+
+        # Get or create subscriber
+        subscriber, created = Subscriber.objects.get_or_create(email=email)
+
+        # Get existing subscribed categories
+        existing_categories = set(subscriber.categories.all())
+        selected_categories = set(Category.objects.filter(category_id__in=category_ids))
+
+        # Determine new categories to add
+        new_categories = selected_categories - existing_categories
+        already_subscribed = selected_categories & existing_categories  # Categories already subscribed
+
+        if not new_categories:  
+            # If all selected categories are already subscribed
+            messages.info(request, f"You are already subscribed to the selected categories.")
+            return redirect("newsletter")
+
+        # Add only new categories
+        for category in new_categories:
+            subscriber.categories.add(category)
+
+        # Send confirmation email only for newly added categories
+        category_list = ", ".join(category.category_name for category in new_categories)
+        subject = "Newsletter Subscription Update"
+        message = f"Dear Subscriber,\n\nYou have successfully subscribed to the following new categories:\n\n{category_list}\n\nStay tuned for updates!"
+        from_email = "your-email@gmail.com"  # Update this
+        recipient_list = [email]
+
+        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
+        messages.success(request, f"Subscription updated! You have been subscribed to new categories: {category_list}.")
+        return redirect("newsletter")
+
+    categories = Category.objects.all()
+    return render(request, "newsletter.html", {"categories": categories})
+
+# Subscribe view
+
+def newsletter_view(request):
+    categories = Category.objects.all()
+    return render(request, "newsletter.html", {"categories": categories})
+
+
+
+
+# Unsubscribe view
+def unsubscribe(request):
+    email = request.GET.get('email')
+    if email:
+        try:
+            subscriber = Subscriber.objects.get(email=email)
+            subscriber.delete()
+            return HttpResponse("You have successfully unsubscribed.")
+        except Subscriber.DoesNotExist:
+            return HttpResponse("Email not found.")
+    return HttpResponse("Invalid request.")
+
+#otp verification setup
+otp_store = {}
+#Temporary dictionary on your running Django server to store OTPs. In production, use a database or cache.
+@csrf_exempt
+def send_otp(request):
+    data = json.loads(request.body)
+    email = data.get('email')
+    otp = str(random.randint(100000, 999999))
+    
+    # ✅ Store OTP in session
+    request.session[f'otp_{email}'] = otp
+
+    send_mail(
+        subject="Your NewsNexus OTP",
+        message=f"""
+    NewsNexus OTP Verification
+    --------------------
+    Hello,
+
+    Your OTP for registration is: {otp}
+
+    - NewsNexus Team
+    """,
+        from_email="youremail@example.com",
+        recipient_list=[email],
+        fail_silently=False
+    )
+    return JsonResponse({'success': True})
+
+# @csrf_exempt  Cross-Site Request Forgery.
+# Django uses CSRF tokens to protect users from malicious forms or scripts trying to perform actions on their behalf. use this if not in localhost.
+@csrf_exempt
+def verify_otp(request):
+    data = json.loads(request.body)
+    email = data.get('email')
+    entered_otp = data.get('otp')
+    stored_otp = request.session.get(f'otp_{email}')
+
+    if entered_otp == stored_otp:
+        return JsonResponse({'verified': True})
+    return JsonResponse({'verified': False})

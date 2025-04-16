@@ -1,3 +1,8 @@
+.navbar-brand img {
+    height: 90px;
+    width: 90;
+    border-radius: 8px;
+}
 
 /*** Spinner Start ***/
 #spinner {
@@ -528,6 +533,13 @@
     width: 100%;
     border-radius: 10px;
     box-shadow: 5px 5px 10px rgb(142, 142, 142);
+    
+}
+
+#comment-list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 .input-field {
     position: relative;
@@ -594,6 +606,7 @@
 .detailpage-comment-fields{
     height: 430px;
     padding: 25px;
+    margin-bottom: 10px;
 }
 .detailpage-commentarea{
     height: 135px;
@@ -1335,20 +1348,28 @@ h3:hover{
 
 .scale-hover:hover{
     transform: scale(1.03);
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.5s ease-in-out;
 }
 
-.text-hover:hover{
-    color: rgb(47, 132, 218);
-}
-
-.backdrop-blur{
-    backdrop-filter: blur(20px);
-}
-
-.columns{
+.language-buttons {
     display: flex;
-    gap: 15px;
-    flex-direction: column;
-    width: fit-content;
+    align-items: flex-start;  /* Align to the left (optional) */
+    gap: 8px;                 /* Space between buttons */
+  }
+.language-buttons button {
+    all: unset;               /* Remove all default button styles */
+    color: #74bbf2;              /* Black text (you can change this) */
+    cursor: pointer;
+    font-size: 10px;
+    font-family: inherit;
+    padding: 4px 0;
+  }
+  
+  .language-buttons button:hover {
+    color: #f7f2f2;              /* Optional: hover color effect */
+  }
+  
+
+  .highlight {
+    background-color: yellow;
 }

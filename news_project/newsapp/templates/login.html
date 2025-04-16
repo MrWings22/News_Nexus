@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NewsNexus - Login</title>
+    <link rel="icon" href="{% static 'img/NewsNexuslogo.png' %}">
     
     <!-- Google Sign-In API -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -55,6 +56,8 @@
             <div class="toggle-login" onclick="toggleLoginMethod()">
                 Use <span id="toggleText">Phone Number</span> instead
             </div>
+
+            <p><a href="{% url 'password_reset' %}">Forgot your password?</a></p>
 
             <button type="submit" class="btn">Login</button>
         </form>

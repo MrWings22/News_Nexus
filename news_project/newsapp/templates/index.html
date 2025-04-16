@@ -3,11 +3,13 @@
 <html lang="en">
 
     <head>
-        <meta charset="utf-8">
-        <title>Newsers - Free HTML Magazine Template</title>
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
-        <meta content="" name="keywords">
-        <meta content="" name="description">
+            <meta charset="utf-8">
+            <title>NewsNexus</title>
+            <meta content="width=device-width, initial-scale=1.0" name="viewport">
+            <meta content="" name="keywords">
+            <meta content="" name="description">
+            <link rel="icon" href="{% static 'img/NewsNexuslogo.png' %}">
+        
 
         <!-- Google Web Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,6 +41,38 @@
         </div>
         <!-- Spinner End -->
 
+<!-- Hidden Translate Widget -->
+<div id="google_translate_element" style="display:none;"></div>
+
+<style>
+  .goog-te-banner-frame, .goog-te-balloon-frame, .goog-te-menu-frame,
+  #goog-gt-tt, .goog-te-combo, .skiptranslate, .VIpgJd-ZVi9od-ORHb-OEVmcd {
+    display: none !important;
+  }
+  body { top: 0px !important; }
+</style>
+
+<script>
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,ml,ta,hi'}, 'google_translate_element');
+  }
+
+  function translatePage(lang) {
+  const i = setInterval(() => {
+    const s = document.querySelector('.goog-te-combo');
+    if (s) {
+      if (lang === 'en') {
+        document.cookie = "googtrans=/en/en; path=/;";
+        location.reload(); // reloads page to original language
+      } else {
+        s.value = lang;
+        s.dispatchEvent(new Event('change'));
+      }
+      clearInterval(i);
+    }
+  }, 100);
+}
+</script>
 
         <!-- Navbar start -->
         <div class="container-fluid sticky-top px-0">
@@ -52,28 +86,39 @@
                             <div class="pe-2 me-3 border-end border-white d-flex align-items-center">
                                 <p class="mb-0 text-white fs-6 fw-normal">Trending</p>
                             </div>
-                            <div class="overflow-hidden" style="width: 735px;">
+                            <div class="overflow-hidden" style="width: 1000px;">
                                 <div id="note" class="ps-2">
-                                    <img src="{% static 'img/features-fashion.jpg' %}" class="img-fluid rounded-circle border border-3 border-primary me-2" style="width: 30px; height: 30px;" alt="">
-                                    <a href="#"><p class="text-white mb-0 link-hover">breaking news</p></a>
+                                    <img src="{% static 'img/NewsNexuslogo.png' %}" class="img-fluid rounded-circle border border-3 border-primary me-2" style="width: 30px; height: 30px;" alt="">
+                                    {% if latestnews.article_id %}
+                                    <a href="{% url 'articledetail' latestnews.article_id %}">
+                                        <p class="text-white mb-0 link-hover">breaking news</p>
+                                    </a>
+                                {% else %}
+                                    <p class="text-white mb-0">breaking news</p>  {# fallback without link #}
+                                {% endif %}                                
                                 </div>
                             </div>
                         </div>
-                        <div class="top-link flex-lg-wrap">
-                            <i class="fas fa-calendar-alt text-white border-end border-secondary pe-2 me-2"> 
-                                <span id="" class="text-body"></span>
-                            </i>
-                        </div>
+                        <div class="top-link language-buttons"  style="width: 110px;">
+                            <button onclick="translatePage('en')">English</button>
+                            <button onclick="translatePage('ml')">മലയാളം</button>
+                            <button onclick="translatePage('ta')">தமிழ்</button>
+                            <button onclick="translatePage('hi')">हिन्दी</button>
+                          </div>                          
                     </div>
                 </div>
             </div>
             <div class="container-fluid bg-light">
                 <div class="container px-0">
                     <nav class="navbar navbar-light navbar-expand-xl">
-                        <a href="{% url 'Homepage' %}" class="navbar-brand mt-3">
-                            <p class="text-primary display-6 mb-2" style="line-height: 0;">NewsNexus</p>
-                            <small class="text-body fw-normal" style="letter-spacing: 12px;">Newspaper</small>
+                        <a href="{% url 'Homepage' %}" class="navbar-brand mt-3 d-flex align-items-center gap-2">
+                            <img src="{% static 'img/NewsNexuslogo.png' %}" alt="NewsNexus Logo" style="height: 50px;">
+                            <div>
+                                <p class="text-primary display-6 mb-1" style="line-height: 1;">NewsNexus</p>
+                                <small class="text-body fw-normal" style="letter-spacing: 6px;">Newspaper</small>
+                            </div>
                         </a>
+                        
                         <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                             <span class="fa fa-bars text-primary"></span>
                         </button>
@@ -88,7 +133,7 @@
                                         {% endfor %}
                                     </div>
                                 </div>
-                                <a href="{% url 'contactus' %}" class="nav-item nav-link">Contact Us</a>
+                                <a href="{% url 'contact' %}" class="nav-item nav-link">Contact Us</a>
                                 {% if user.is_authenticated %}
                                 <div class="nav-item dropdown">
                                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">{{ user.username }}</a>
@@ -103,6 +148,7 @@
                                
                             </div>
                             <div class="d-flex flex-nowrap border-top pt-3 pt-xl-0">
+                                <a href="{% url 'weather' %}" >
                                 <div class="d-flex">
                                     <img src="{% static 'img/weather-icon.png' %}" class="img-fluid w-100 me-2" alt="" id="weather-icon">
                                     <div class="d-flex align-items-center">
@@ -113,6 +159,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                </a>
                                 <!-- <button class="btn-search btn border border-primary btn-md-square rounded-circle bg-white my-auto" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button> -->
                             </div>
                             <div class="search-wrapper">
@@ -168,11 +215,23 @@
                             </a>
                         </div>
                         <div class="col-lg-9">
-                            <div class="d-flex position-relative rounded-pill overflow-hidden" style="position: relative; right: -600px;">
-                                <!-- <input class="form-control border-0 w-100 py-3 rounded-pill" type="email" placeholder="example@gmail.com"> -->
-                                <button type="submit" class="btn btn-primary border-0 py-3 px-5 rounded-pill text-white ">Subscribe Now</button>
-                            </div>
+                            <!-- <div class="d-flex position-relative rounded-pill overflow-hidden" style="height: 60px;"> -->
+                                {% if user.is_authenticated %}
+                                    <!-- Normal Subscribe Button for Logged-in Users -->
+                                    <a href="{% url 'newsletter' %}" class="btn btn-primary border-0 py-3 px-5 rounded-pill text-white w-100 text-center">
+                                        Subscribe Now
+                                    </a>
+                                {% else %}
+                                    <!-- Moving Button for Guests -->
+                                    <a id="subscribe-btn" class="btn btn-primary border-0 py-3 px-5 rounded-pill text-white position-absolute" 
+                                        style="align-items: center; cursor: pointer;">
+                                        Subscribe Now
+                                    </a>
+                                    <small id="login-warning" class="text-danger d-none">⚠️ You need to log in first!</small>
+                                {% endif %}
+                            <!-- </div> -->
                         </div>
+                        
                     </div>
                 </div>
                 <div class="row g-5">
@@ -313,6 +372,35 @@
         showToast(message.message, type);
       });
     });
+
+    // Moving Button for Guests  Subscribe Button for Logged-in Users
+    document.addEventListener("DOMContentLoaded", function () {
+        const button = document.getElementById("subscribe-btn");
+
+
+        if (button) {
+            button.addEventListener("mouseover", function () {
+                const parent = button.parentElement;
+                const maxX = parent.clientWidth - button.clientWidth - 20;  // Prevent going outside
+                const maxY = parent.clientHeight - button.clientHeight - 20; // Prevent going outside
+
+                // Ensure a minimum movement so the button doesn't just jitter in place
+                const newX = Math.max(10, Math.random() * maxX);
+                const newY = Math.max(10, Math.random() * maxY);
+
+                button.style.transform = `translate(${newX}px, ${newY}px)`;
+
+                // Show warning message
+                warning.classList.remove("d-none");
+            });
+
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                alert("⚠️ You need to log in first!");
+                window.location.href = "{% url 'login' %}";  // Redirect to login page
+            });
+        }
+    });
   </script>
         <!-- JavaScript Libraries -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -320,7 +408,9 @@
         <script src="{% static 'lib/easing/easing.min.js' %}"></script>
         <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
         <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-        
+
+        <!-- google_translate_element Javascript -->
+        <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
         <!-- Template Javascript -->
         <script src="{% static 'js/main.js' %}"></script>
     </body>

@@ -126,6 +126,48 @@
 
 })(jQuery);
 
+document.addEventListener("DOMContentLoaded", function () {
+    // 1. Update Date
+    function updateDate() {
+        const now = new Date();
+        const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+        document.getElementById("weather-date").innerText = now.toLocaleDateString("en-US", options);
+    }
+    updateDate();
+
+    // 2. Fetch Live Location & Weather
+    function fetchWeather() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                const apiKey = "47eed1a31f80d6bd24e9a10c56ab12fa"; 
+                const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    // Update Temperature
+                    document.getElementById("temperature").innerText = `${Math.round(data.main.temp)}°C`;
+                    
+                    // Update Location (City Name)
+                    document.getElementById("location").innerText = data.name + ",";
+
+                    // Update Weather Icon
+                    const iconCode = data.weather[0].icon;
+                    document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/${iconCode}.png`;
+
+                } catch (error) {
+                    document.getElementById("temperature").innerText = "Error";
+                    document.getElementById("location").innerText = "Weather Unavailable";
+                }
+            });
+        }
+    }
+    fetchWeather();
+});
+
   // Function to update the date dynamically
   function updateDate() {
     const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
@@ -175,22 +217,6 @@ updateDate();
             }
     }
 
-    // //search
-    // function searchToggle(obj, event) {
-    //     var wrapper = document.querySelector('.search-wrapper');
-    //     if (!wrapper.classList.contains('active')) {
-    //         wrapper.classList.add('active');
-    //         event.stopPropagation();
-    //     } else {
-    //         wrapper.classList.remove('active');
-    //         event.stopPropagation();
-    //     }
-    // }
-    
-   
-    
-    
-
     document.addEventListener('DOMContentLoaded', function() {
         const commentForm = document.getElementById('commentForm');
         const sendButton = document.getElementById('sendButton');
@@ -214,6 +240,12 @@ updateDate();
             .then(data => {
                 console.log("Data:", data);
                 if (data.success) {
+
+                    const emptyMessage = document.getElementById('no-comments-msg');
+                    if (emptyMessage) {
+                        emptyMessage.remove();
+                    }
+
                     const newComment = document.createElement('div');
                     newComment.classList.add('detailpage-usercomment');
                     newComment.innerHTML = `
@@ -225,6 +257,15 @@ updateDate();
                     `;
                     commentList.prepend(newComment);
                     commentForm.reset();
+
+                    const commentCountElem = document.getElementById('comment-count');
+                    if (commentCountElem) {
+                        let currentCount = parseInt(commentCountElem.innerText);
+                        if (!isNaN(currentCount)) {
+                            commentCountElem.innerText = currentCount + 1;
+                        }
+                    }
+
                 } else {
                     alert('Failed to submit comment: ' + (data.errors || data.error));
                 }
@@ -544,3 +585,80 @@ window.addEventListener('scroll', () => {
 });
 //search pagination end
 
+let isPlaying = false;
+let words = [];
+let currentWordIndex = 0;
+let utterance = null;
+
+function toggleTTS() {
+    let headline = document.querySelector(".h1.display-5").innerText;
+    let content = document.getElementById("article-content").innerText;
+    let button = document.getElementById("ttsButton");
+
+    if (!isPlaying) {
+        startTTS(headline, content, button);
+    } else {
+        stopTTS(button);
+    }
+}
+
+function startTTS(headline, content, button) {
+    let headlineUtterance = new SpeechSynthesisUtterance(headline);
+    let transitionUtterance = new SpeechSynthesisUtterance("Now let's read the content.");
+    let contentUtterance = new SpeechSynthesisUtterance(content);
+    
+    words = content.split(" ");
+    currentWordIndex = 0;
+    highlightText();
+
+    headlineUtterance.onend = () => {
+        speechSynthesis.speak(transitionUtterance);
+    };
+    
+    transitionUtterance.onend = () => {
+        speechSynthesis.speak(contentUtterance);
+    };
+
+    contentUtterance.rate = 1.0;
+    contentUtterance.onboundary = (event) => {
+        if (event.name === "word") {
+            highlightNextWord();
+        }
+    };
+
+    contentUtterance.onend = () => {
+        isPlaying = false;
+        button.innerHTML = '<i class="fa fa-volume-up"></i>Read';
+        clearHighlight();
+    };
+    
+    speechSynthesis.speak(headlineUtterance);
+    isPlaying = true;
+    button.innerHTML = '<i class="fa fa-pause"></i>Stop';
+}
+
+function stopTTS(button) {
+    speechSynthesis.cancel();
+    isPlaying = false;
+    button.innerHTML = '<i class="fa fa-volume-up"></i>Read';
+    clearHighlight();
+}
+
+function highlightText() {
+    let article = document.getElementById("article-content");
+    article.innerHTML = words.map((word, index) => `<span id='word-${index}'>${word}</span>`).join(" ");
+}
+
+function highlightNextWord() {
+    if (currentWordIndex > 0) {
+        document.getElementById(`word-${currentWordIndex - 1}`)?.classList.remove("highlight");
+    }
+    if (currentWordIndex < words.length) {
+        document.getElementById(`word-${currentWordIndex}`)?.classList.add("highlight");
+        currentWordIndex++;
+    }
+}
+
+function clearHighlight() {
+    document.getElementById("article-content").innerHTML = words.join(" ");
+}

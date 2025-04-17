@@ -336,74 +336,7 @@
         {% endif %}
         
 <script>
-    // Function to create and display toast messages
-    function showToast(message, type = 'info', duration = 5000) {
-      const toastContainer = document.getElementById('toastContainer');
-      
-      // Create toast element
-      const toast = document.createElement('div');
-      toast.className = `toast ${type}`;
-      toast.textContent = message;
-      
-      // Add to container
-      toastContainer.appendChild(toast);
-      
-      // Trigger animation
-      setTimeout(() => {
-        toast.classList.add('show');
-      }, 10);
-      
-      // Remove after duration
-      setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => {
-          toastContainer.removeChild(toast);
-        }, 400);
-      }, duration);
-    }
     
-    // Process Django messages on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      // Check if messages exist in the page
-      const messages = JSON.parse(document.getElementById('django-messages').textContent || '[]');
-      
-      messages.forEach(function(message) {
-        let type = 'info';
-        if (message.tags.includes('success')) type = 'success';
-        if (message.tags.includes('error')) type = 'error';
-        
-        showToast(message.message, type);
-      });
-    });
-
-    // Moving Button for Guests  Subscribe Button for Logged-in Users
-    document.addEventListener("DOMContentLoaded", function () {
-        const button = document.getElementById("subscribe-btn");
-
-
-        if (button) {
-            button.addEventListener("mouseover", function () {
-                const parent = button.parentElement;
-                const maxX = parent.clientWidth - button.clientWidth - 20;  // Prevent going outside
-                const maxY = parent.clientHeight - button.clientHeight - 20; // Prevent going outside
-
-                // Ensure a minimum movement so the button doesn't just jitter in place
-                const newX = Math.max(10, Math.random() * maxX);
-                const newY = Math.max(10, Math.random() * maxY);
-
-                button.style.transform = `translate(${newX}px, ${newY}px)`;
-
-                // Show warning message
-                warning.classList.remove("d-none");
-            });
-
-            button.addEventListener("click", function (event) {
-                event.preventDefault();
-                alert("⚠️ You need to log in first!");
-                window.location.href = "{% url 'login' %}";  // Redirect to login page
-            });
-        }
-    });
   </script>
         <!-- JavaScript Libraries -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>

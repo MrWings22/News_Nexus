@@ -1,7 +1,7 @@
 import requests
 import json
 
-PERSPECTIVE_API_KEY = "AIzaSyCkWhGP4SiqLBUhujNYJuMv8NVWQVr_XiU"  # Replace with your key
+PERSPECTIVE_API_KEY = "AIzaSyDpv06_Q3VuOYpr-DW2dpNnLSVfZwFaVH4"  # Replace with your key
 
 
 def analyze_comment(comment_text):
@@ -18,6 +18,8 @@ def analyze_comment(comment_text):
 
     # Send the request to the Perspective API
     response = requests.post(url, json=data, params=params)
+    response.raise_for_status()  # Will raise error for bad responses
+
     
     # Log the entire response to debug
     print("API Response:", response.json())

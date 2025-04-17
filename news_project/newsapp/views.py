@@ -313,15 +313,10 @@ def add_comment(request, article_id):
         if score is not None:
             if score >= 0.7:
                 # If the comment is toxic, save it as an inappropriate comment
-                Comment.objects.create(
-                    article_id=article_id,
-                    user=request.user,
-                    comments="Inappropriate comment"
-                )
                 return JsonResponse({
                     'status': 'rejected', 
                     'score': score, 
-                    'message': 'Your comment seems toxic!'
+                    'message': 'Your comment seems innapropriate!'
                 })
             else:
                 form = CommentForm(request.POST)
@@ -329,6 +324,7 @@ def add_comment(request, article_id):
                     comment = form.save(commit=False)
                     comment.article = article
                     comment.user = request.user
+                    comment.toxicity_score = score
                     comment.save()
                     # print("Comment saved:", comment.comments)
                     comment_count = Comment.objects.filter(article=article).count()
@@ -595,27 +591,3 @@ def verify_otp(request):
     return JsonResponse({'verified': False})
 
 
-# def comment_view(request, article_id):
-#     comment_text = request.POST.get('comment', '')
-#     score = analyze_comment(comment_text)
-
-#     if score is not None:
-#         if score >= 0.7:
-#             # Save comment as "Inappropriate comment"
-#             Comment.objects.create(
-#                 article_id=article_id,
-#                 user=request.user,
-#                 comments="Inappropriate comment"
-#             )
-#             return JsonResponse({'status': 'rejected', 'score': score, 'message': 'Your comment seems toxic!'})
-#         else:
-#             # Save the original comment
-#             Comment.objects.create(
-#                 article_id=article_id,
-#                 user=request.user,
-#                 comments=comment_text,
-#                 toxicity_score=score
-#             )
-#             return JsonResponse({'status': 'accepted', 'score': score, 'message': 'Comment posted successfully.'})
-#     else:
-#         return JsonResponse({'status': 'error', 'message': 'Failed to analyze comment.'})

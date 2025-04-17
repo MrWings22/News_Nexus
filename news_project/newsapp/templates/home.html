@@ -84,7 +84,13 @@
                                     {% for comment in comments %}
                                         <div class="comment">
                                             <p style="color: rgb(0, 123, 231)"><strong>{{ comment.user.username }}</strong> <i style="color: rgb(112, 109, 109)">{{ comment.created_at|timesince }} ago</i></p>
-                                            <p>{{ comment.comments }}</p>
+                                            <p>
+                                                {% if comment.toxicity_score and comment.toxicity_score >= 0.7 %}
+                                                    Inappropriate comment
+                                                {% else %}
+                                                    {{ comment.comments }}
+                                                {% endif %}    
+                                            </p>
                                         </div>
                                     {% empty %}
                                         <p id="no-comments-msg" style="color: grey; text-align: center;">No comments yet. Be the first to comment!</p>

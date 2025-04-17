@@ -226,6 +226,10 @@ updateDate();
         sendButton.addEventListener('click', function() {
             console.log("Send button clicked on detail page");
             const formData = new FormData(commentForm);
+
+            formData.append('comment', formData.get('comments'));
+
+
             fetch(commentForm.action, {
                 method: 'POST',
                 body: formData,

@@ -87,14 +87,17 @@
                                 <p class="mb-0 text-white fs-6 fw-normal">Trending</p>
                             </div>
                             <div class="overflow-hidden" style="width: 1000px;">
-                                <div id="note" class="ps-2">
-                                    <img src="{% static 'img/NewsNexuslogo.png' %}" class="img-fluid rounded-circle border border-3 border-primary me-2" style="width: 30px; height: 30px;" alt="">
-                                    {% if latestnews.article_id %}
-                                    <a href="{% url 'articledetail' latestnews.article_id %}">
-                                        <p class="text-white mb-0 link-hover">breaking news</p>
+                                <div id="note" class="ps-2"><p class="text-primary mb-0 link-hover">breaking news:&nbsp;</p>
+                                {% if breakingnews %}
+                                {% with img=breakingnews.articleimages_set.first %}
+                                    <img src="{{ img.image.url }}" class="img-fluid rounded-circle border border-3 border-primary me-2" style="width: 30px; height: 30px;" alt="">
+                                {%endwith%}
+                                
+                                    <a href="{% url 'articledetail' breakingnews.article_id %}">
+                                        <p class="text-white mb-0 link-hover"> {{breakingnews.head_line}}</p>
                                     </a>
                                 {% else %}
-                                    <p class="text-white mb-0">breaking news</p>  {# fallback without link #}
+                                    <p class="text-white mb-0">no breaking news available</p> 
                                 {% endif %}                                
                                 </div>
                             </div>
@@ -104,7 +107,7 @@
                             <button onclick="translatePage('ml')">മലയാളം</button>
                             <button onclick="translatePage('ta')">தமிழ்</button>
                             <button onclick="translatePage('hi')">हिन्दी</button>
-                          </div>                          
+                        </div>                          
                     </div>
                 </div>
             </div>

@@ -25,6 +25,7 @@ from django.http import HttpResponse
 import random
 import time
 from django.core.paginator import Paginator
+from .utils.perspective import analyze_comment
 
 
 def Login(request):
@@ -174,7 +175,7 @@ def google_authenticate(request):
     return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
 
 def Indexpage(request):
-    return render(request, "index.html")
+    return render(request, 'index.html')
 
 def Homepage(request):
     shoppings = Category.objects.filter(category_name="shopping").first()
@@ -183,6 +184,7 @@ def Homepage(request):
     entertainment = Category.objects.filter(category_name="entertainment").first()
     latestnews = Article.objects.order_by('-created_at').exclude(category=shoppings).first()
     topfivenews = Article.objects.order_by('-created_at').exclude(pk=latestnews.pk).exclude(category=shoppings)[:5]
+    
 
     if latestnews:
         latestnews.views += 1
@@ -226,7 +228,8 @@ def Homepage(request):
                                          'sportsnews': sportsnews,
                                          'politicsnews': politicsnews,
                                          'entertainmentnews': entertainmentnews,
-                                         'othernews': othernews})
+                                         'othernews': othernews,
+                                         })
 
 
 
@@ -301,25 +304,48 @@ def add_comment(request, article_id):
     if request.method == "POST":
         print("POST data:", request.POST)
         article = get_object_or_404(Article, article_id=article_id)
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.article = article
-            comment.user = request.user
-            comment.save()
-            # print("Comment saved:", comment.comments)
-            comment_count = Comment.objects.filter(article=article).count()
 
-            return JsonResponse({
-                'success': True,
-                'username': request.user.username,
-                'comment': comment.comments,
-                'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                'comment_count': comment_count
-            })
+        comment_text = request.POST.get('comments', '')
+        
+        # Analyze toxicity of the comment
+        score = analyze_comment(comment_text)
+        
+        if score is not None:
+            if score >= 0.7:
+                # If the comment is toxic, save it as an inappropriate comment
+                Comment.objects.create(
+                    article_id=article_id,
+                    user=request.user,
+                    comments="Inappropriate comment"
+                )
+                return JsonResponse({
+                    'status': 'rejected', 
+                    'score': score, 
+                    'message': 'Your comment seems toxic!'
+                })
+            else:
+                form = CommentForm(request.POST)
+                if form.is_valid():
+                    comment = form.save(commit=False)
+                    comment.article = article
+                    comment.user = request.user
+                    comment.save()
+                    # print("Comment saved:", comment.comments)
+                    comment_count = Comment.objects.filter(article=article).count()
+
+                    return JsonResponse({
+                        'success': True,
+                        'username': request.user.username,
+                        'comment': comment.comments,
+                        'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                        'comment_count': comment_count
+                    })
+                else:
+                    print("Form errors:", form.errors)
+                    return JsonResponse({'success': False, 'errors': form.errors}, status=400)
         else:
-            print("Form errors:", form.errors)
-            return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Failed to analyze comment.'})
+        
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
 
@@ -567,3 +593,29 @@ def verify_otp(request):
     if entered_otp == stored_otp:
         return JsonResponse({'verified': True})
     return JsonResponse({'verified': False})
+
+
+# def comment_view(request, article_id):
+#     comment_text = request.POST.get('comment', '')
+#     score = analyze_comment(comment_text)
+
+#     if score is not None:
+#         if score >= 0.7:
+#             # Save comment as "Inappropriate comment"
+#             Comment.objects.create(
+#                 article_id=article_id,
+#                 user=request.user,
+#                 comments="Inappropriate comment"
+#             )
+#             return JsonResponse({'status': 'rejected', 'score': score, 'message': 'Your comment seems toxic!'})
+#         else:
+#             # Save the original comment
+#             Comment.objects.create(
+#                 article_id=article_id,
+#                 user=request.user,
+#                 comments=comment_text,
+#                 toxicity_score=score
+#             )
+#             return JsonResponse({'status': 'accepted', 'score': score, 'message': 'Comment posted successfully.'})
+#     else:
+#         return JsonResponse({'status': 'error', 'message': 'Failed to analyze comment.'})

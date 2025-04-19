@@ -253,15 +253,30 @@ updateDate();
 
                     const newComment = document.createElement('div');
                     newComment.classList.add('detailpage-usercomment');
+                    newComment.classList.add('comment'); 
                     newComment.innerHTML = `
-                        <div class="detailpage-user_date">
-                            <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">${data.username}</div></b>
-                            <div class="detailpage-date" style="font-size: 14px; color: grey">Just now</div>
+                        <div class="detailpage-user_date" style="display: flex; align-items: center; gap: 10px;">
+                        ${data.user_image ? `<img src="${data.user_image}" alt="User Image" class="detailpage-user_info-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">` : ''}
+                            <div class="detailpage-user_info"> 
+                                <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">${data.username}</div></b>
+                                <div class="detailpage-date" style=" color: grey">${data.created_at}</div>
+
+                            </div>
                         </div>
-                        <p>${data.comment}</p>
+                        <p>
+                            ${data.toxicity_score >= 0.7 ? 'Inappropriate comment' : data.comment}
+                        </p>
                     `;
-                    commentList.prepend(newComment);
+                    commentList.appendChild(newComment); 
                     commentForm.reset();
+
+                   const scrollContainer = document.getElementById('comment-scroll-container');
+
+                        setTimeout(() => {
+                            scrollContainer.scrollTop = scrollContainer.scrollHeight;
+                        }, 100); // 100ms delay
+
+
 
                     const commentCountElem = document.getElementById('comment-count');
                     if (commentCountElem) {

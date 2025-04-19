@@ -105,14 +105,20 @@
                             <div class="tab-content">
                                 <div class="detailpage-commentbox">
                                     <!-- Display Existing Comments -->
-                                    <div class="detailpage-comment-fields" id="comment-list">
-                                        {% for comment in article.comment_set.all %}
+                                    <div class="detailpage-comment-fields " id="comment-list comment-scroll-container">
+                                        {% for comment in article.comment_set.all reversed %}
                                             <div class="detailpage-usercomment">
-                                                <div class="detailpage-user_date">
+                                                <div class="detailpage-user_info">
+                                                    <img src="{{ comment.user.profile_pic.url}}" alt="" class="detailpage-user_info-img"  style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
                                                     <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">{{ comment.user.username }}</div></b>
-                                                    <div class="detailpage-date" style="font-size: 14px; color: grey">{{ comment.created_at|timesince }} ago</div>
+                                                    <div class="detailpage-date" style=" color: grey">{{ comment.created_at|timesince }} ago</div>
                                                 </div>
-                                                <p>{{ comment.comments }}</p>
+                                                <p>{% if comment.toxicity_score and comment.toxicity_score >= 0.7 %}
+                                                        Inappropriate comment
+                                                    {% else %}
+                                                        {{ comment.comments }}
+                                                    {% endif %}    
+                                                </p>
                                             </div>
                                         {% empty %}
                                             <p id="no-comments-msg" style="color: grey; text-align: center;">No comments yet. Be the first to comment!</p>

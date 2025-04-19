@@ -79,12 +79,17 @@
                                 <h5 class="modal-title" id="exampleModalLabel"><i style="font-family:Copperplate;color:rgb(122, 177, 255)">{{ latestnews.head_line|truncatechars:40 }}</i></h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body custom-scroll">
+                            <div class="modal-body custom-scroll "id="comment-scroll-container">
                                 <div id="comment-list">
-                                    {% for comment in comments %}
+                                    {% for comment in comments reversed %}
                                         <div class="comment">
-                                            <p style="color: rgb(0, 123, 231)"><strong>{{ comment.user.username }}</strong> <i style="color: rgb(112, 109, 109)">{{ comment.created_at|timesince }} ago</i></p>
-                                            <p>
+                                            <div class="detailpage-user_info"> 
+                                                <img src="{{ comment.user.profile_pic.url }}" alt="" class="detailpage-user_info-img"  style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
+                                                <div class="detailpage-user" style="color: rgb(0, 123, 231)"><strong>{{ comment.user.username }}</strong></div>
+                                                <div class="detailpage-date" style="color: rgb(112, 109, 109); ">{{ comment.created_at|timesince }} ago</div>
+                                                
+                                            </div>
+                                            <P>
                                                 {% if comment.toxicity_score and comment.toxicity_score >= 0.7 %}
                                                     Inappropriate comment
                                                 {% else %}

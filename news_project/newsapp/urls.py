@@ -6,11 +6,13 @@ from .views import contact_view
 from django.contrib.auth.views import (
     PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView)
 from .views import CustomPasswordResetView
+from django.contrib import admin
+
 urlpatterns = [
+    path('admin/', admin.site.urls), 
     path('index/', views.Indexpage,  name="Indexpage"),
     path('', views.Homepage,  name="Homepage"),
     path('article/<int:article_id>', views.articledetail, name='articledetail'),
-    # path('contact/', views.contactus, name='contactus'),
     path('login/', views.Login, name='login'),
     path('register/', views.Registration, name='register'),
     path('google-authenticate/', views.google_authenticate, name='google_authenticate'),
@@ -48,7 +50,7 @@ urlpatterns = [
     path('unsubscribe/', views.unsubscribe, name='unsubscribe'),
     path('send-otp/', views.send_otp, name='send_otp'),
     path('verify-otp/', views.verify_otp, name='verify_otp'),
-
+    path('admin-inappropriate-comments/', views.view_inappropriate_comments, name='inappropriate_comments'),
 ]
 
 

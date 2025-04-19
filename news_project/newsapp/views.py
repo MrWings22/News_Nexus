@@ -26,7 +26,8 @@ import random
 import time
 from django.core.paginator import Paginator
 from .utils.perspective import analyze_comment
-
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.timesince import timesince
 
 def Login(request):
     if request.method == "POST":
@@ -311,34 +312,40 @@ def add_comment(request, article_id):
         score = analyze_comment(comment_text)
         
         if score is not None:
-            if score >= 0.7:
-                # If the comment is toxic, save it as an inappropriate comment
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.article = article
+                comment.user = request.user
+                comment.toxicity_score = score
+                comment.is_new_inappropriate = True
+                comment.save()
+
+                if score >= 0.7:
+                    # If the comment is toxic, save it as an inappropriate comment
+                    return JsonResponse({
+                        'status': 'rejected', 
+                        'message': 'Your comment seems innapropriate!',
+                        'comment_saved': True
+                    })
+                    # print("Comment saved:", comment.comments)
+
+                user_profile_pic_url = ''
+                if request.user.profile_pic:
+                    user_profile_pic_url = request.build_absolute_uri(request.user.profile_pic.url)
+                comment_count = Comment.objects.filter(article=article).count()
+
                 return JsonResponse({
-                    'status': 'rejected', 
-                    'score': score, 
-                    'message': 'Your comment seems innapropriate!'
+                    'success': True,
+                    'username': request.user.username,
+                    'comment': comment.comments,
+                    'created_at': timesince(comment.created_at) + " ago", 
+                    'comment_count': comment_count,
+                    'user_image': user_profile_pic_url,
                 })
             else:
-                form = CommentForm(request.POST)
-                if form.is_valid():
-                    comment = form.save(commit=False)
-                    comment.article = article
-                    comment.user = request.user
-                    comment.toxicity_score = score
-                    comment.save()
-                    # print("Comment saved:", comment.comments)
-                    comment_count = Comment.objects.filter(article=article).count()
-
-                    return JsonResponse({
-                        'success': True,
-                        'username': request.user.username,
-                        'comment': comment.comments,
-                        'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                        'comment_count': comment_count
-                    })
-                else:
-                    print("Form errors:", form.errors)
-                    return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+                print("Form errors:", form.errors)
+                return JsonResponse({'success': False, 'errors': form.errors}, status=400)
         else:
             return JsonResponse({'status': 'error', 'message': 'Failed to analyze comment.'})
         
@@ -590,4 +597,8 @@ def verify_otp(request):
         return JsonResponse({'verified': True})
     return JsonResponse({'verified': False})
 
-
+@staff_member_required
+def view_inappropriate_comments(request):
+    bad_comments = Comment.objects.filter(toxicity_score__gte=0.7).select_related('user', 'article')
+    Comment.objects.filter(is_new_inappropriate=True, toxicity_score__gt=0.5).update(is_new_inappropriate=False)
+    return render(request, 'view_innappropriate_comments.html', {'bad_comments': bad_comments})

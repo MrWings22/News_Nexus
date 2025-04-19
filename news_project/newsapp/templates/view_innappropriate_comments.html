@@ -1,0 +1,32 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1 style="color:#cc0000;">Inappropriate Comments</h1>
+
+{% if bad_comments %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Comment</th>
+                <th>User</th>
+                <th>Article</th>
+                <th>Score</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comment in bad_comments %}
+                <tr>
+                    <td>{{ comment.comments }}</td>
+                    <td>{{ comment.user.username }}</td>
+                    <td><a href="{% url 'articledetail' comment.article.article_id %}">{{ comment.article.head_line }}</a></td>
+                    <td>{{ comment.toxicity_score|floatformat:2 }}</td>
+                    <td>{{ comment.created_at|timesince }} ago</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No inappropriate comments found.</p>
+{% endif %}
+{% endblock %}

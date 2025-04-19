@@ -41,6 +41,17 @@ class ArticlAdmin(admin.ModelAdmin):
     breaking_news_icon.short_description = "Pinned"
     breaking_news_icon.admin_order_field = 'breaking_news'
 
+# class CommentAdmin(admin.ModelAdmin):
+#     list_display = ['__str__', 'comments', 'user', 'created_at']  # Customize display fields
+#     actions = ['delete_selected_comments']
+
+#     def delete_selected_comments(self, request, queryset):
+#         """Deletes the selected comments."""
+#         deleted_count = queryset.delete()[0]
+#         self.message_user(request, f"Successfully deleted {deleted_count} comments.", level='SUCCESS')
+
+#     delete_selected_comments.short_description = "Delete selected comments"
+
 admin.site.register(Category)
 admin.site.register(Article, ArticlAdmin)
 admin.site.register(Comment)

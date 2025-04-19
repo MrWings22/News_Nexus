@@ -4,7 +4,7 @@ from django.conf import settings
 
 class CustomUser(AbstractUser):
     phone = models.CharField(max_length=10, unique=True)
-    profile_pic = models.ImageField(upload_to='profile_pics/', default='default.jpg', blank=True, null=True)
+    profile_pic = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
 
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
@@ -43,6 +43,7 @@ class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     toxicity_score = models.FloatField(null=True, blank=True)
+    is_new_inappropriate = models.BooleanField(default=False)
     
     def __str__(self):
         return self.comments[:20]

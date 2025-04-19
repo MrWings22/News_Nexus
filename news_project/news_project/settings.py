@@ -65,6 +65,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'newsapp.context_processors.breaking_news_processor',
+                'newsapp.context_processors.bad_comment_count',
             ],
         },
          'DIRS': [BASE_DIR / 'newsapp/templates'],

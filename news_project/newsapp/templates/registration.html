@@ -51,7 +51,7 @@
             
             <!-- Phone Number -->
             <div class="form-group">
-                <input type="tel" id="phone" name="phone" placeholder="Enter phone number">
+                <input type="tel" id="phone" name="phone" placeholder="Enter phone number"  pattern="[6-9]\d{9}" required>
             </div>
             <!-- Password -->
             <div class="form-group">
@@ -88,7 +88,7 @@
             const phoneInputField = document.getElementById("phone");
            
             // Initialize intl-tel-input with India as the default country
-            const iti = window.intlTelInput(phoneInput, {
+            const iti = window.intlTelInput(phoneInputField, {
                 initialCountry: "in", // Set India as default
                 preferredCountries: ["in", "us", "gb"], // Optional: prioritize some countries
                 separateDialCode: true, // Display the dial code separately

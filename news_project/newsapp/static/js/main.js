@@ -217,18 +217,6 @@ updateDate();
             }
     }
 
-    //search
-    function searchToggle(obj, event) {
-        var wrapper = document.querySelector('.search-wrapper');
-        if (!wrapper.classList.contains('active')) {
-            wrapper.classList.add('active');
-            event.stopPropagation();
-        } else {
-            wrapper.classList.remove('active');
-            event.stopPropagation();
-        }
-    }
-    
     document.addEventListener('DOMContentLoaded', function() {
         const commentForm = document.getElementById('commentForm');
         const sendButton = document.getElementById('sendButton');
@@ -238,6 +226,11 @@ updateDate();
         sendButton.addEventListener('click', function() {
             console.log("Send button clicked on detail page");
             const formData = new FormData(commentForm);
+
+            // You don't need to manually append — FormData already includes 'comments'
+
+
+
             fetch(commentForm.action, {
                 method: 'POST',
                 body: formData,
@@ -252,20 +245,53 @@ updateDate();
             .then(data => {
                 console.log("Data:", data);
                 if (data.success) {
+
+                    const emptyMessage = document.getElementById('no-comments-msg');
+                    if (emptyMessage) {
+                        emptyMessage.remove();
+                    }
+
                     const newComment = document.createElement('div');
                     newComment.classList.add('detailpage-usercomment');
+                    newComment.classList.add('comment'); 
                     newComment.innerHTML = `
-                        <div class="detailpage-user_date">
-                            <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">${data.username}</div></b>
-                            <div class="detailpage-date" style="font-size: 14px; color: grey">Just now</div>
+                        <div class="detailpage-user_date" style="display: flex; align-items: center; gap: 10px;">
+                        ${data.user_image ? `<img src="${data.user_image}" alt="User Image" class="detailpage-user_info-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">` : ''}
+                            <div class="detailpage-user_info"> 
+                                <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">${data.username}</div></b>
+                                <div class="detailpage-date" style=" color: grey">${data.created_at}</div>
+
+                            </div>
                         </div>
-                        <p>${data.comment}</p>
+                        <p>
+                            ${data.toxicity_score >= 0.7 ? 'Inappropriate comment' : data.comment}
+                        </p>
                     `;
-                    commentList.prepend(newComment);
+                    commentList.appendChild(newComment); 
                     commentForm.reset();
+
+                   const scrollContainer = document.getElementById('comment-scroll-container');
+
+                        setTimeout(() => {
+                            scrollContainer.scrollTop = scrollContainer.scrollHeight;
+                        }, 100); // 100ms delay
+
+
+
+                    const commentCountElem = document.getElementById('comment-count');
+                    if (commentCountElem) {
+                        let currentCount = parseInt(commentCountElem.innerText);
+                        if (!isNaN(currentCount)) {
+                            commentCountElem.innerText = currentCount + 1;
+                        }
+                    }
+
+                } else if (data.status === 'rejected') {
+                    showToast(data.message, 'error');// This will show "Your comment seems toxic!"
                 } else {
-                    alert('Failed to submit comment: ' + (data.errors || data.error));
+                    alert('Failed to submit comment.'); // Generic fallback
                 }
+                    
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -527,3 +553,206 @@ updateDate();
         });
     });
     
+
+//search pagination strat
+let page = 2; // Start from the second page since the first 6 are already loaded
+let loading = false;
+let hasNextPage = true;
+
+async function loadMoreArticles() {
+    if (loading || !hasNextPage) return;
+    loading = true;
+    document.getElementById('loader').style.display = 'block';
+
+    try {
+        const query = new URLSearchParams(window.location.search).get('q') || '';
+        const response = await fetch(`?q=${query}&page=${page}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch data');
+
+        const data = await response.json();
+        hasNextPage = data.has_next;
+
+        data.articles.forEach(article => {
+            const articleHtml = `
+                <div class="row-sm-12 mb-4 article scale-hover">
+                    <div class="row rounded" style="box-shadow: 5px 4px 5px 2px rgb(121, 121, 121);">
+                        <div class="col-sm-5 p-0" style="height: 200px; border-radius: 10px 0 0 10px;">
+                            ${article.image_url ? `<img src="${article.image_url}" alt="${article.head_line}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px 0 0 10px;">` : ''}
+                        </div>
+                        <div class="col-sm-7 p-3" style="height: 200px; border-radius: 0 10px 10px 0; background: linear-gradient(to top right, white, rgb(227, 243, 252));">
+                            <h4><a href="/articledetail/${article.id}/">${article.head_line}</a></h4>
+                            <p>${article.description.substring(0, 150)}...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('article-container').insertAdjacentHTML('beforeend', articleHtml);
+        });
+
+        page++;
+    } catch (error) {
+        console.error(error);
+    } finally {
+        document.getElementById('loader').style.display = 'none';
+        loading = false;
+    }
+}
+
+window.addEventListener('scroll', () => {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+        loadMoreArticles();
+    }
+});
+//search pagination end
+
+let isPlaying = false;
+let words = [];
+let currentWordIndex = 0;
+let utterance = null;
+
+function toggleTTS() {
+    let headline = document.querySelector(".h1.display-5").innerText;
+    let content = document.getElementById("article-content").innerText;
+    let button = document.getElementById("ttsButton");
+
+    if (!isPlaying) {
+        startTTS(headline, content, button);
+    } else {
+        stopTTS(button);
+    }
+}
+
+function startTTS(headline, content, button) {
+    let headlineUtterance = new SpeechSynthesisUtterance(headline);
+    let transitionUtterance = new SpeechSynthesisUtterance("Now let's read the content.");
+    let contentUtterance = new SpeechSynthesisUtterance(content);
+    
+    words = content.split(" ");
+    currentWordIndex = 0;
+    highlightText();
+
+    headlineUtterance.onend = () => {
+        speechSynthesis.speak(transitionUtterance);
+    };
+    
+    transitionUtterance.onend = () => {
+        speechSynthesis.speak(contentUtterance);
+    };
+
+    contentUtterance.rate = 1.0;
+    contentUtterance.onboundary = (event) => {
+        if (event.name === "word") {
+            highlightNextWord();
+        }
+    };
+
+    contentUtterance.onend = () => {
+        isPlaying = false;
+        button.innerHTML = '<i class="fa fa-volume-up"></i>Read';
+        clearHighlight();
+    };
+    
+    speechSynthesis.speak(headlineUtterance);
+    isPlaying = true;
+    button.innerHTML = '<i class="fa fa-pause"></i>Stop';
+}
+
+function stopTTS(button) {
+    speechSynthesis.cancel();
+    isPlaying = false;
+    button.innerHTML = '<i class="fa fa-volume-up"></i>Read';
+    clearHighlight();
+}
+
+function highlightText() {
+    let article = document.getElementById("article-content");
+    article.innerHTML = words.map((word, index) => `<span id='word-${index}'>${word}</span>`).join(" ");
+}
+
+function highlightNextWord() {
+    if (currentWordIndex > 0) {
+        document.getElementById(`word-${currentWordIndex - 1}`)?.classList.remove("highlight");
+    }
+    if (currentWordIndex < words.length) {
+        document.getElementById(`word-${currentWordIndex}`)?.classList.add("highlight");
+        currentWordIndex++;
+    }
+}
+
+function clearHighlight() {
+    document.getElementById("article-content").innerHTML = words.join(" ");
+}
+
+// Function to create and display toast messages
+function showToast(message, type = 'info', duration = 5000) {
+    const toastContainer = document.getElementById('toastContainer');
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    
+    // Add to container
+    toastContainer.appendChild(toast);
+    
+    // Trigger animation
+    setTimeout(() => {
+      toast.classList.add('show');
+    }, 10);
+    
+    // Remove after duration
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => {
+        toastContainer.removeChild(toast);
+      }, 400);
+    }, duration);
+  }
+  
+
+
+  // Process Django messages on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if messages exist in the page
+    const messages = JSON.parse(document.getElementById('django-messages').textContent || '[]');
+    
+    messages.forEach(function(message) {
+      let type = 'info';
+      if (message.tags.includes('success')) type = 'success';
+      if (message.tags.includes('error')) type = 'error';
+      
+      showToast(message.message, type);
+    });
+  });
+
+  // Moving Button for Guests  Subscribe Button for Logged-in Users
+  document.addEventListener("DOMContentLoaded", function () {
+      const button = document.getElementById("subscribe-btn");
+
+
+      if (button) {
+          button.addEventListener("mouseover", function () {
+              const parent = button.parentElement;
+              const maxX = parent.clientWidth - button.clientWidth - 20;  // Prevent going outside
+              const maxY = parent.clientHeight - button.clientHeight - 20; // Prevent going outside
+
+              // Ensure a minimum movement so the button doesn't just jitter in place
+              const newX = Math.max(10, Math.random() * maxX);
+              const newY = Math.max(10, Math.random() * maxY);
+
+              button.style.transform = `translate(${newX}px, ${newY}px)`;
+
+              // Show warning message
+              warning.classList.remove("d-none");
+          });
+
+          button.addEventListener("click", function (event) {
+              event.preventDefault();
+              alert("⚠️ You need to log in first!");
+              window.location.href = "{% url 'login' %}";  // Redirect to login page
+          });
+      }
+  });

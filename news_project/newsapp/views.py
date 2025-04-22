@@ -24,7 +24,10 @@ from .models import Category, Subscriber
 from django.http import HttpResponse
 import random
 import time
-
+from django.core.paginator import Paginator
+from .utils.perspective import analyze_comment
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.timesince import timesince
 
 def Login(request):
     if request.method == "POST":
@@ -173,12 +176,16 @@ def google_authenticate(request):
     return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
 
 def Indexpage(request):
-    return render(request, "index.html")
+    return render(request, 'index.html')
 
 def Homepage(request):
     shoppings = Category.objects.filter(category_name="shopping").first()
+    sports = Category.objects.filter(category_name="sports").first()
+    politics = Category.objects.filter(category_name="politics").first()
+    entertainment = Category.objects.filter(category_name="entertainment").first()
     latestnews = Article.objects.order_by('-created_at').exclude(category=shoppings).first()
     topfivenews = Article.objects.order_by('-created_at').exclude(pk=latestnews.pk).exclude(category=shoppings)[:5]
+    
 
     if latestnews:
         latestnews.views += 1
@@ -200,10 +207,15 @@ def Homepage(request):
         displayed_article_ids.add(latestnews.pk)
 
     shoppingnews = Article.objects.filter(category=shoppings).order_by('-created_at')[:5]
-    popularnews = Article.objects.exclude(category=shoppings).exclude(pk=latestnews.pk).exclude(pk__in=displayed_article_ids).order_by('-created_at')[:6]
+    sportsnews = Article.objects.filter(category=sports).exclude(pk=latestnews.pk).exclude(pk__in=displayed_article_ids).order_by('-created_at')[:3]
+    politicsnews = Article.objects.filter(category=politics).exclude(pk=latestnews.pk).exclude(pk__in=displayed_article_ids).order_by('-created_at')[:3]
+    entertainmentnews = Article.objects.filter(category=entertainment).exclude(pk=latestnews.pk).exclude(pk__in=displayed_article_ids).order_by('-created_at')[:3]
+
 
     displayed_article_ids.update(shoppingnews.values_list('pk', flat=True))
-    displayed_article_ids.update(popularnews.values_list('pk', flat=True))
+    displayed_article_ids.update(sportsnews.values_list('pk', flat=True))
+    displayed_article_ids.update(politicsnews.values_list('pk', flat=True))
+    displayed_article_ids.update(entertainmentnews.values_list('pk', flat=True))
 
     othernews = Article.objects.exclude(pk__in=displayed_article_ids).order_by('-created_at')
 
@@ -214,8 +226,11 @@ def Homepage(request):
                                          'form': form,
                                          'categories': categories,
                                          'shoppingnews': shoppingnews,
-                                         'popularnews': popularnews,
-                                         'othernews': othernews})
+                                         'sportsnews': sportsnews,
+                                         'politicsnews': politicsnews,
+                                         'entertainmentnews': entertainmentnews,
+                                         'othernews': othernews,
+                                         })
 
 
 
@@ -253,16 +268,34 @@ def weatherpage(request):
 
 def Searchresult(request):
     query = request.GET.get('q', '').strip()
-    
+    page_number = request.GET.get('page', 1)
+    categories = Category.objects.all()
+
     if query:
         articles = Article.objects.filter(
-            Q(head_line__icontains=query) |  # Search in headline
-            Q(category__category_name__icontains=query)  # Search in category name
-        ).distinct()
+            Q(head_line__icontains=query) |
+            Q(category__category_name__icontains=query)
+        ).distinct().order_by('-created_at')
     else:
-        articles = Article.objects.all()
-    
-    return render(request, 'search_results.html', {'articles': articles, 'query': query})
+        articles = Article.objects.all().order_by('-created_at')
+
+    paginator = Paginator(articles, 6)  # 6 articles per page
+    page_obj = paginator.get_page(page_number)
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':  # Check if AJAX request
+        articles_data = [
+            {
+                'id': article.article_id,
+                'head_line': article.head_line,
+                'description': article.description,
+                'image_url': article.articleimages_set.first().image.url if article.articleimages_set.exists() else None
+            }
+            for article in page_obj
+        ]
+        return JsonResponse({'articles': articles_data, 'has_next': page_obj.has_next()})
+
+    return render(request, 'search_results.html', {'articles': page_obj, 'query': query, 'categories': categories})
+
 
 
 @login_required
@@ -272,25 +305,50 @@ def add_comment(request, article_id):
     if request.method == "POST":
         print("POST data:", request.POST)
         article = get_object_or_404(Article, article_id=article_id)
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.article = article
-            comment.user = request.user
-            comment.save()
-            # print("Comment saved:", comment.comments)
-            comment_count = Comment.objects.filter(article=article).count()
 
-            return JsonResponse({
-                'success': True,
-                'username': request.user.username,
-                'comment': comment.comments,
-                'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                'comment_count': comment_count
-            })
+        comment_text = request.POST.get('comments', '')
+        
+        # Analyze toxicity of the comment
+        score = analyze_comment(comment_text)
+        
+        if score is not None:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.article = article
+                comment.user = request.user
+                comment.toxicity_score = score
+                comment.is_new_inappropriate = True
+                comment.save()
+
+                if score >= 0.7:
+                    # If the comment is toxic, save it as an inappropriate comment
+                    return JsonResponse({
+                        'status': 'rejected', 
+                        'message': 'Your comment seems innapropriate!',
+                        'comment_saved': True
+                    })
+                    # print("Comment saved:", comment.comments)
+
+                user_profile_pic_url = ''
+                if request.user.profile_pic:
+                    user_profile_pic_url = request.build_absolute_uri(request.user.profile_pic.url)
+                comment_count = Comment.objects.filter(article=article).count()
+
+                return JsonResponse({
+                    'success': True,
+                    'username': request.user.username,
+                    'comment': comment.comments,
+                    'created_at': timesince(comment.created_at) + " ago", 
+                    'comment_count': comment_count,
+                    'user_image': user_profile_pic_url,
+                })
+            else:
+                print("Form errors:", form.errors)
+                return JsonResponse({'success': False, 'errors': form.errors}, status=400)
         else:
-            print("Form errors:", form.errors)
-            return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Failed to analyze comment.'})
+        
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
 
@@ -538,3 +596,9 @@ def verify_otp(request):
     if entered_otp == stored_otp:
         return JsonResponse({'verified': True})
     return JsonResponse({'verified': False})
+
+@staff_member_required
+def view_inappropriate_comments(request):
+    bad_comments = Comment.objects.filter(toxicity_score__gte=0.7).select_related('user', 'article')
+    Comment.objects.filter(is_new_inappropriate=True, toxicity_score__gt=0.5).update(is_new_inappropriate=False)
+    return render(request, 'view_innappropriate_comments.html', {'bad_comments': bad_comments})

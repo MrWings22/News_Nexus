@@ -65,7 +65,7 @@
                     {% with img=article.articleimages_set.first %}
                     <div class="image-container">
                         <img src="{{ img.image.url }}" alt="">
-                        <div class="overlay">
+                        <div class="overlay backdrop-blur">
                             <a href="{% url 'articledetail' article.article_id %}">
                                 <h3 class="text-shadow text-hover">{{ article.head_line|truncatechars:90 }}</h3>
                             </a>
@@ -82,8 +82,8 @@
     <div class="container py-5">
         <div class="latest-news-carousel owl-carousel">
             {% for article in articles|slice:"6:11" %}         
-            <div class="latest-news-item">
-                <div class="bg-light rounded latest-news">
+            <div class="latest-news-item scale-hover">
+                <div class="bg-light rounded latest-news ">
                     <div class="rounded-top overflow-hidden">
                         {% with img=article.articleimages_set.first %}
                         <img src="{{ img.image.url }}" id="topnews-images" class="img-zoomin img-fluid rounded-top w-100" alt="{{ article.head_line }}">

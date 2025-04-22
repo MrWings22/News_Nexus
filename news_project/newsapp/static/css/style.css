@@ -283,13 +283,26 @@
 #topnews-images{
     height: 120px;
 }
-.latnews{
-    height: 200px;
+
+.latest-news-item{
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px 2px rgb(154, 154, 154);
+    overflow: hidden;
 }
 
+.latnews{
+    height: 200px;
+    background: white;
+    text-align: center;
+}
 
 .latest-news .latest-news-carousel.owl-carousel{
     position: relative;
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px 2px rgb(109, 109, 109);
+    padding: 0 4px;
 }
 
 .latest-news .latest-news-carousel.owl-carousel .owl-nav .owl-prev {
@@ -497,6 +510,7 @@
     max-height: 570px;  /* Set a fixed height */
     overflow-y: auto;   /* Enable vertical scrolling */
     padding-right: 10px; /* Space for scrollbar */
+    flex-direction: column-reverse; 
 }
 
 /* Optional: Custom scrollbar styling */
@@ -516,10 +530,21 @@
 .comment{
     background-color: rgb(255, 255, 255);
     padding: 5px;
-    min-width: 70px;
+    min-width: 100%;
+    min-height: 100px;
     width: 100%;
     border-radius: 10px;
     box-shadow: 5px 5px 10px rgb(142, 142, 142);
+
+}
+.comment p{
+    margin-left: 60px;
+}
+
+#comment-list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 .input-field {
     position: relative;
@@ -551,7 +576,7 @@
     padding: 10px;
     height: 80vh;
     border-radius: 20px;
-
+    background-color: #e4e7f0;
 }
 
 
@@ -586,6 +611,10 @@
 .detailpage-comment-fields{
     height: 430px;
     padding: 25px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
 }
 .detailpage-commentarea{
     height: 135px;
@@ -594,7 +623,7 @@
 }
 
 .detailpage-usercomment{
-    background: #f2f2f2;
+    background: white;
     padding:8px;
     border-radius: 10px;
     box-shadow: 5px 5px 10px rgb(142, 142, 142);
@@ -646,6 +675,7 @@
 .modal-content {
     height: 100%;
     overflow-y: auto;
+    background-color: #e8e8f3;
 }
 
 .modal-backdrop {
@@ -671,8 +701,8 @@ body.modal-open .custom-modal {
 .search-wrapper {
     z-index: 999;
     position: absolute; 
-    top: 18px; 
-    right: -30px; 
+    top: 20%; 
+    right: -35px; 
     transform: none; 
 }
 
@@ -834,146 +864,6 @@ body.modal-open .custom-modal {
   
 } 
 
-/* .search-wrapper {
-    position: absolute;
-    transform: none;
-    z-index: 999;
-    top: 18px; 
-    right: -30px; 
-
-}
-.search-wrapper.active {}
-
-.search-wrapper .input-holder {    
-    height: 70px;
-    width:70px;
-    overflow: hidden;
-    background: rgb(255, 255, 255);
-    border-radius: 50px;
-    position: relative;
-    transition: all 0.3s ease-in-out;
-}
-.search-wrapper.active .input-holder {
-    width:450px;
-    border-radius: 50px;
-    background: rgb(255, 255, 255);
-    transition: all .5s cubic-bezier(0.000, 0.105, 0.035, 1.570);
-}
-.search-wrapper .input-holder .search-input {
-    width:100%;
-    height: 50px;
-    padding:0px 70px 0 20px;
-    opacity: 0;
-    position: absolute;
-    top:0px;
-    left:0px;
-    background: transparent;
-    box-sizing: border-box;
-    border:none;
-    outline:none;
-    font-family:"Open Sans", Arial, Verdana;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 20px;
-    color:#FFF;
-    transform: translate(0, 60px);
-    transition: all .3s cubic-bezier(0.000, 0.105, 0.035, 1.570);
-    transition-delay: 0.3s;
-}
-.search-wrapper.active .input-holder .search-input {
-    opacity: 1;
-    transform: translate(0, 10px);
-}
-.search-wrapper .input-holder .search-icon {
-    width:70px;
-    height:70px;
-    border:none;
-    border-radius:6px;
-    background: #FFF;
-    padding:0px;
-    outline:none;
-    position: relative;
-    z-index: 2;
-    float:right;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-}
-.search-wrapper.active .input-holder .search-icon {
-    width: 50px;
-    height:50px;
-    margin: 10px;
-    border-radius: 30px;
-}
-.search-wrapper .input-holder .search-icon span {
-    width:22px;
-    height:22px;
-    display: inline-block;
-    vertical-align: middle;
-    position:relative;
-    transform: rotate(45deg);
-    transition: all .4s cubic-bezier(0.650, -0.600, 0.240, 1.650);
-}
-.search-wrapper.active .input-holder .search-icon span {
-    transform: rotate(-45deg);
-}
-.search-wrapper .input-holder .search-icon span::before, .search-wrapper .input-holder .search-icon span::after {
-    position: absolute; 
-    content:'';
-}
-.search-wrapper .input-holder .search-icon span::before {
-    width: 4px;
-    height: 11px;
-    left: 9px;
-    top: 18px;
-    border-radius: 2px;
-    background: #1b91ff;
-}
-.search-wrapper .input-holder .search-icon span::after {
-    width: 14px;
-    height: 14px;
-    left: 0px;
-    top: 0px;
-    border-radius: 16px;
-    border: 4px solid #1b91ff;
-}
-.search-wrapper .close {
-    position: absolute;
-    z-index: 1;
-    top:24px;
-    right:20px;
-    width:25px;
-    height:25px;
-    cursor: pointer;
-    transform: rotate(-180deg);
-    transition: all .3s cubic-bezier(0.285, -0.450, 0.935, 0.110);
-    transition-delay: 0.2s;
-}
-.search-wrapper.active .close {
-    right:-50px;
-    transform: rotate(45deg);
-    transition: all .6s cubic-bezier(0.000, 0.105, 0.035, 1.570);
-    transition-delay: 0.5s;
-}
-.search-wrapper .close::before, .search-wrapper .close::after {
-    position:absolute;
-    content:'';
-    background: #1b91ff;
-    border-radius: 2px;
-}
-.search-wrapper .close::before {
-    width: 5px;
-    height: 25px;
-    left: 10px;
-    top: 0px;
-}
-.search-wrapper .close::after {
-    width: 25px;
-    height: 5px;
-    left: 0px;
-    top: 10px;
-}  */
-
-
 /* light mode and dark mode */
 .detailpage-comment-fields {
     max-height: 430px; /* Adjust the height as needed */
@@ -997,6 +887,22 @@ body.modal-open .custom-modal {
 
 .detailpage-comment-fields::-webkit-scrollbar-thumb:hover {
     background: #555; /* Color of the scrollbar thumb on hover */
+}
+.detailpage-user_info{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+}
+.detailpage-user_info-img{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit:cover;
+}
+
+.detailpage-usercomment p{
+    margin-left: 60px;
 }
 
 .profile-container {      
@@ -1348,3 +1254,7 @@ h3:hover{
     color: #f7f2f2;              /* Optional: hover color effect */
   }
   
+
+  .highlight {
+    background-color: yellow;
+}

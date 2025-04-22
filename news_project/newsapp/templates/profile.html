@@ -1,12 +1,15 @@
 {% extends 'index.html'%}
 {% load static %}
 {% block contents %}
-    <div class="row profile-container">
+    <div class="row profile-container notranslate">
         <div class="col-sm-3"></div>
         <div class="wrapper col-sm-6 p-2">
-            
-                <img src="{{ user.profile_pic.url }}" alt="Profile Picture" id="profile-pic">
-                
+                <!-- <img src="{% if user.profile_pic %}{{ user.profile_pic.url }}{% else %}{% static 'img/footer-2.jpg' %}{% endif %}" alt="Profiiile Picture" id="profile-pic"> -->
+                {% if user.profile_pic %}
+                <img src="{{ user.profile_pic.url }}" alt="profile-pic" id="profile-pic">
+                {% else %}
+                <img src="{% static 'img/profile_default.jpg' %}" alt="profile-pic" id="profile-pic">
+                {%endif%}
             <div class="card-container">
                 <div class="profile-body front" {% if show_edit_form %}style="transform: rotateY(180deg); display: none;"{% endif %}>
                     <div class="row-sm-12 text-center"><h2>{{user.username}}</h2></div>

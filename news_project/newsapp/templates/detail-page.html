@@ -1,5 +1,6 @@
 {%extends 'index.html'%}
 {% load custom_filters %}
+{% load article_extras %}
 {%load static%}
 {% load article_extras %}
 
@@ -56,7 +57,7 @@
                             <a href="#" class="text-dark link-hover me-3"><i class="fa fa-clock"></i> {{ article.content|reading_time }} minute read</a>
                             <a href="#" class="text-dark link-hover me-3"><i class="fa fa-eye"></i> {{article.views}} Views</a>
                             <button style="background: transparent; border: none;" type="button" class="text-black me-3 link-hover" data-bs-toggle="modal" >
-                                <i class="fa fa-comment-dots"></i> {{ comments.count }} Comments
+                                <i id="no-comments-msg" class="fa fa-comment-dots"></i><span id="comment-count">{{ comments.count }}</span> Comments
                             </button>
                             <a href="#" class="text-dark link-hover" onclick="shareWebsite(); return false;">
                                 <i class="fa fa-arrow-up"></i>Share
@@ -68,158 +69,14 @@
                                 <i class="fa fa-volume-up"></i>Read
                             </button>
                             
-                            <style>
-                                /* Highlighted text while reading */
-                                .highlight {
-                                    background-color: yellow;
-                                }
-                            </style>
-                            <script>
-                            let isPlaying = false;
-                            let words = [];
-                            let currentWordIndex = 0;
-                            let utterance = null;
-
-                            function toggleTTS() {
-                                let headline = document.querySelector(".h1.display-5").innerText;
-                                let content = document.getElementById("article-content").innerText;
-                                let button = document.getElementById("ttsButton");
-
-                                if (!isPlaying) {
-                                    startTTS(headline, content, button);
-                                } else {
-                                    stopTTS(button);
-                                }
-                            }
-
-                            function startTTS(headline, content, button) {
-                                let headlineUtterance = new SpeechSynthesisUtterance(headline);
-                                let transitionUtterance = new SpeechSynthesisUtterance("Now let's read the content.");
-                                let contentUtterance = new SpeechSynthesisUtterance(content);
-                                
-                                words = content.split(" ");
-                                currentWordIndex = 0;
-                                highlightText();
-
-                                headlineUtterance.onend = () => {
-                                    speechSynthesis.speak(transitionUtterance);
-                                };
-                                
-                                transitionUtterance.onend = () => {
-                                    speechSynthesis.speak(contentUtterance);
-                                };
-
-                                contentUtterance.rate = 1.0;
-                                contentUtterance.onboundary = (event) => {
-                                    if (event.name === "word") {
-                                        highlightNextWord();
-                                    }
-                                };
-
-                                contentUtterance.onend = () => {
-                                    isPlaying = false;
-                                    button.innerHTML = '<i class="fa fa-volume-up"></i>Read';
-                                    clearHighlight();
-                                };
-                                
-                                speechSynthesis.speak(headlineUtterance);
-                                isPlaying = true;
-                                button.innerHTML = '<i class="fa fa-pause"></i>Stop';
-                            }
-
-                            function stopTTS(button) {
-                                speechSynthesis.cancel();
-                                isPlaying = false;
-                                button.innerHTML = '<i class="fa fa-volume-up"></i>Read';
-                                clearHighlight();
-                            }
-
-                            function highlightText() {
-                                let article = document.getElementById("article-content");
-                                article.innerHTML = words.map((word, index) => `<span id='word-${index}'>${word}</span>`).join(" ");
-                            }
-
-                            function highlightNextWord() {
-                                if (currentWordIndex > 0) {
-                                    document.getElementById(`word-${currentWordIndex - 1}`)?.classList.remove("highlight");
-                                }
-                                if (currentWordIndex < words.length) {
-                                    document.getElementById(`word-${currentWordIndex}`)?.classList.add("highlight");
-                                    currentWordIndex++;
-                                }
-                            }
-
-                            function clearHighlight() {
-                                document.getElementById("article-content").innerHTML = words.join(" ");
-                            }
-                            </script>
+                          
                         </div>
                         <div class="my-4" id="article-content">
-                            {{ article.description }}
+                            {{ article.description|safe }}
                         </div>
                         
                         
-                        <!-- <div class="tab-class">
-                            <div class="d-flex justify-content-between border-bottom mb-4">
-                                <ul class="nav nav-pills d-inline-flex text-center">
-                                    <li class="nav-item mb-3">
-                                        <h5 class="mt-2 me-3 mb-0">Tags:</h5>
-                                    </li>
-                                    <li class="nav-item mb-3">
-                                        <a class="d-flex py-2 bg-light rounded-pill active me-2" data-bs-toggle="pill" href="#tab-1">
-                                            <span class="text-dark" style="width: 100px;">Sports</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item mb-3">
-                                        <a class="d-flex py-2 bg-light rounded-pill me-2" data-bs-toggle="pill" href="#tab-2">
-                                            <span class="text-dark" style="width: 100px;">Magazine</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item mb-3">
-                                        <a class="d-flex py-2 bg-light rounded-pill me-2" data-bs-toggle="pill" href="#tab-3">
-                                            <span class="textz-dark" style="width: 100px;">Politics</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                                <div class="d-flex align-items-center">
-                                    <h5 class="mb-0 me-3">Share:</h5>
-                                    <i class="fab fa-facebook-f link-hover btn btn-square rounded-circle border-primary text-dark me-2"></i>
-                                    <i class="btn fab bi-twitter link-hover btn btn-square rounded-circle border-primary text-dark me-2"></i>
-                                    <i class="btn fab fa-instagram link-hover btn btn-square rounded-circle border-primary text-dark me-2"></i>
-                                    <i class="btn fab fa-linkedin-in link-hover btn btn-square rounded-circle border-primary text-dark"></i>
-                                </div>
-                            </div>
-                                <div class="tab-content">
-                                <div class="detailpage-commentbox">
-                                   
-                                    <div class="detailpage-comment-fields">
-                                        {% for comment in article.comment_set.all %}
-                                            <div class="detailpage-usercomment">
-                                                <div class="detailpage-user_date">
-                                                    <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">{{ comment.user.username }}</div></b>
-                                                    <div class="detailpage-date" style="font-size: 14px; color: grey">{{ comment.created_at|timesince }} ago</div>
-                                                </div>
-                                                <p>{{ comment.comments }}</p>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                            
-                                   
-                                    
-                                    <div class="detailpage-commentarea">
-                                            {% csrf_token %}
-                                            <div class="detailpage-input-field">
-                                                <textarea name="comments" class="detailpage-comment-input" placeholder="Add a comment..." required></textarea>
-                                                <button type="button" id="sendButton">
-                                                    <i id="sendicon" class="fa fa-paper-plane"></i>
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </div> -->
+                        
                         <div class="tab-class">
                             <div class="d-flex justify-content-between border-bottom mb-4">
                                 <ul class="nav nav-pills d-inline-flex text-center">
@@ -248,18 +105,31 @@
                             <div class="tab-content">
                                 <div class="detailpage-commentbox">
                                     <!-- Display Existing Comments -->
-                                    <div class="detailpage-comment-fields" id="comment-list">
-                                        {% for comment in article.comment_set.all %}
-                                            <div class="detailpage-usercomment">
-                                                <div class="detailpage-user_date">
-                                                    <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">{{ comment.user.username }}</div></b>
-                                                    <div class="detailpage-date" style="font-size: 14px; color: grey">{{ comment.created_at|timesince }} ago</div>
+                                    <div class="detailpage-comment-fields " id="comment-scroll-container">
+                                        <div id="comment-list">
+                                            {% for comment in article.comment_set.all  %}
+                                                <div class="detailpage-usercomment">
+                                                    <div class="detailpage-user_info">
+                                                        {% if comment.user.profile_pic %}
+                                                        <img src="{{ comment.user.profile_pic.url }}" alt="" class="detailpage-user_info-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
+                                                    {% else %}
+                                                        <img src="{% static 'profile-default.jpg' %}" alt="" class="detailpage-user_info-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
+                                                    {% endif %}
+                                                    
+                                                        <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">{{ comment.user.username }}</div></b>
+                                                        <div class="detailpage-date" style=" color: grey">{{ comment.created_at|timesince }} ago</div>
+                                                    </div>
+                                                    <p>{% if comment.toxicity_score and comment.toxicity_score >= 0.7 %}
+                                                            Inappropriate comment
+                                                        {% else %}
+                                                            {{ comment.comments }}
+                                                        {% endif %}    
+                                                    </p>
                                                 </div>
-                                                <p>{{ comment.comments }}</p>
-                                            </div>
-                                        {% empty %}
-                                            <p style="color: grey; text-align: center;">No comments yet. Be the first to comment!</p>
-                                        {% endfor %}
+                                            {% empty %}
+                                                <p id="no-comments-msg" style="color: grey; text-align: center;">No comments yet. Be the first to comment!</p>
+                                            {% endfor %}
+                                        </div>
                                     </div>
                                     <!-- Comment Input Form -->
                                     {% if request.user.is_authenticated %}
@@ -267,6 +137,7 @@
                                         <form id="commentForm" action="{% url 'add_comment' article.article_id %}" method="post">
                                             {% csrf_token %}
                                             <div class="detailpage-input-field">
+                                                <img src="{{ user_profile_pic }}"  alt="" style=" width:50px; height:50px; border-radius:50%; object-fit:cover; margin: 3px;">   
                                                 <textarea name="comments" class="detailpage-comment-input" placeholder="Add a comment..." required></textarea>
                                                 <button type="button" id="sendButton">
                                                     <i id="sendicon" class="fa fa-paper-plane"></i>
@@ -296,7 +167,7 @@
                                             {% endif %}
                                         {% endwith %}
                                     </div>
-                                    <div style=" height: 140px;" class="col-sm-8 rounded p-2"><a href="{% url 'articledetail' news.article_id %}" ><h5>{{news.head_line|truncatechars:75}}</h5></a></div>
+                                    <div style=" height: 140px;" class="col-sm-8 rounded p-2"><a href="{% url 'articledetail' news.article_id %}" ><h5 class="text-hover ">{{news.head_line|truncatechars:75}}</h5></a></div>
                                 </div>
                             </div>
                         {%endfor%}

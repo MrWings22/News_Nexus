@@ -3,8 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 
 class CustomUser(AbstractUser):
-    phone = models.CharField(max_length=10, unique=True)
-    profile_pic = models.ImageField(upload_to='profile_pics/', default='default.jpg', blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    profile_pic = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
 
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
@@ -25,9 +25,16 @@ class Article(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     views = models.PositiveIntegerField(default=0,)
+    breaking_news = models.BooleanField(default=False)
 
     def __str__(self):
         return self.head_line
+    def save(self, *args, **kwargs):
+        # Ensure only one article is marked as breaking news
+        if self.breaking_news:
+            # Unmark all other articles as breaking news
+            Article.objects.filter(breaking_news=True).exclude(article_id=self.article_id).update(breaking_news=False)
+        super().save(*args, **kwargs)
 
 class Comment(models.Model):
     comment_id = models.AutoField(primary_key=True)
@@ -35,7 +42,11 @@ class Comment(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    toxicity_score = models.FloatField(null=True, blank=True)
+    is_new_inappropriate = models.BooleanField(default=False)
     
+    def __str__(self):
+        return self.comments[:20]
 
 class Tags(models.Model):
     tag_id = models.AutoField(primary_key=True)

@@ -29,6 +29,41 @@ from .utils.perspective import analyze_comment
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.timesince import timesince
 
+# def Login(request):
+#     if request.method == "POST":
+#         login_method = request.POST.get("login_method")  # 'email' or 'phone'
+#         password = request.POST.get("password")
+#         user = None
+
+#         if login_method == "email":
+#             email = request.POST.get("email")
+#             try:
+#                 user = CustomUser.objects.get(email=email)
+#                 if not user.check_password(password):
+#                     user = None
+#             except CustomUser.DoesNotExist:
+#                 user = None
+#         else:
+#             phone = request.POST.get("phone")
+#             try:
+#                 user = CustomUser.objects.get(phone=phone)
+#                 if not user.check_password(password):
+#                     user = None
+#             except CustomUser.DoesNotExist:
+#                 user = None
+
+#         if user is not None:
+#             login(request, user)
+#             if user.last_login is None:
+#                 messages.success(request, f"Welcome, {user.username}! Login successful.")
+#             else:
+#                 messages.success(request, f"Welcome back, {user.username}! Login successful.")
+#             return redirect("Homepage")
+#         else:
+#             messages.error(request, "Invalid email/phone or password.")
+
+#     return render(request, "login.html")
+
 def Login(request):
     if request.method == "POST":
         login_method = request.POST.get("login_method")  # 'email' or 'phone'
@@ -41,6 +76,8 @@ def Login(request):
                 user = CustomUser.objects.get(email=email)
                 if not user.check_password(password):
                     user = None
+                else:
+                    user.backend = 'django.contrib.auth.backends.ModelBackend'  # Set the backend
             except CustomUser.DoesNotExist:
                 user = None
         else:
@@ -49,6 +86,8 @@ def Login(request):
                 user = CustomUser.objects.get(phone=phone)
                 if not user.check_password(password):
                     user = None
+                else:
+                    user.backend = 'django.contrib.auth.backends.ModelBackend'  # Set the backend
             except CustomUser.DoesNotExist:
                 user = None
 
@@ -115,7 +154,7 @@ def Registration(request):
     
     return render(request, 'registration.html')
 
-@csrf_exempt
+@csrf_exempt  # Exempt CSRF check for this view
 def google_authenticate(request):
     if request.method == 'POST':
         try:
@@ -149,14 +188,11 @@ def google_authenticate(request):
                 name = email.split('@')[0]
                 
             # Check if user exists, create if not
-            try:
-                user = CustomUser.objects.get(email=email)
-            except CustomUser.DoesNotExist:
-                # Create new user
-                user = CustomUser.objects.create(
-                    email=email, 
-                    username=name
-                )
+            user, created = CustomUser.objects.get_or_create(
+                email=email,
+                defaults={'username': name}
+            )
+            if created:
                 user.set_unusable_password()  # Better than setting password=None
                 user.save()
             
@@ -175,16 +211,21 @@ def google_authenticate(request):
     # Handle GET requests (for completeness)
     return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
 
+def PostLoginRedirect(request):
+    return redirect('Homepage') # Redirect to homepage after login
+
 def Indexpage(request):
     return render(request, 'index.html')
 
 def Homepage(request):
+    print(f"User is authenticated: {request.user.is_authenticated}")
     shoppings = Category.objects.filter(category_name="shopping").first()
     sports = Category.objects.filter(category_name="sports").first()
     politics = Category.objects.filter(category_name="politics").first()
     entertainment = Category.objects.filter(category_name="entertainment").first()
     latestnews = Article.objects.order_by('-created_at').exclude(category=shoppings).first()
     topfivenews = Article.objects.order_by('-created_at').exclude(pk=latestnews.pk).exclude(category=shoppings)[:5]
+    
     
 
     if latestnews:
@@ -200,7 +241,6 @@ def Homepage(request):
         latestnews_images =[]
 
     form = CommentForm()
-    categories = Category.objects.all()
     displayed_article_ids = set(news.pk for news in topfivenews)
 
     if latestnews:
@@ -224,7 +264,6 @@ def Homepage(request):
                                          'topfivenews': topfivenews,
                                          'comments': comments,
                                          'form': form,
-                                         'categories': categories,
                                          'shoppingnews': shoppingnews,
                                          'sportsnews': sportsnews,
                                          'politicsnews': politicsnews,
@@ -249,8 +288,8 @@ def articledetail(request, article_id):
         for news in related_news
     }
 
-    categories = Category.objects.all()
-    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images, 'related_news':related_news, 'related_news_images': related_news_images, 'comments':comments, 'categories': categories, 'tags': tags})
+    
+    return render(request, 'detail-page.html', {'article': article, 'article_images': article_images, 'related_news':related_news, 'related_news_images': related_news_images, 'comments':comments, 'tags': tags})
 
 def contactus(request):
     categories = Category.objects.all()
@@ -269,7 +308,7 @@ def weatherpage(request):
 def Searchresult(request):
     query = request.GET.get('q', '').strip()
     page_number = request.GET.get('page', 1)
-    categories = Category.objects.all()
+    
 
     if query:
         articles = Article.objects.filter(
@@ -294,7 +333,7 @@ def Searchresult(request):
         ]
         return JsonResponse({'articles': articles_data, 'has_next': page_obj.has_next()})
 
-    return render(request, 'search_results.html', {'articles': page_obj, 'query': query, 'categories': categories})
+    return render(request, 'search_results.html', {'articles': page_obj, 'query': query})
 
 
 
@@ -323,13 +362,18 @@ def add_comment(request, article_id):
 
                 if score >= 0.7:
                     # If the comment is toxic, save it as an inappropriate comment
+                    user_profile_pic_url = ''
+                    if request.user.profile_pic:
+                        user_profile_pic_url = request.build_absolute_uri(request.user.profile_pic.url)
+
                     return JsonResponse({
                         'status': 'rejected', 
-                        'message': 'Your comment seems innapropriate!',
-                        'comment_saved': True
+                        'message': 'Your comment seems inappropriate!',
+                        'username': request.user.username,
+                        'created_at': timesince(comment.created_at) + " ago",  # Adjusted created_at for rejected comments
+                        'user_image': user_profile_pic_url,
                     })
-                    # print("Comment saved:", comment.comments)
-
+                
                 user_profile_pic_url = ''
                 if request.user.profile_pic:
                     user_profile_pic_url = request.build_absolute_uri(request.user.profile_pic.url)
@@ -599,6 +643,9 @@ def verify_otp(request):
 
 @staff_member_required
 def view_inappropriate_comments(request):
-    bad_comments = Comment.objects.filter(toxicity_score__gte=0.7).select_related('user', 'article')
+    bad_comments = Comment.objects.filter(toxicity_score__gte=0.7).select_related('user', 'article').order_by('-created_at')
     Comment.objects.filter(is_new_inappropriate=True, toxicity_score__gt=0.5).update(is_new_inappropriate=False)
     return render(request, 'view_innappropriate_comments.html', {'bad_comments': bad_comments})
+
+
+

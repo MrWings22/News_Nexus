@@ -374,7 +374,18 @@
     transition: transform 0.3s ease-in-out;
 }
 
-
+.category-division{
+    display: flex; 
+    gap: 30px; 
+    border-top: 
+    5px solid rgb(0, 119, 158);
+    flex-wrap: wrap;
+}
+.category-columns{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
 .headline-overlay {
     position: absolute;
     bottom: 0;
@@ -529,33 +540,36 @@
 
 .comment{
     background-color: rgb(255, 255, 255);
-    padding: 5px;
+    padding: 12px;
     min-width: 100%;
-    min-height: 100px;
+    min-height: 90px;
     width: 100%;
-    border-radius: 10px;
-    box-shadow: 5px 5px 10px rgb(142, 142, 142);
-
+    border-radius: 5px;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s ease forwards;
+    animation-delay: calc(var(--comment-index) * 100ms);
+    box-shadow: 1px 1px 2px rgb(81, 80, 80);
 }
 .comment p{
     margin-left: 60px;
+    margin-bottom: -2px;
 }
 
 #comment-list{
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
 }
 .input-field {
     position: relative;
     width: 100%;
-    min-height: 50px;
+    min-height: 100px;
     max-height: 100px;
     display: flex;
     align-items: flex-start; 
     border-radius: 20px;
     background: #fff;
-    box-shadow:0px 0px 10px 6px rgb(153, 226, 248);
+    box-shadow: 0 0 9px 5px rgb(110, 188, 234);
 }
 
 .comment-input {
@@ -587,8 +601,8 @@
     align-items: flex-start; 
     border-radius: 20px;
     background: #fff;
-    box-shadow:0px 0px 10px 7px rgb(153, 226, 248);
     margin-bottom: 5px;
+    box-shadow: 0 0 9px 5px rgb(110, 188, 234);
 }
 
 
@@ -603,9 +617,10 @@
     outline: none;
     overflow: hidden; 
     line-height: 1.5; 
-    
     border-radius: 20px;
-    
+    border-left: 1px solid rgb(110, 188, 234);
+    border-right: 1px solid rgb(110, 188, 234);
+    margin-right: 10px;;
 }
 
 .detailpage-comment-fields{
@@ -619,16 +634,24 @@
 .detailpage-commentarea{
     height: 135px;
     padding: 25px;
-    
+
 }
 
 .detailpage-usercomment{
     background: white;
     padding:8px;
     border-radius: 10px;
-    box-shadow: 5px 5px 10px rgb(142, 142, 142);
+    box-shadow: 1px 1px 2px rgb(81, 80, 80);
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s ease forwards;
+    animation-delay: calc(var(--comment-index) * 100ms);
 }
-
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 #sendButton {
     position: relative;
@@ -675,7 +698,8 @@
 .modal-content {
     height: 100%;
     overflow-y: auto;
-    background-color: #e8e8f3;
+    /* background-color: #e8e8f3; */
+    background-color: rgb(235, 238, 240);
 }
 
 .modal-backdrop {
@@ -766,13 +790,17 @@ body.modal-open .custom-modal {
     float: right;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+    
 }
-
+.search-icon i:hover{
+    cursor: pointer;
+}
 .search-icon i{
     font-size: large;
     color: #1b91ff;
     z-index: 111;
 }
+
 .search-wrapper.active .input-holder .search-icon {
     width: 30px; 
     height: 30px; 
@@ -891,7 +919,7 @@ body.modal-open .custom-modal {
 .detailpage-user_info{
     display: flex;
     gap: 10px;
-    align-items: center;
+    align-items: top;
 
 }
 .detailpage-user_info-img{
@@ -1238,8 +1266,13 @@ h3:hover{
 
 .language-buttons {
     display: flex;
-    align-items: flex-start;  /* Align to the left (optional) */
-    gap: 8px;                 /* Space between buttons */
+    align-items: flex-start;
+    justify-content: space-between;  /* Align to the left (optional) */
+    gap: 8px;     
+    z-index: 1;
+    position: absolute;
+    right: 25px;
+    width: 250px;      /* Space between buttons */
   }
 .language-buttons button {
     all: unset;               /* Remove all default button styles */
@@ -1248,6 +1281,7 @@ h3:hover{
     font-size: 10px;
     font-family: inherit;
     padding: 4px 0;
+    font-size: 11px;
   }
   
   .language-buttons button:hover {
@@ -1258,3 +1292,4 @@ h3:hover{
   .highlight {
     background-color: yellow;
 }
+

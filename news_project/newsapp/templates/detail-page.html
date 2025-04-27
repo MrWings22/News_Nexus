@@ -2,7 +2,6 @@
 {% load custom_filters %}
 {% load article_extras %}
 {%load static%}
-{% load article_extras %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -54,10 +53,10 @@
                             {% endif %} 
                         </div>
                         <div class="d-flex justify-content-between">
-                            <a href="#" class="text-dark link-hover me-3"><i class="fa fa-clock"></i> {{ article.content|reading_time }} minute read</a>
+                            <a href="#" class="text-dark link-hover me-3"><i class="fa fa-clock"></i> {{ article.description|reading_time }} minute read</a>
                             <a href="#" class="text-dark link-hover me-3"><i class="fa fa-eye"></i> {{article.views}} Views</a>
                             <button style="background: transparent; border: none;" type="button" class="text-black me-3 link-hover" data-bs-toggle="modal" >
-                                <i id="no-comments-msg" class="fa fa-comment-dots"></i><span id="comment-count">{{ comments.count }}</span> Comments
+                                <a href="#comment-list"  class="text-dark link-hover me-3"><i class="fa fa-comment-dots"></i><span id="comment-count">{{ comments.count }}</span> Comments</a>
                             </button>
                             <a href="#" class="text-dark link-hover" onclick="shareWebsite(); return false;">
                                 <i class="fa fa-arrow-up"></i>Share
@@ -110,10 +109,10 @@
                                             {% for comment in article.comment_set.all  %}
                                                 <div class="detailpage-usercomment">
                                                     <div class="detailpage-user_info">
-                                                        {% if comment.user.profile_pic %}
+                                                    {% if comment.user.profile_pic %}
                                                         <img src="{{ comment.user.profile_pic.url }}" alt="" class="detailpage-user_info-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
                                                     {% else %}
-                                                        <img src="{% static 'profile-default.jpg' %}" alt="" class="detailpage-user_info-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
+                                                        <img src="{% static 'img/profile_default.jpg' %}" alt="" class="detailpage-user_info-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
                                                     {% endif %}
                                                     
                                                         <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">{{ comment.user.username }}</div></b>
@@ -137,7 +136,11 @@
                                         <form id="commentForm" action="{% url 'add_comment' article.article_id %}" method="post">
                                             {% csrf_token %}
                                             <div class="detailpage-input-field">
-                                                <img src="{{ user_profile_pic }}"  alt="" style=" width:50px; height:50px; border-radius:50%; object-fit:cover; margin: 3px;">   
+                                                {% if user_profile_pic %}
+                                                    <img src="{{ user_profile_pic }}"  alt="" style=" width:50px; height:50px; border-radius:50%; object-fit:cover; margin: 3px;"> 
+                                                {% else %}
+                                                    <img src="{% static 'img/profile_default.jpg' %}" alt=""  style=" width:50px; height:50px; border-radius:50%; object-fit:cover; margin: 3px;">
+                                                {% endif %}   
                                                 <textarea name="comments" class="detailpage-comment-input" placeholder="Add a comment..." required></textarea>
                                                 <button type="button" id="sendButton">
                                                     <i id="sendicon" class="fa fa-paper-plane"></i>
@@ -156,7 +159,7 @@
                     </div>
                     <div class="col-lg-4 p-2 justify-content-around">
                         {% for news in related_news %}
-                            <div style="height: 140px; background: linear-gradient(to top right, white, rgb(229, 248, 255));" class="row-sm-2 mt-3 rounded">
+                            <div style="height: 140px; background: linear-gradient(to top right, white, rgb(229, 248, 255)); overflow: hidden;" class="row-sm-2 mt-3 rounded">
                                 <div style="margin-left: 0px; width: 100%;border-radius: 10px; border: 1px solid white; box-shadow: 4px 2px 6px 0px rgb(147, 147, 147);"class="row">
                                     <div style=" height: 140px;" class="col-sm-4 rounded p-0">
                                         {% with related_news_images|get:news.article_id as news_image %}

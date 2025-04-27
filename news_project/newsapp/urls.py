@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import path
+from django.urls import include, path
 from . import views
 from .views import contact_view
 from django.contrib.auth.views import (
@@ -8,8 +8,10 @@ from django.contrib.auth.views import (
 from .views import CustomPasswordResetView
 from django.contrib import admin
 
+
 urlpatterns = [
     path('admin/', admin.site.urls), 
+    path('accounts/', include('allauth.urls')), 
     path('index/', views.Indexpage,  name="Indexpage"),
     path('', views.Homepage,  name="Homepage"),
     path('article/<int:article_id>', views.articledetail, name='articledetail'),
@@ -51,6 +53,8 @@ urlpatterns = [
     path('send-otp/', views.send_otp, name='send_otp'),
     path('verify-otp/', views.verify_otp, name='verify_otp'),
     path('admin-inappropriate-comments/', views.view_inappropriate_comments, name='inappropriate_comments'),
+    path('post-login-redirect/', views.PostLoginRedirect, name='post_login_redirect'),
+
 ]
 
 

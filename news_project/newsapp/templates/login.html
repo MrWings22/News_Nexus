@@ -1,4 +1,5 @@
 {% load static %}
+{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,15 +64,20 @@
         </form>
 
         <div class="divider"><span>or</span></div>
+
+        <a class="google-signin" href="{% provider_login_url 'google' %}" > 
+            <img width="33" height="33" src="https://img.icons8.com/color/48/google-logo.png" alt="google-logo"/>
+            Login with Google
+        </a>
         
-        <div class="social-login">
+        <!-- <div class="social-login">
             <div id="g_id_onload"
                 data-client_id="17220004254-2qn2ck2rjorqrfp90eukhadat3cah9lr.apps.googleusercontent.com"
                 data-callback="handleCredentialResponse"
                 data-auto_prompt="false">
             </div>
             <div class="g_id_signin" data-type="standard"></div>
-        </div>
+        </div> -->
 
         <div class="register-link">
             Don't have an account? <a href="{% url 'register' %}">Register here</a>

@@ -221,7 +221,17 @@ updateDate();
         const commentForm = document.getElementById('commentForm');
         const sendButton = document.getElementById('sendButton');
         const commentList = document.getElementById('comment-list');
+        const textarea = document.querySelector('.detailpage-comment-input');
+        
+        
         console.log("Detail page JS loaded", commentForm, sendButton, commentList);
+
+        textarea.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();  // Prevent the default newline behavior
+                sendButton.click();      // Trigger button click
+            }
+        });
 
         sendButton.addEventListener('click', function() {
             console.log("Send button clicked on detail page");
@@ -256,7 +266,7 @@ updateDate();
                     newComment.classList.add('comment'); 
                     newComment.innerHTML = `
                         <div class="detailpage-user_date" style="display: flex; align-items: center; gap: 10px;">
-                        ${data.user_image ? `<img src="${data.user_image}" alt="User Image" class="detailpage-user_info-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">` : ''}
+                        ${data.user_image ? `<img src="${data.user_image}" alt="User Image" class="detailpage-user_info-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">` : `<img src="/path/to/default-avatar.png" alt="User Image" class="detailpage-user_info-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">`}
                             <div class="detailpage-user_info"> 
                                 <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">${data.username}</div></b>
                                 <div class="detailpage-date" style=" color: grey">${data.created_at}</div>
@@ -287,7 +297,27 @@ updateDate();
                     }
 
                 } else if (data.status === 'rejected') {
-                    showToast(data.message, 'error');// This will show "Your comment seems toxic!"
+                    // Handle rejected comment
+                    const rejectedComment = document.createElement('div');
+                    rejectedComment.classList.add('detailpage-usercomment');
+                    rejectedComment.classList.add('comment');
+                    rejectedComment.innerHTML = `
+                        <div class="detailpage-user_date" style="display: flex; align-items: center; gap: 10px;">
+                            <!-- Use placeholder if no user image in rejected comment -->
+                            ${data.user_image ? `<img src="${data.user_image}" alt="User Image" class="detailpage-user_info-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">` : `<img src="/path/to/default-avatar.png" alt="User Image" class="detailpage-user_info-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">`}
+                            <div class="detailpage-user_info"> 
+                                <b><div class="detailpage-user" style="color:rgb(110, 110, 255)">${data.username || 'Unknown User'}</div></b>
+                                <div class="detailpage-date" style=" color: grey">${data.created_at || 'Just now'}</div>
+                            </div>
+                        </div>
+                        <p>Inappropriate comment</p>
+                    `;
+                    commentList.appendChild(rejectedComment);
+        
+                    // Optionally show a toast or a message
+                    showToast(data.message, 'error'); // This will show "Your comment seems inappropriate!"
+                
+                
                 } else {
                     alert('Failed to submit comment.'); // Generic fallback
                 }

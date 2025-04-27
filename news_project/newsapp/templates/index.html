@@ -57,25 +57,42 @@
     new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,ml,ta,hi'}, 'google_translate_element');
   }
 
-  function translatePage(lang) {
-  const i = setInterval(() => {
-    const s = document.querySelector('.goog-te-combo');
-    if (s) {
-      if (lang === 'en') {
-        document.cookie = "googtrans=/en/en; path=/;";
-        location.reload(); // reloads page to original language
-      } else {
-        s.value = lang;
-        s.dispatchEvent(new Event('change'));
-      }
-      clearInterval(i);
+  function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      expires = "; expires=" + date.toUTCString();
     }
-  }, 100);
-}
+    document.cookie = name + "=" + value + expires + "; path=/";
+    document.cookie = name + "=" + value + expires + "; path=/; domain=" + window.location.hostname;
+  }
+
+  function translatePage(lang) {
+    // Always set the googtrans cookie and reload
+    setCookie("googtrans", `/en/${lang}`, 1);
+    location.reload();
+  }
+
+//   function translatePage(lang) {
+//   const i = setInterval(() => {
+//     const s = document.querySelector('.goog-te-combo');
+//     if (s) {
+//       if (lang === 'en') {
+//         setCookie("googtrans", `/en/${lang}`, 1);
+//         location.reload();
+//       } else {
+//         s.value = lang;
+//         s.dispatchEvent(new Event('change'));
+//       }
+//       clearInterval(i);
+//     }
+//   }, 100);
+// }
 </script>
 
         <!-- Navbar start -->
-        <div class="container-fluid sticky-top px-0 notranslate">
+        <div class="container-fluid sticky-top px-0">
             <div class="container-fluid topbar bg-dark d-none d-lg-block">
                 <div class="container px-0">
                     <div class="topbar-top d-flex justify-content-between flex-lg-wrap">
@@ -84,30 +101,31 @@
                                 <i class="fas fa-bolt text-white"></i>
                             </span>
                             <div class="pe-2 me-3 border-end border-white d-flex align-items-center">
-                                <p class="mb-0 text-white fs-6 fw-normal">Trending</p>
+                                <p class="mb-0 text-white fs-6 fw-normal notranslate">Trending</p>
                             </div>
-                            <div class="overflow-hidden" style="width: 1000px;">
+                            <div class="overflow-hidden" style="width: 800px;">
                                 <div id="note" class="ps-2"><p class="text-primary mb-0 link-hover">breaking news:&nbsp;</p>
-                                {% if breakingnews %}
-                                {% with img=breakingnews.articleimages_set.first %}
-                                    <img src="{{ img.image.url }}" class="img-fluid rounded-circle border border-3 border-primary me-2" style="width: 30px; height: 30px;" alt="">
-                                {%endwith%}
-                                
-                                    <a href="{% url 'articledetail' breakingnews.article_id %}">
-                                        <p class="text-white mb-0 link-hover"> {{breakingnews.head_line}}</p>
-                                    </a>
-                                {% else %}
-                                    <p class="text-white mb-0">no breaking news available</p> 
-                                {% endif %}                                
+                                    {% if breakingnews %}
+                                    {% with img=breakingnews.articleimages_set.first %}
+                                        <img src="{{ img.image.url }}" class="img-fluid rounded-circle border border-3 border-primary me-2" style="width: 30px; height: 30px;" alt="">
+                                    {%endwith%}
+                                    
+                                        <a href="{% url 'articledetail' breakingnews.article_id %}">
+                                            <p class="text-white mb-0 link-hover"> {{breakingnews.head_line}}</p>
+                                        </a>
+                                    {% else %}
+                                        <p class="text-white mb-0">no breaking news available</p> 
+                                    {% endif %}                                
                                 </div>
                             </div>
-                        </div>
-                        <div class="top-link language-buttons notranslate" style="width: 110px;">                            
-                            <button onclick="translatePage('en')">English</button>
-                            <button onclick="translatePage('ml')">മലയാളം</button>
-                            <button onclick="translatePage('ta')">தமிழ்</button>
-                            <button onclick="translatePage('hi')">हिन्दी</button>
-                        </div>                          
+                        
+                            <div class="language-buttons notranslate">
+                                <button onclick="translatePage('en')">English</button>
+                                <button onclick="translatePage('ml')">മലയാളം</button>
+                                <button onclick="translatePage('ta')">தமிழ்</button>
+                                <button onclick="translatePage('hi')">हिन्दी</button>
+                            </div>    
+                        </div>                      
                     </div>
                 </div>
             </div>
@@ -150,57 +168,38 @@
                                 {% endif %}
                                
                             </div>
-                            <div class="d-flex flex-nowrap border-top pt-3 pt-xl-0">
-                                <a href="{% url 'weather' %}" >
-                                <div class="d-flex">
-                                    <img src="{% static 'img/weather-icon.png' %}" class="img-fluid w-100 me-2" alt="" id="weather-icon">
-                                    <div class="d-flex align-items-center">
-                                        <strong class="fs-4 text-secondary" id="temperature">Fetching...</strong>
-                                        <div class="d-flex flex-column ms-2" style="width: 150px;">
-                                            <span class="text-body" id="location">Locating...</span>
-                                            <small id="weather-date">Loading date...</small>
+                            <div class="d-flex flex-nowrap border-top pt-3 pt-xl-0 ">
+                                <a href="{% url 'weather' %}">
+                                    <div class="d-flex">
+                                        <img src="{% static 'img/weather-icon.png' %}" class="img-fluid w-100 me-2" alt="" id="weather-icon">
+                                        <div class="d-flex align-items-center">
+                                            <strong class="fs-4 text-secondary" id="temperature">Fetching...</strong>
+                                            <div class="d-flex flex-column ms-2" style="width: 150px;">
+                                                <span class="text-body" id="location">Locating...</span>
+                                                <small id="weather-date">Loading date...</small>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
                                 </a>
-                                <!-- <button class="btn-search btn border border-primary btn-md-square rounded-circle bg-white my-auto" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button> -->
+                           
+                                <div class="search-wrapper">
+                                    <form method="GET" action="{% url 'searchresults' %}">
+                                        <div class="input-holder">
+                                            <input type="text" class="search-input" name="q" placeholder="Type to search" value="{{ query|default:'' }}" />
+                                            <button type="submit" class="search-icon" onclick="searchToggle(this, event);">
+                                                <i class="bi bi-search" ></i>
+                                            </button> 
+                                        </div>
+                                        <span class="close" onclick="searchToggle(this, event);"></span>
+                                    </form>
+                                </div>
                             </div>
-                            <div class="search-wrapper">
-                                <form method="GET" action="{% url 'searchresults' %}">
-                                    <div class="input-holder">
-                                        <input type="text" class="search-input" name="q" placeholder="Type to search" value="{{ query|default:'' }}" />
-                                        <button type="button" class="search-icon" onclick="searchToggle(this, event);">
-                                            <i class="bi bi-search"></i>
-                                        </button> 
-                                    </div>
-                                    <span class="close" onclick="searchToggle(this, event);"></span>
-                                </form>
-                            </div>
-                       
                         </div>
                     </nav>
                 </div>
             </div>
         </div>
         <!-- Navbar End -->
-          
-        <!-- Modal Search Start -->
-        <!-- <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-fullscreen">
-                <div class="modal-content rounded-0">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Search by keyword</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body d-flex align-items-center">
-                        <div class="input-group w-75 mx-auto d-flex">
-                            <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                            <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
-                        </div>
-                    </div>   
-                </div>
-            </div>
-        </div> -->
         
         
         <!-- Modal Search End -->
@@ -237,18 +236,18 @@
                         
                     </div>
                 </div>
-                <div class="row g-5">
+                <div class="row g-5 notranslate">
                     <div class="col-lg-6 col-xl-3">
                         <div class="footer-item-1">
                             <h4 class="mb-4 text-white">Get In Touch</h4>
-                            <p class="text-secondary line-h">Address: <span class="text-white">Cherpunkal, Palai</span></p>
-                            <p class="text-secondary line-h">Email: <span class="text-white">newsnexus@gmail.com</span></p>
-                            <p class="text-secondary line-h">Phone: <span class="text-white">+91 123 4567 890</span></p>
+                            <p class="text-secondary line-h">Address: <span class="text-white">123 Streat, New York</span></p>
+                            <p class="text-secondary line-h">Email: <span class="text-white">Example@gmail.com</span></p>
+                            <p class="text-secondary line-h">Phone: <span class="text-white">+0123 4567 8910</span></p>
                             <div class="d-flex line-h">
-                                <a class="btn btn-light me-2 btn-md-square rounded-circle" href="https://twitter.com"><i class="fab fa-twitter text-dark"></i></a>
-                                <a class="btn btn-light me-2 btn-md-square rounded-circle" href="https://www.facebook.com"><i class="fab fa-facebook-f text-dark"></i></a>
-                                <a class="btn btn-light me-2 btn-md-square rounded-circle" href="https://www.youtube.com"><i class="fab fa-youtube text-dark"></i></a>
-                                <a class="btn btn-light btn-md-square rounded-circle" href="https://www.instagram.com"><i class="fab fa-instagram text-dark"></i></a>
+                                <a class="btn btn-light me-2 btn-md-square rounded-circle" href=""><i class="fab fa-twitter text-dark"></i></a>
+                                <a class="btn btn-light me-2 btn-md-square rounded-circle" href=""><i class="fab fa-facebook-f text-dark"></i></a>
+                                <a class="btn btn-light me-2 btn-md-square rounded-circle" href=""><i class="fab fa-youtube text-dark"></i></a>
+                                <a class="btn btn-light btn-md-square rounded-circle" href=""><i class="fab fa-linkedin-in text-dark"></i></a>
                             </div>
                         </div>
                     </div>
@@ -304,7 +303,7 @@
 
 
         <!-- Copyright Start -->
-        <div class="container-fluid copyright bg-dark py-4">
+        <div class="container-fluid copyright bg-dark py-4 notranslate">
             <div class="container">
                 <div class="row">
                     <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">

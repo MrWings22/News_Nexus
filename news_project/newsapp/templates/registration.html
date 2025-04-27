@@ -1,4 +1,6 @@
 {% load static %}
+{% load socialaccount %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,6 +15,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="{% static 'css/loginreg.css' %}">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js"></script>
 
    
 </head>
@@ -51,7 +55,7 @@
             
             <!-- Phone Number -->
             <div class="form-group">
-                <input type="tel" id="phone" name="phone" placeholder="Enter phone number"  pattern="[6-9]\d{9}" required>
+                <input type="tel" id="phone" name="phone" placeholder="Enter phone number">
             </div>
             <!-- Password -->
             <div class="form-group">
@@ -65,18 +69,32 @@
             </div>
             <button type="submit" class="btn">Register</button>
         </form>
+        
         <div class="divider"><span>or</span></div>
-       
-        <div class="social-login">
-            <div id="g_id_onload"
-            data-client_id="401461607164-iteo9mansh0couh6mfleifi6u3fn5adh.apps.googleusercontent.com"
-            data-context="signup"
+
+            <a class="google-signin" href="{% provider_login_url 'google' %}" > 
+                <img width="33" height="33" src="https://img.icons8.com/color/48/google-logo.png" alt="google-logo"/>
+                Login with Google
+            </a>
+    
+        
+        <!-- <div id="g_id_onload"
+            data-client_id="YOUR_GOOGLE_CLIENT_ID"
+            data-context="signin"
             data-ux_mode="popup"
-            data-callback="handleCredentialResponse"
+            data-callback="handleGoogleResponse"
             data-auto_prompt="false">
         </div>
-            <div class="g_id_signin" data-type="standard"></div>
-        </div>
+    
+        <div class="g_id_signin"
+            data-type="standard"
+            data-shape="rectangular"
+            data-theme="outline"
+            data-text="sign_in_with"
+            data-size="large"
+            data-logo_alignment="left">
+        </div> -->
+   
         <div class="register-link">
             Already have an account? <a href="{% url 'login' %}">Login here</a>
         </div>
@@ -88,7 +106,7 @@
             const phoneInputField = document.getElementById("phone");
            
             // Initialize intl-tel-input with India as the default country
-            const iti = window.intlTelInput(phoneInputField, {
+            const iti = window.intlTelInput(phoneInput, {
                 initialCountry: "in", // Set India as default
                 preferredCountries: ["in", "us", "gb"], // Optional: prioritize some countries
                 separateDialCode: true, // Display the dial code separately
@@ -96,31 +114,9 @@
             });
         });    
             
-        function handleCredentialResponse(response) {
-            console.log("Google response:", response);
-            
-            // Send the credential to your backend
-            fetch("{% url 'google_authenticate' %}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCSRFToken()
-                },
-                body: JSON.stringify({credential: response.credential})
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = "{% url 'Homepage' %}";
-                } else {
-                    console.error("Error:", data.error);
-                    alert("Sign-in failed: " + data.error);
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-            });
-        }
+  
+        
+
 
         // Function to get CSRF token
         function getCSRFToken() {

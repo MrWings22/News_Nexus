@@ -3,7 +3,7 @@ import json
 from google.cloud import translate_v2 as translate
 from google.cloud import language_v1
 
-PERSPECTIVE_API_KEY = "AIzaSyDpv06_Q3VuOYpr-DW2dpNnLSVfZwFaVH4"  # Replace with your key
+PERSPECTIVE_API_KEY = "AIzaSyDpv06_Q3VuOYpr-DW2dpNnLSVfZwFaVH4" 
 # Function to detect language using LibreTranslate (FREE)
 def detect_language(text):
     try:

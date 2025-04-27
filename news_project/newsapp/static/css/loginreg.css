@@ -157,3 +157,7 @@ h2 {
 #otp-section button.confirm-otp-btn {
     margin-left: 10px;
 }
+
+.google-signin{
+    background-color: rgb(255, 255, 255); height: fit-content; width:100%; padding: 6px 0 6px 0; border-radius: 5px; border: 1px solid rgb(198, 198, 198); text-decoration: none; color: rgb(43, 43, 43); display: flex; flex-direction: row; align-items: center; justify-content: center;
+}

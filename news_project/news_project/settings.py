@@ -39,6 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +54,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sites.middleware.CurrentSiteMiddleware',
+    'allauth.account.middleware.AccountMiddleware', 
 ]
 
 ROOT_URLCONF = 'news_project.urls'
@@ -66,6 +73,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'newsapp.context_processors.breaking_news_processor',
                 'newsapp.context_processors.bad_comment_count',
+                'newsapp.context_processors.user_profile_context',
+                'newsapp.context_processors.category_list',
             ],
         },
          'DIRS': [BASE_DIR / 'newsapp/templates'],
@@ -130,7 +139,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'newsapp.CustomUser'
 LOGIN_URL = '/login/'
 
-LOGIN_REDIRECT_URL = "http://localhost:8000/google-authenticate"
+
 
 
 CSRF_TRUSTED_ORIGINS = [
@@ -153,4 +162,49 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+GOOGLE_CLIENT_ID = config("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = config("GOOGLE_CLIENT_SECRET")
+
+
+
+
+
+LOGIN_REDIRECT_URL = "/post-login-redirect/"
+LOGOUT_REDIRECT_URL = '/'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': ['email'],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_PKCE_ENABLED': True,
+    }
+}
+
+SITE_ID = 2
+
+# Custom adapter for social account login
+# newsapp/adapters.py
+SOCIALACCOUNT_ADAPTER = 'newsapp.adapters.CustomSocialAccountAdapter'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'newsapp.adapters': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+# newsapp/adapters.py

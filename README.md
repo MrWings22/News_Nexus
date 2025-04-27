@@ -1,55 +1,56 @@
-News Nexus 📰
+# 📰 News Nexus
 
-News Nexus is a dynamic web app that aggregates and displays the latest news, offering a clean and responsive user experience.
+**News Nexus** is a dynamic Django-based web app that aggregates and displays the latest news with a clean, responsive user interface.
 
-📖 About
-News Nexus is a Django-based web app that fetches and displays live news articles in an elegant, responsive design.
-It also supports user authentication, Google OAuth login, and email services configured via SMTP.
+---
 
-✨ Features
-📰 Aggregates real-time news content.
+## 📖 About
 
-👤 User authentication (Signup/Login).
+News Nexus fetches and displays live news articles in an elegant way.  
+It supports:
+- User authentication
+- Google OAuth login
+- Email services via SMTP
+- Secure environment variables
 
-🔑 Google OAuth 2.0 Authentication.
+---
 
-📧 Email notifications (SMTP setup via Gmail).
+## ✨ Features
 
-📱 Responsive and clean UI using SCSS and JS.
+- 📰 Aggregates real-time news content.
+- 👤 User authentication (Signup/Login).
+- 🔑 Google OAuth 2.0 Authentication.
+- 📧 Email notifications (Gmail SMTP setup).
+- 📱 Responsive UI with SCSS and JavaScript.
+- 🔐 Secure environment management using `.env`.
 
-🔐 Secure environment management with .env.
+---
 
-🚀 Installation and Setup
-Clone the repository
+## 🚀 Installation and Setup
 
-bash
-Copy
-Edit
+### Clone the repository
+```bash
 git clone https://github.com/MrWings22/News_Nexus.git
 cd News_Nexus
-Create and activate a virtual environment
+```
 
-bash
-Copy
-Edit
+### Create and activate a virtual environment
+```bash
 python -m venv venv
 # Windows
 venv\Scripts\activate
 # Mac/Linux
 source venv/bin/activate
-Install dependencies
+```
 
-bash
-Copy
-Edit
+### Install dependencies
+```bash
 pip install -r requirements.txt
-Set up the .env file
+```
 
-Create a .env file inside the project root and add:
-
-env
-Copy
-Edit
+### Set up the `.env` file
+Create a `.env` file in the root directory and add:
+```env
 SECRET_KEY=your-django-secret-key
 
 # Email Settings
@@ -64,63 +65,63 @@ DEFAULT_FROM_EMAIL=your-gmail-address@gmail.com
 # Google OAuth Settings
 GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=your-google-client-secret
-⚡ Important: Never commit the .env file to GitHub!
+```
+⚡ **Important:** Never commit your `.env` file to GitHub!
 
-Run migrations
-
-bash
-Copy
-Edit
+### Run migrations
+```bash
 python manage.py migrate
-Create a Superuser
+```
 
-bash
-Copy
-Edit
+### Create a Superuser
+```bash
 python manage.py createsuperuser
-You'll be asked to enter:
+```
+Provide:
+- Username
+- Email
+- Password
 
-Username
-
-Email
-
-Password
-
-Start the development server
-
-bash
-Copy
-Edit
+### Start the development server
+```bash
 python manage.py runserver
-Access the app Go to: http://127.0.0.1:8000/
+```
 
-🛠 Project Structure
-csharp
-Copy
-Edit
+Access the app at: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+
+---
+
+## 🛠 Project Structure
+
+```
 News_Nexus/
 │
 ├── .vscode/            # VSCode settings
 ├── news_project/       # Django project
-│   ├── settings.py     # Configurations (.env reading)
-│   ├── urls.py         # URL routes
-│   ├── templates/      # HTML files
-│   ├── static/         # CSS, JS, Images
-│   └── manage.py       # Django manager
-├── requirements.txt    # Required Python packages
-├── LICENSE             # MIT License
-└── README.md           # You are here!
-🔥 Tech Stack
-Backend: Django (Python 3.10+)
+│   ├── settings.py     # Django settings (.env included)
+│   ├── urls.py         # Project URL routes
+│   ├── templates/      # HTML templates
+│   ├── static/         # CSS, JS, images
+│   └── manage.py       # Django management script
+├── requirements.txt    # Python dependencies
+├── LICENSE             # Project license
+└── README.md           # This file
+```
 
-Frontend: HTML5, CSS3, SCSS, JavaScript
+---
 
-Database: SQLite (default) – easily switchable
+## 🔥 Tech Stack
 
-Auth: Django Auth + Google OAuth
+- **Backend**: Django (Python 3.10+)
+- **Frontend**: HTML5, CSS3, SCSS, JavaScript
+- **Database**: SQLite (default; easily switchable)
+- **Authentication**: Django Auth + Google OAuth
+- **Email Service**: Gmail SMTP
 
-Email: Gmail SMTP backend
+---
 
-🛡️ License
-This project is licensed under the MIT License.
+## 🛡️ License
 
+This project is licensed under the **MIT License**.
+
+---

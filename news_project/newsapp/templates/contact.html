@@ -1,0 +1,136 @@
+{% extends 'index.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>NewsNexus</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
+        <link rel="icon" href="{% static 'img/NewsNexuslogo.png' %}">
+
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@100;600;800&display=swap" rel="stylesheet"> 
+
+        <!-- Icon Font Stylesheet -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+        <!-- Libraries Stylesheet -->
+        <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+        <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+        <!-- Template Stylesheet -->
+        <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    </head>
+
+    <body>
+        {%block contents%}
+        <!-- Contact Us Start -->
+        <div class="container-fluid py-5">
+            <div class="container py-5">
+                <div class="bg-light rounded p-5">
+                    <div class="row g-4">
+                        <div class="col-lg-5">
+                            <div class="">
+                                <h1 class="mb-4">General Customer Care & Technical Support</h1>
+                                <p class="mb-4">The contact form is currently inactive. Get a functional and working contact form with Ajax & PHP in a few minutes. Just copy and paste the files, add a little code and you're done. <a href="https://htmlcodex.com/contact-form">Download Now</a>.</p>
+                                <div class="rounded">
+                                    <iframe class="rounded w-100" 
+                                    style="height: 425px;" 
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3845.8780889138184!2d76.63748757488331!3d9.686567778349776!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b07d33732dc5e6b%3A0x9cd375f1a9f11195!2sBishop%20Vayalil%20Memorial%20Holy%20Cross%20College!5e1!3m2!1sen!2sin!4v1741259102571!5m2!1sen!2sin" 
+                                    loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                                    </iframe>                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-7">
+                            <form action="{% url 'contact' %}" method="post" class="mb-4">
+                            {% csrf_token %}
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <input type="text" class="w-100 form-control border-0 py-3" name="name" placeholder="Your Name">
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="email" class="w-100 form-control border-0 py-3" name="email" placeholder="Enter Your Email">
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="w-100 form-control border-0 py-3" name="phone" placeholder="Enter Your Phone">
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="w-100 form-control border-0 py-3" name="subject" placeholder="Subject">
+                                    </div>
+                                    <div class="col-12">
+                                        <textarea name="message" class="w-100 form-control border-0" rows="6" cols="10" placeholder="Your Message"></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="w-100 btn btn-primary form-control py-3" type="submit">Submit Now</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="row g-4">
+                                <div class="col-xl-6">
+                                    <div class="d-flex p-4 rounded bg-white">
+                                        <i class="fas fa-map-marker-alt fa-2x text-primary me-4"></i>
+                                        <div>
+                                            <h4>Address</h4>
+                                            <a href="https://maps.app.goo.gl/3aU6XqSwGKLRogSx6">BVM Holy Cross College Cherpunkal, Kottayam</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6">
+                                    <div class="d-flex p-4 rounded bg-white">
+                                        <i class="fas fa-envelope fa-2x text-primary me-4"></i>
+                                        <div>
+                                            <h4>Mail Us</h4>
+                                            <a href="mailto:harishankarka@gmail.com">harishankarka@gmail.com</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6">
+                                    <div class="d-flex p-4 rounded bg-white">
+                                        <i class="fa fa-phone-alt fa-2x text-primary me-4"></i>
+                                        <div>
+                                            <h4>Telephone</h4>
+                                            <a href "tel:+918075963076">8075963076</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6">
+                                    <div class="d-flex p-4 rounded bg-white">
+                                        <i class="fa fa-share-alt fa-2x text-primary me-4"></i>
+                                        <div>
+                                            <h4>Share</h4>
+                                            <div class="d-flex">
+                                                <button class="btn btn-primary" onclick="shareWebsite()"><i class="fa fa-share-alt me-2"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Contact Us End -->
+        {%endblock%}
+        <!-- JavaScript Libraries -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+        <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+        <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+        <!-- Template Javascript -->
+        <script src="{% static 'js/main.js' %}"></script>
+    </body>
+
+</html>

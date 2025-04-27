@@ -1,0 +1,141 @@
+{% load static %}
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsNexus - Login</title>
+    <link rel="icon" href="{% static 'img/NewsNexuslogo.png' %}">
+    
+    <!-- Google Sign-In API -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- intl-tel-input CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="{% static 'css/loginreg.css' %}">
+</head>
+<body>
+    <div class="goback">
+        <a href="{% url 'Homepage' %}"><i class='bx bxs-left-arrow-square'></i></a>
+    </div>
+    <div class="login-container">
+        <h2>Login to NewsApp</h2>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p style="color:red" class="">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form id="loginForm" method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <input type="hidden" id="login_method" name="login_method" value="email">
+
+            <!-- Email Login -->
+            <div class="form-group" id="emailGroup">
+                <input type="email" id="email" name="email" placeholder=" " required>
+                <label for="email">Email</label>
+            </div>
+
+            <!-- Phone Login -->
+            <div class="form-group" id="phoneGroup" style="display: none;">
+                <label for="phone">Phone Number</label>
+                <div class="phone-input-container">
+                    <input type="tel" id="phone" name="phone" pattern="[6-9]\d{9}" >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="password" id="password" name="password" placeholder=" " required>
+                <label for="password">Password</label>
+            </div>
+
+            <div class="toggle-login" onclick="toggleLoginMethod()">
+                Use <span id="toggleText">Phone Number</span> instead
+            </div>
+
+            <p><a href="{% url 'password_reset' %}">Forgot your password?</a></p>
+
+            <button type="submit" class="btn">Login</button>
+        </form>
+
+        <div class="divider"><span>or</span></div>
+
+        <a class="google-signin" href="{% provider_login_url 'google' %}" > 
+            <img width="33" height="33" src="https://img.icons8.com/color/48/google-logo.png" alt="google-logo"/>
+            Login with Google
+        </a>
+        
+        <!-- <div class="social-login">
+            <div id="g_id_onload"
+                data-client_id="17220004254-2qn2ck2rjorqrfp90eukhadat3cah9lr.apps.googleusercontent.com"
+                data-callback="handleCredentialResponse"
+                data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin" data-type="standard"></div>
+        </div> -->
+
+        <div class="register-link">
+            Don't have an account? <a href="{% url 'register' %}">Register here</a>
+        </div>
+    </div>
+    
+    <!-- intl-tel-input JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+
+    <script>
+        let isEmailLogin = true;
+
+        function toggleLoginMethod() {
+            const emailGroup = document.getElementById('emailGroup');
+            const phoneGroup = document.getElementById('phoneGroup');
+            const toggleText = document.getElementById('toggleText');
+            const loginMethodInput = document.getElementById('login_method');
+
+            if (isEmailLogin) {
+                emailGroup.style.display = 'none';
+                phoneGroup.style.display = 'block';
+                toggleText.textContent = 'Email';
+                loginMethodInput.value = 'phone';
+            } else {
+                emailGroup.style.display = 'block';
+                phoneGroup.style.display = 'none';
+                toggleText.textContent = 'Phone Number';
+                loginMethodInput.value = 'email';
+            }
+            isEmailLogin = !isEmailLogin;
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const phoneInputField = document.getElementById("phone");
+
+            // Initialize intl-tel-input with India as the default country
+            const iti = window.intlTelInput(phoneInputField, {
+                initialCountry: "in",
+                separateDialCode: true, // Enables country code separation
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+            });
+
+            document.getElementById("loginForm").addEventListener("submit", function (e) {
+               
+
+                if (!isEmailLogin) {
+                    if (iti.isValidNumber()) {
+                        phoneInputField.value = iti.getNumber();
+                    } else {
+                        alert("Invalid phone number. Please check your input.");
+                        e.preventDefault();
+                    }
+                }
+            });
+        });
+
+   
+    </script>
+
+</body>
+</html>

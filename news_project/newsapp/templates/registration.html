@@ -1,0 +1,206 @@
+{% load static %}
+{% load socialaccount %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsNexus - Register</title>
+    <link rel="icon" href="{% static 'img/NewsNexuslogo.png' %}">
+   
+    <!-- Google Sign-In API -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- intl-tel-input CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="{% static 'css/loginreg.css' %}">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+
+   
+</head>
+<body>
+    <div class="goback"  title="go back">
+        <a href="{% url 'Homepage' %}"><i class='bx bxs-left-arrow-square'></i></a>
+    </div>
+    <div class="register-container">
+        <h2>Register for NewsApp</h2>
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <p style="color:red" class="{{ message.tags }}">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form id="registerForm" method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
+            <!-- Full Name -->
+            <div class="form-group">
+                <input type="text" id="username" name="username" placeholder="" required>
+                <label for="username">Username</label>
+            </div>
+            <!-- Email -->
+            <div class="form-group" id="email-group">
+                <input type="email" id="email" name="email" placeholder="" required oninput="showVerifyBtn()">
+                <label for="email">Email</label>
+                <button type="button" id="verify-btn" class="verify-btn" style="display: none;" onclick="sendOTP()">Send OTP</button>
+            </div>
+            
+            <div class="form-group" id="otp-section" style="display: none;">
+                <input type="text" id="otp" name="otp" placeholder="Enter OTP">
+                <button type="button" class="confirm-otp-btn" onclick="verifyOTP()">Confirm OTP</button>
+                <p id="otp-message" style="color: red;"></p>
+            </div>
+            
+            <!-- Phone Number -->
+            <div class="form-group">
+                <input type="tel" id="phone" name="phone" placeholder="Enter phone number">
+            </div>
+            <!-- Password -->
+            <div class="form-group">
+                <input type="password" id="password" name="password" placeholder="" required>
+                <label for="password">Password</label>
+            </div>
+            <!-- Confirm Password -->
+            <div class="form-group">
+                <input type="password" id="confirmPassword" name="confirmpassword" placeholder="" required>
+                <label for="confirmPassword">Confirm Password</label>
+            </div>
+            <button type="submit" class="btn">Register</button>
+        </form>
+        
+        <div class="divider"><span>or</span></div>
+
+            <a class="google-signin" href="{% provider_login_url 'google' %}" > 
+                <img width="33" height="33" src="https://img.icons8.com/color/48/google-logo.png" alt="google-logo"/>
+                Login with Google
+            </a>
+    
+        
+        <!-- <div id="g_id_onload"
+            data-client_id="YOUR_GOOGLE_CLIENT_ID"
+            data-context="signin"
+            data-ux_mode="popup"
+            data-callback="handleGoogleResponse"
+            data-auto_prompt="false">
+        </div>
+    
+        <div class="g_id_signin"
+            data-type="standard"
+            data-shape="rectangular"
+            data-theme="outline"
+            data-text="sign_in_with"
+            data-size="large"
+            data-logo_alignment="left">
+        </div> -->
+   
+        <div class="register-link">
+            Already have an account? <a href="{% url 'login' %}">Login here</a>
+        </div>
+    </div>
+    <!-- intl-tel-input JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const phoneInputField = document.getElementById("phone");
+           
+            // Initialize intl-tel-input with India as the default country
+            const iti = window.intlTelInput(phoneInput, {
+                initialCountry: "in", // Set India as default
+                preferredCountries: ["in", "us", "gb"], // Optional: prioritize some countries
+                separateDialCode: true, // Display the dial code separately
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+            });
+        });    
+            
+  
+        
+
+
+        // Function to get CSRF token
+        function getCSRFToken() {
+            let cookieValue = null;
+            let cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.startsWith("csrftoken=")) {
+                    cookieValue = cookie.substring("csrftoken=".length, cookie.length);
+                    break;
+                }
+            }
+            return cookieValue;
+        }
+        let verifiedEmail = false;
+
+function showVerifyBtn() {
+    const email = document.getElementById('email').value;
+    const verifyBtn = document.getElementById('verify-btn');
+    verifyBtn.style.display = email ? 'inline-block' : 'none';
+}
+
+function sendOTP() {
+    const email = document.getElementById('email').value;
+    fetch("{% url 'send_otp' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()
+        },
+        body: JSON.stringify({ email: email })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('otp-section').style.display = 'block';
+        } else {
+            alert('Error sending OTP: ' + data.message);
+        }
+    });
+}
+
+function verifyOTP() {
+    const email = document.getElementById('email').value;
+    const otp = document.getElementById('otp').value;
+
+    fetch("{% url 'verify_otp' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()
+        },
+        body: JSON.stringify({ email: email, otp: otp })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const msg = document.getElementById('otp-message');
+        if (data.verified) {
+            msg.style.color = 'green';
+            msg.textContent = 'Email verified ✔';
+            verifiedEmail = true;
+        } else {
+            msg.style.color = 'red';
+            msg.textContent = 'Wrong OTP ❌';
+        }
+    });
+}
+
+// ✅ Block form submission if email not verified
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    if (!verifiedEmail) {
+        e.preventDefault();
+        alert('Please verify your email before registering.');
+    }
+});
+
+function getCSRFToken() {
+    let cookieValue = null;
+    document.cookie.split(';').forEach(cookie => {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'csrftoken') cookieValue = value;
+    });
+    return cookieValue;
+}
+    </script>
+</body>
+</html>

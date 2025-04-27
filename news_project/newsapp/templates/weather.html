@@ -1,0 +1,227 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NewsNexus Weather</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #5481d5, #2a5298);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      text-align: center;
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    .logo {
+      width: 120px;
+      margin-bottom: 20px;
+      animation: pop 1s ease forwards;
+    }
+
+    .weather-container {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      width: 90%;
+      max-width: 550px;
+      transition: transform 0.3s ease;
+    }
+
+    .weather-container:hover {
+      transform: scale(1.01);
+    }
+
+    h2, h3 {
+      margin: 10px 0;
+    }
+
+    h2 {
+      font-size: 30px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    h3 {
+      font-weight: 400;
+    }
+
+    p {
+      font-size: 16px;
+    }
+
+    #temperature {
+      font-size: 42px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    #description {
+      text-transform: capitalize;
+      font-style: italic;
+      margin-top: 5px;
+      font-size: 18px;
+    }
+
+    #weather-icon {
+      width: 100px;
+      animation: float 2s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .goback {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 40px;
+      color: white;
+      z-index: 2;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .goback:hover {
+      transform: scale(1.2);
+      color: #ffe600;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .logo {
+        width: 80px;
+      }
+
+      .weather-container {
+        padding: 20px;
+      }
+
+      #temperature {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Go Back Icon -->
+  <div class="goback">
+    <a href="{% url 'Homepage' %}"><i class='bx bxs-left-arrow-square'></i></a>
+  </div>
+
+  <!-- Logo -->
+  <img src="{% static 'img/NewsNexuslogo.png' %}" class="logo">
+
+  <!-- Weather Content -->
+  <div class="weather-container">
+    <h2>Live Weather</h2>
+    <p id="weather-date"></p>
+    <p id="weather-time"></p>
+    <h3 id="location">Fetching location...</h3>
+    <img id="weather-icon" src="" alt="Weather Icon" />
+    <h2 id="temperature">--°C</h2>
+    <p id="description"></p>
+    <p>Humidity: <span id="humidity">--</span>%</p>
+    <p>Wind Speed: <span id="wind-speed">--</span> m/s</p>
+  </div>
+
+  <!-- Weather Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      function updateDateTime() {
+        const now = new Date();
+        const dateOptions = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+        const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+        document.getElementById("weather-date").innerText = now.toLocaleDateString("en-US", dateOptions);
+        document.getElementById("weather-time").innerText = now.toLocaleTimeString("en-US", timeOptions);
+      }
+
+      setInterval(updateDateTime, 1000);
+      updateDateTime();
+
+      function fetchWeather() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(async (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const apiKey = "47eed1a31f80d6bd24e9a10c56ab12fa";
+            const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                document.getElementById("temperature").innerText = `${Math.round(data.main.temp)}°C`;
+                document.getElementById("location").innerText = data.name + ",";
+                document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+                document.getElementById("description").innerText = data.weather[0].description;
+                document.getElementById("humidity").innerText = data.main.humidity;
+                document.getElementById("wind-speed").innerText = data.wind.speed;
+
+                const weatherMain = data.weather[0].main.toLowerCase();
+
+                let backgroundGradient;
+
+                switch (weatherMain) {
+                    case 'clear':
+                    backgroundGradient = "linear-gradient(135deg, #fbc2eb, #a6c1ee)";
+                    break;
+                    case 'clouds':
+                    backgroundGradient = "linear-gradient(135deg, #bdc3c7, #2c3e50)";
+                    break;
+                    case 'rain':
+                    case 'drizzle':
+                    backgroundGradient = "linear-gradient(135deg, #4b79a1, #283e51)";
+                    break;
+                    case 'thunderstorm':
+                    backgroundGradient = "linear-gradient(135deg, #141e30, #243b55)";
+                    break;
+                    case 'snow':
+                    backgroundGradient = "linear-gradient(135deg, #e6dada, #274046)";
+                    break;
+                    case 'mist':
+                    case 'fog':
+                    case 'haze':
+                    backgroundGradient = "linear-gradient(135deg, #757f9a, #d7dde8)";
+                    break;
+                    default:
+                    backgroundGradient = "linear-gradient(135deg, #5481d5, #2a5298)";
+                    break;
+                }
+
+                document.body.style.background = backgroundGradient;
+
+                } catch (error) {
+                document.getElementById("temperature").innerText = "Error";
+                document.getElementById("location").innerText = "Weather Unavailable";
+                }
+
+          });
+        }
+      }
+
+      fetchWeather();
+    });
+  </script>
+</body>
+</html>
